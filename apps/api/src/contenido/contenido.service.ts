@@ -22,6 +22,8 @@ export interface ElementoCola {
   version: number;
   titulo: string;
   notas?: string;
+  /** Solo en ejercicios. */
+  fichaIds?: string[];
   actualizado: Date;
 }
 
@@ -60,7 +62,7 @@ export class ContenidoService {
       }),
       ...ejercicios.map((e) => {
         const data = e.data as Ejercicio;
-        return { coleccion: "ejercicios" as const, id: e.id, tipo: e.tipo, estado: e.estado, version: e.version, titulo: tituloEjercicio(data), notas: data.revision.notas, actualizado: e.actualizado };
+        return { coleccion: "ejercicios" as const, id: e.id, tipo: e.tipo, estado: e.estado, version: e.version, titulo: tituloEjercicio(data), notas: data.revision.notas, fichaIds: e.fichaIds, actualizado: e.actualizado };
       }),
     ];
     return elementos.sort((a, b) => b.actualizado.getTime() - a.actualizado.getTime());

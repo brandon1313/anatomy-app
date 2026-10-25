@@ -60,4 +60,9 @@ pnpm typecheck
   - Se puede aprobar desde borrador, en revisión o rechazada.
 - **Tablas extra:** `tokens_renovacion` (se guarda solo el hash y se rotan en cada renovación) y `configuracion` (firma del revisor y precio de Premium).
 - **Borrar la cuenta** borra en cascada todos los datos del usuario, incluidos intentos y eventos.
-- **Pendiente para la semana 2:** dónde se arma el curso (unidades, lecciones y sus ejercicios). El PRD no tiene vista ni ruta para eso; la idea es un editor de lecciones en el panel y `GET`/`PUT /admin/curso`.
+- **Curso:** el PRD no decía dónde se arma. El panel tiene la página **Curso** (lecciones y sus ejercicios) y la API `GET`/`PUT /admin/curso`. La beta tiene un solo curso. El id de cada lección sale de su título al crearla y no cambia, porque el progreso del estudiante depende de él.
+- **Publicar** (solo admin, `POST /admin/publicar`):
+  - Arma el paquete solo con lo aprobado y corre `PaqueteContenido.parse` y `erroresDeConsistencia`.
+  - Si una lección incluye algo sin aprobar, el error dice su estado en vez de "no existe".
+  - No publica una versión idéntica a la anterior (409).
+- **Paquete actual:** la app lo pide con `GET /paquete/actual?desde=N`, que trae el contenido solo si hay una versión más nueva que N.

@@ -96,3 +96,13 @@ th { font-size: 0.85em; color: var(--tenue); font-weight: 600; }
 .resultados { padding-left: 20px; }
 .resultado-creado strong { color: var(--verde); }
 .resultado-fallido strong { color: var(--rojo); }
+
+.leccion .fila input { flex: 1; }
+.ejercicios-leccion { padding-left: 24px; margin: 8px 0; }
+.ejercicios-leccion li { padding: 4px 0; }
+.ejercicios-leccion .tipo { color: var(--tenue); font-size: 0.9em; }
+.ejercicios-leccion .controles { display: inline-flex; gap: 4px; margin-left: 8px; }
+.ejercicios-leccion .controles button { min-height: 28px; padding: 2px 8px; }
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; padding: 12px 16px 16px; }
+.tarjeta h2 { margin-top: 4px; }
+.exito { color: var(--verde); }

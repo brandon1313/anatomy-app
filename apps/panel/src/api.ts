@@ -123,6 +123,7 @@ export interface ElementoCola {
   version: number;
   titulo: string;
   notas?: string;
+  fichaIds?: string[];
   actualizado: string;
 }
 
@@ -139,6 +140,18 @@ export interface RespuestaFicha {
 export interface RespuestaEjercicio {
   ejercicio: Ejercicio;
   fichas: { id: string; nombre: string; estado: EstadoRevision }[];
+}
+
+export interface Conteos {
+  lecciones: number;
+  fichas: number;
+  imagenes: number;
+  ejercicios: number;
+}
+
+export interface RespuestaPaquetes {
+  siguiente: { version: number; errores: string[]; sinCambios: boolean; conteos?: Conteos };
+  historial: { version: number; publicadoPor: string; publicadoEn: string; conteos: Conteos }[];
 }
 
 export type ResultadoGeneracion =

@@ -8,6 +8,7 @@ import { config } from "./config";
 import { ContenidoModule } from "./contenido/contenido.module";
 import { GeneradorModule } from "./generador/generador.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { PublicacionModule } from "./publicacion/publicacion.module";
 import { UsuariosController } from "./usuarios/usuarios.controller";
 
 @Module({
@@ -18,6 +19,7 @@ import { UsuariosController } from "./usuarios/usuarios.controller";
     AuthModule,
     ContenidoModule,
     GeneradorModule,
+    PublicacionModule,
   ],
   controllers: [UsuariosController],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

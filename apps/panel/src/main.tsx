@@ -5,10 +5,12 @@ import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-do
 import { cerrarSesion, sesionGuardada } from "./api";
 import "./estilos.css";
 import { Cola } from "./paginas/Cola";
+import { Curso } from "./paginas/Curso";
 import { EditorEjercicio } from "./paginas/EditorEjercicio";
 import { EditorFicha } from "./paginas/EditorFicha";
 import { Generar } from "./paginas/Generar";
 import { Login } from "./paginas/Login";
+import { Publicar } from "./paginas/Publicar";
 
 const consultas = new QueryClient({ defaultOptions: { queries: { staleTime: 10_000, retry: false } } });
 
@@ -33,6 +35,8 @@ function App() {
         <nav>
           <NavLink to="/cola">Cola de revisión</NavLink>
           <NavLink to="/generar">Generar</NavLink>
+          <NavLink to="/curso">Curso</NavLink>
+          {usuario.rol === "admin" && <NavLink to="/publicar">Publicar</NavLink>}
         </nav>
         <span className="usuario">
           {usuario.nombre} ({usuario.rol})
@@ -47,6 +51,8 @@ function App() {
           <Route path="/fichas/:id" element={<EditorFicha />} />
           <Route path="/ejercicios/:id" element={<EditorEjercicio />} />
           <Route path="/generar" element={<Generar />} />
+          <Route path="/curso" element={<Curso />} />
+          {usuario.rol === "admin" && <Route path="/publicar" element={<Publicar />} />}
           <Route path="*" element={<Navigate to="/cola" replace />} />
         </Routes>
       </main>
