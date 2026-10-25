@@ -7,11 +7,11 @@ App de lecciones cortas de anatomía con contenido redactado por IA y aprobado p
 | `packages/contenido` | Esquema zod (contrato de datos), `distanciaABorde`, regla del toque y validación de la salida del generador |
 | `apps/api` | NestJS + Prisma + PostgreSQL: autenticación, cola de revisión y generador |
 | `apps/panel` | React + Vite: panel interno para la revisora y el admin |
-| `apps/mobile` | Pendiente (semana 2) |
+| `apps/mobile` | Expo SDK 58 + Expo Router: registro, descarga del paquete, ruta de lecciones y los 3 ejercicios de texto |
 
 ## Arrancar en local
 
-Requisitos: Node 22, pnpm 9 y Docker.
+Requisitos: Node 24 (`nvm use` lee `.nvmrc`; las herramientas de React Native 0.88 piden 22.13 o más), pnpm 9 y Docker.
 
 ```bash
 pnpm install
@@ -28,6 +28,17 @@ El primer editor o admin se crea registrándose (`POST /auth/registro`) y cambia
 ```bash
 pnpm --filter @anatomia/api rol --email revisora@ejemplo.com --rol editor
 ```
+
+## App
+
+```bash
+pnpm --filter @anatomia/mobile start   # QR para Expo Go; tecla w abre la versión web
+```
+
+- **En tu teléfono, con Expo Go:** la app tiene que llegar a la API por la red local. Arranca con `EXPO_PUBLIC_API_URL=http://<IP de tu computadora>:3000`.
+- **En web** (solo para desarrollo): agrega `http://localhost:8081` a `CORS_ORIGENES` en `apps/api/.env`. En web, los tokens y el paquete se guardan en `localStorage` (`*.web.ts`). En el teléfono, los tokens van en el llavero del sistema (`expo-secure-store`) y el paquete en un archivo (`expo-file-system`).
+- **Contenido local:** el paquete se valida con `PaqueteContenido` antes de reemplazar la copia local. Sin conexión, la app sigue con la última copia. Las lecciones completadas se guardan por usuario en el dispositivo.
+- **Pendiente para la semana 3:** los ejercicios de imagen (por ahora se omiten), el repaso con ts-fsrs, la racha, los recordatorios, los intentos en SQLite con `/sync`, reportar error, el perfil, borrar la cuenta y la pantalla de Premium.
 
 ## Generador
 
