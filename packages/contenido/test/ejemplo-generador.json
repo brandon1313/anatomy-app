@@ -1,0 +1,74 @@
+{
+  "fichas": [
+    {
+      "id": "recto-femoral",
+      "tipo": "musculo",
+      "nombre": {
+        "principal": "Recto femoral",
+        "latin": "Musculus rectus femoris",
+        "sinonimos": ["Recto anterior del muslo"]
+      },
+      "region": "muslo",
+      "compartimento": "anterior",
+      "origen": [
+        "Espina ilíaca anteroinferior (tendón directo)",
+        "Borde superior del acetábulo (tendón reflejo)"
+      ],
+      "insercion": [
+        "Rótula, por medio del tendón del cuádriceps",
+        "Tuberosidad de la tibia, por medio del ligamento rotuliano"
+      ],
+      "inervacion": [{ "nervio": "Nervio femoral", "raices": "L2–L4" }],
+      "acciones": ["Extensión de la rodilla", "Flexión de la cadera"],
+      "notaClinica": "Cruza la cadera y la rodilla: es la única porción del cuádriceps que también flexiona la cadera.",
+      "referencias": [{ "libro": "tortora" }]
+    }
+  ],
+  "ejercicios": [
+    {
+      "id": "recto-femoral-inervacion",
+      "tipo": "opcion_multiple",
+      "fichaIds": ["recto-femoral"],
+      "dificultad": 1,
+      "enunciado": "¿Qué nervio inerva el recto femoral?",
+      "opciones": [
+        { "id": "a", "texto": "Nervio femoral" },
+        { "id": "b", "texto": "Nervio obturador" },
+        { "id": "c", "texto": "Nervio ciático" },
+        { "id": "d", "texto": "Nervio glúteo superior" }
+      ],
+      "correcta": "a",
+      "explicacion": "Todo el cuádriceps, incluido el recto femoral, está inervado por el nervio femoral (L2–L4)."
+    },
+    {
+      "id": "recto-femoral-ficha",
+      "tipo": "emparejar",
+      "fichaIds": ["recto-femoral"],
+      "dificultad": 2,
+      "enunciado": "Une cada parte de la ficha del recto femoral con su dato.",
+      "pares": [
+        { "izquierda": "Origen", "derecha": "Espina ilíaca anteroinferior" },
+        { "izquierda": "Inserción", "derecha": "Tuberosidad de la tibia (vía ligamento rotuliano)" },
+        { "izquierda": "Inervación", "derecha": "Nervio femoral" },
+        { "izquierda": "Acción en la cadera", "derecha": "Flexión" }
+      ],
+      "explicacion": "Al cruzar dos articulaciones, el recto femoral extiende la rodilla y además flexiona la cadera."
+    },
+    {
+      "id": "recto-femoral-caso-nervio-femoral",
+      "tipo": "caso_clinico",
+      "fichaIds": ["recto-femoral"],
+      "dificultad": 2,
+      "caso": "Un paciente con una lesión del nervio femoral refiere que la rodilla se le dobla al apoyar el peso sobre esa pierna.",
+      "pregunta": "¿Qué acción está más comprometida?",
+      "opciones": [
+        { "id": "a", "texto": "Extensión de la rodilla" },
+        { "id": "b", "texto": "Flexión plantar del tobillo" },
+        { "id": "c", "texto": "Aducción de la cadera" },
+        { "id": "d", "texto": "Abducción de la cadera" }
+      ],
+      "correcta": "a",
+      "explicacion": "El nervio femoral inerva el cuádriceps, el principal extensor de la rodilla; sin él, la rodilla no se estabiliza al cargar peso."
+    }
+  ]
+}

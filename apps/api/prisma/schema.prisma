@@ -1,0 +1,218 @@
+// Modelo de datos — ver docs/PRD.md, sección "Modelo de datos".
+// El contenido vive en `data` (JSONB) y se valida con packages/contenido antes de cada escritura;
+// las columnas aparte sirven para filtrar y ordenar.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  estudiante
+  editor
+  admin
+}
+
+enum EstadoRevision {
+  borrador
+  en_revision
+  aprobada
+  rechazada
+}
+
+enum EstadoReporte {
+  abierto
+  resuelto
+}
+
+model Usuario {
+  id               String   @id @default(uuid()) @db.Uuid
+  email            String   @unique
+  hash             String
+  nombre           String
+  universidad      String?
+  rol              Rol      @default(estudiante)
+  zonaHoraria      String   @default("America/Guatemala") @map("zona_horaria")
+  /// "HH:MM" en la zona horaria del usuario.
+  horaRecordatorio String?  @map("hora_recordatorio")
+  creado           DateTime @default(now())
+
+  tokens         TokenRenovacion[]
+  intentos       Intento[]
+  progreso       ProgresoFicha[]
+  racha          Racha?
+  reportes       ReporteError[]
+  eventos        Evento[]
+  interesPremium InteresPremium[]
+
+  @@map("usuarios")
+}
+
+/// Tokens de renovación; se guarda solo el hash. Se borran al cerrar sesión o borrar la cuenta.
+model TokenRenovacion {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  hash      String   @unique
+  expira    DateTime
+  creado    DateTime @default(now())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@map("tokens_renovacion")
+}
+
+model Ficha {
+  id          String         @id
+  estado      EstadoRevision @default(borrador)
+  version     Int            @default(1)
+  /// FichaMusculo (incluye revision y version)
+  data        Json
+  revisadoPor String?        @map("revisado_por")
+  revisadoEn  DateTime?      @map("revisado_en")
+  actualizado DateTime       @updatedAt
+
+  @@index([estado])
+  @@map("fichas")
+}
+
+model Imagen {
+  id          String         @id
+  estado      EstadoRevision @default(borrador)
+  version     Int            @default(1)
+  /// Imagen, con sus zonas
+  data        Json
+  archivoUrl  String         @map("archivo_url")
+  actualizado DateTime       @updatedAt
+
+  @@index([estado])
+  @@map("imagenes")
+}
+
+model Ejercicio {
+  id          String         @id
+  tipo        String
+  estado      EstadoRevision @default(borrador)
+  version     Int            @default(1)
+  /// Ejercicio
+  data        Json
+  /// Copia de data.fichaIds para filtrar por ficha.
+  fichaIds    String[]       @map("ficha_ids")
+  actualizado DateTime       @updatedAt
+
+  @@index([estado])
+  @@index([fichaIds], type: Gin)
+  @@map("ejercicios")
+}
+
+model Curso {
+  id   String @id
+  /// Curso, con unidades y lecciones
+  data Json
+
+  @@map("cursos")
+}
+
+/// Nunca se modifica: cada publicación crea la versión siguiente.
+model Paquete {
+  version      Int      @id
+  contenido    Json
+  publicadoPor String   @map("publicado_por")
+  publicadoEn  DateTime @default(now()) @map("publicado_en")
+
+  @@map("paquetes")
+}
+
+model Intento {
+  /// Generado en el dispositivo, así un reenvío no crea duplicados.
+  id             String   @id @db.Uuid
+  usuarioId      String   @map("usuario_id") @db.Uuid
+  ejercicioId    String   @map("ejercicio_id")
+  correcto       Boolean
+  msRespuesta    Int      @map("ms_respuesta")
+  respondidoEn   DateTime @map("respondido_en")
+  paqueteVersion Int      @map("paquete_version")
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@index([ejercicioId])
+  @@map("intentos")
+}
+
+model ProgresoFicha {
+  usuarioId         String    @map("usuario_id") @db.Uuid
+  fichaId           String    @map("ficha_id")
+  estado            String
+  estabilidad       Float
+  dificultad        Float
+  diasProgramados   Int       @default(0) @map("dias_programados")
+  pasosAprendizaje  Int       @default(0) @map("pasos_aprendizaje")
+  repeticiones      Int
+  lapsos            Int
+  ultimaRevision    DateTime? @map("ultima_revision")
+  proximaRevision   DateTime  @map("proxima_revision")
+  ultimoEjercicioId String?   @map("ultimo_ejercicio_id")
+  usuario           Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, fichaId])
+  @@map("progreso_ficha")
+}
+
+model Racha {
+  usuarioId String  @id @map("usuario_id") @db.Uuid
+  actual    Int     @default(0)
+  maxima    Int     @default(0)
+  /// Día local "YYYY-MM-DD" de la última actividad.
+  ultimoDia String? @map("ultimo_dia")
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("rachas")
+}
+
+model ReporteError {
+  id          String        @id @db.Uuid
+  ejercicioId String        @map("ejercicio_id")
+  usuarioId   String        @map("usuario_id") @db.Uuid
+  motivo      String
+  comentario  String?
+  creado      DateTime
+  estado      EstadoReporte @default(abierto)
+  usuario     Usuario       @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([estado])
+  @@map("reportes_error")
+}
+
+model Evento {
+  id          String   @id @default(uuid()) @db.Uuid
+  usuarioId   String   @map("usuario_id") @db.Uuid
+  nombre      String
+  propiedades Json     @default("{}")
+  creado      DateTime @default(now())
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([nombre, creado])
+  @@map("eventos")
+}
+
+model InteresPremium {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  plan      String
+  creado    DateTime @default(now())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("interes_premium")
+}
+
+/// Ajustes editables desde el panel (firma del revisor, precio de Premium...).
+model Configuracion {
+  clave       String   @id
+  valor       Json
+  actualizado DateTime @updatedAt
+
+  @@map("configuracion")
+}

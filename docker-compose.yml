@@ -1,0 +1,14 @@
+# Infraestructura local. Postgres usa 5433 para no chocar con otros proyectos en 5432.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: anatomia
+      POSTGRES_PASSWORD: anatomia
+      POSTGRES_DB: anatomia
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
