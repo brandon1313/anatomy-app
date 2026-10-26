@@ -63,7 +63,10 @@ function renovar(): Promise<boolean> {
       body: JSON.stringify({ tokenRenovacion: s.tokenRenovacion }),
     });
     if (!r.ok) {
-      guardarSesion(null);
+      // Otra pestaña pudo renovar con el mismo token: si la sesión guardada ya cambió, vale esa.
+      if (sesionGuardada()?.tokenRenovacion !== s.tokenRenovacion) return sesionGuardada() !== null;
+      // Solo un rechazo del servidor cierra la sesión; un error pasajero no.
+      if (r.status === 401) guardarSesion(null);
       return false;
     }
     guardarSesion(await r.json());

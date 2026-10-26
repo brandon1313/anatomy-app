@@ -53,7 +53,9 @@ export class AuthService {
       include: { usuario: true },
     });
     if (!guardado || guardado.expira < new Date()) throw new UnauthorizedException();
-    await this.prisma.tokenRenovacion.delete({ where: { id: guardado.id } });
+    // Dos renovaciones a la vez con el mismo token (dos pestañas): solo la que logra borrarlo sigue.
+    const { count } = await this.prisma.tokenRenovacion.deleteMany({ where: { id: guardado.id } });
+    if (count === 0) throw new UnauthorizedException();
     return this.sesion(guardado.usuario);
   }
 
