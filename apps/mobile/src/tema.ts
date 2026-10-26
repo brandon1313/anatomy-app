@@ -10,7 +10,10 @@ export const color = {
   verdeSuave: "#e6f4ec",
   rojo: "#b3261e",
   rojoSuave: "#fbe9e7",
+  ambar: "#a35b00",
   bloqueado: "#a8a8a2",
+  /** Relleno de la zona correcta sobre la imagen (semitransparente). */
+  zonaCorrecta: "#3ddc84",
 };
 
 export const espacio = { xs: 4, s: 8, m: 16, l: 24, xl: 32 };

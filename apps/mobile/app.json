@@ -28,6 +28,12 @@
     "scheme": "anatomia",
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4a48a075-db49-4a86-b864-968c05ce4fc7"
+      }
+    },
+    "owner": "brandonr61"
   }
 }

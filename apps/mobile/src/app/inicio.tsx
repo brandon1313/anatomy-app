@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
+import { uriImagen } from "../lib/imagenes";
 import { ejerciciosDeLeccion, estadoLeccion, lecciones } from "../leccion/flujo";
 import { color, espacio, TOQUE_MINIMO } from "../tema";
 
@@ -52,7 +53,7 @@ export default function Inicio() {
         <View style={estilos.ruta}>
           {todas.map((l, i) => {
             const estado = estadoLeccion(todas, i, completadas);
-            const n = ejerciciosDeLeccion(paquete, l).length;
+            const n = ejerciciosDeLeccion(paquete, l, (archivo) => uriImagen(archivo) !== null).length;
             return (
               <Pressable
                 key={l.id}

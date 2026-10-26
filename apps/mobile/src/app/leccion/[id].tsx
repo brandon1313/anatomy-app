@@ -4,8 +4,11 @@ import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../../componentes/Boton";
 import { Emparejar } from "../../ejercicios/Emparejar";
+import { IdentificarImagen } from "../../ejercicios/IdentificarImagen";
 import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
+import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import { useApp } from "../../lib/estado";
+import { uriImagen } from "../../lib/imagenes";
 import { actual, ejerciciosDeLeccion, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
 import { color, espacio, TOQUE_MINIMO } from "../../tema";
 
@@ -30,11 +33,17 @@ export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { paquete, completar } = useApp();
   const leccion = useMemo(() => (paquete ? lecciones(paquete).find((l) => l.id === id) : undefined), [paquete, id]);
-  const ejercicios = useMemo(() => (paquete && leccion ? ejerciciosDeLeccion(paquete, leccion) : []), [paquete, leccion]);
+  const ejercicios = useMemo(
+    () => (paquete && leccion ? ejerciciosDeLeccion(paquete, leccion, (archivo) => uriImagen(archivo) !== null) : []),
+    [paquete, leccion],
+  );
   const porId = useMemo(() => new Map(ejercicios.map((e) => [e.id, e])), [ejercicios]);
+  const imagenes = useMemo(() => new Map((paquete?.imagenes ?? []).map((i) => [i.id, i])), [paquete]);
+  const nombres = useMemo(() => new Map((paquete?.fichas ?? []).map((f) => [f.id, f.nombre.principal])), [paquete]);
 
   const [sesion, setSesion] = useState(() => iniciar(ejercicios.map((e) => e.id)));
-  const [respuesta, setRespuesta] = useState<boolean | null>(null);
+  /** `detalle`: algo más que decir al fallar ("Tocaste el vasto lateral."). */
+  const [respuesta, setRespuesta] = useState<{ correcto: boolean; detalle?: string } | null>(null);
   const inicio = useRef(Date.now());
 
   const fin = terminada(sesion);
@@ -73,11 +82,12 @@ export default function Leccion() {
 
   const ejercicio = porId.get(actual(sesion)!)!;
   const props = {
-    onResponder: (correcto: boolean) => {
+    onResponder: (correcto: boolean, detalle?: string) => {
       setSesion((s) => responder(s, correcto, Date.now() - inicio.current));
-      setRespuesta(correcto);
+      setRespuesta({ correcto, detalle });
     },
   };
+  const imagen = "imagenId" in ejercicio ? imagenes.get(ejercicio.imagenId) : undefined;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -100,16 +110,23 @@ export default function Leccion() {
           <Emparejar key={sesion.indice} ejercicio={ejercicio} {...props} />
         ) : ejercicio.tipo === "opcion_multiple" || ejercicio.tipo === "caso_clinico" ? (
           <OpcionMultiple key={sesion.indice} ejercicio={ejercicio} {...props} />
+        ) : ejercicio.tipo === "tocar_estructura" && imagen ? (
+          <TocarEstructura key={sesion.indice} ejercicio={ejercicio} imagen={imagen} nombres={nombres} {...props} />
+        ) : ejercicio.tipo === "identificar_imagen" && imagen ? (
+          <IdentificarImagen key={sesion.indice} ejercicio={ejercicio} imagen={imagen} {...props} />
         ) : null}
       </ScrollView>
 
       {respuesta !== null && (
-        <View style={[estilos.retro, respuesta ? estilos.retroBien : estilos.retroMal]} accessibilityLiveRegion="polite">
-          <Text style={[estilos.retroTitulo, { color: respuesta ? color.verde : color.rojo }]}>{respuesta ? "¡Correcto!" : "Incorrecto"}</Text>
+        <View style={[estilos.retro, respuesta.correcto ? estilos.retroBien : estilos.retroMal]} accessibilityLiveRegion="polite">
+          <Text style={[estilos.retroTitulo, { color: respuesta.correcto ? color.verde : color.rojo }]}>
+            {respuesta.correcto ? "¡Correcto!" : "Incorrecto"}
+          </Text>
+          {respuesta.detalle && <Text style={estilos.detalle}>{respuesta.detalle}</Text>}
           <Text style={estilos.explicacion}>{ejercicio.explicacion}</Text>
           <Boton
             titulo="Continuar"
-            variante={respuesta ? "exito" : "error"}
+            variante={respuesta.correcto ? "exito" : "error"}
             onPress={() => {
               setSesion(siguiente);
               setRespuesta(null);
@@ -136,6 +153,7 @@ const estilos = StyleSheet.create({
   retroBien: { backgroundColor: color.verdeSuave, borderTopColor: color.verde },
   retroMal: { backgroundColor: color.rojoSuave, borderTopColor: color.rojo },
   retroTitulo: { fontSize: 22, fontWeight: "800" },
+  detalle: { fontSize: 16, fontWeight: "600", color: color.texto },
   explicacion: { fontSize: 16, color: color.texto, lineHeight: 23, marginBottom: espacio.s },
   tituloResultado: { fontSize: 30, fontWeight: "800", color: color.texto, textAlign: "center" },
   cifras: { flexDirection: "row", gap: espacio.m },

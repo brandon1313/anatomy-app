@@ -1,5 +1,41 @@
+import type { PaqueteContenido } from "@anatomia/contenido";
 import { describe, expect, it } from "vitest";
-import { actual, barajar, calificarEmparejar, estadoLeccion, iniciar, progreso, responder, resultado, siguiente, terminada, type Sesion } from "./flujo";
+import {
+  actual,
+  barajar,
+  calificarEmparejar,
+  ejerciciosDeLeccion,
+  estadoLeccion,
+  iniciar,
+  progreso,
+  responder,
+  resultado,
+  siguiente,
+  terminada,
+  type Sesion,
+} from "./flujo";
+
+describe("ejerciciosDeLeccion", () => {
+  // Solo lo que usa la función: ejercicios (id, tipo, imagenId) e imágenes (id, archivo).
+  const paquete = {
+    imagenes: [{ id: "muslo", archivo: "imagenes/muslo-1.webp" }],
+    ejercicios: [
+      { id: "texto", tipo: "opcion_multiple" },
+      { id: "tocar", tipo: "tocar_estructura", imagenId: "muslo" },
+      { id: "identificar", tipo: "identificar_imagen", imagenId: "muslo" },
+      { id: "sin-imagen", tipo: "tocar_estructura", imagenId: "otra" },
+    ],
+  } as unknown as PaqueteContenido;
+  const leccion = { id: "l1", titulo: "L1", orden: 0, ejercicioIds: ["texto", "tocar", "identificar", "sin-imagen", "borrado"] };
+
+  it("incluye los de imagen cuando su imagen está disponible", () => {
+    expect(ejerciciosDeLeccion(paquete, leccion).map((e) => e.id)).toEqual(["texto", "tocar", "identificar"]);
+  });
+
+  it("salta los de imagen si la imagen no se descargó", () => {
+    expect(ejerciciosDeLeccion(paquete, leccion, () => false).map((e) => e.id)).toEqual(["texto"]);
+  });
+});
 
 /** Responde la sesión entera según `aciertos` (por id) y devuelve los ids en el orden mostrado. */
 function jugar(s: Sesion, acierta: (id: string, vez: number) => boolean) {

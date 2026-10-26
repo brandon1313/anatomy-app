@@ -3,15 +3,28 @@ import type { z } from "zod";
 
 export type TLeccion = z.infer<typeof Leccion>;
 
-/** Tipos que la app ya sabe mostrar; los de imagen llegan en la semana 3. */
-const SOPORTADOS = new Set<Ejercicio["tipo"]>(["opcion_multiple", "caso_clinico", "emparejar"]);
+/** Tipos que la app sabe mostrar. Un tipo nuevo en un paquete se salta en vez de romper la lección. */
+const SOPORTADOS = new Set<Ejercicio["tipo"]>(["opcion_multiple", "caso_clinico", "emparejar", "identificar_imagen", "tocar_estructura"]);
 
-export function ejerciciosDeLeccion(p: PaqueteContenido, leccion: TLeccion): Ejercicio[] {
+/**
+ * Ejercicios de la lección que se pueden mostrar. Se saltan los que el paquete ya no trae y los de
+ * imagen cuya imagen falta o no está descargada (`imagenDisponible` recibe la clave del archivo).
+ */
+export function ejerciciosDeLeccion(
+  p: PaqueteContenido,
+  leccion: TLeccion,
+  imagenDisponible: (archivo: string) => boolean = () => true,
+): Ejercicio[] {
   const porId = new Map(p.ejercicios.map((e) => [e.id, e]));
+  const imagenes = new Map(p.imagenes.map((i) => [i.id, i]));
   return leccion.ejercicioIds.flatMap((id) => {
     const e = porId.get(id);
-    // Si un paquete nuevo ya no trae un ejercicio, se ignora sin romper la lección.
-    return e && SOPORTADOS.has(e.tipo) ? [e] : [];
+    if (!e || !SOPORTADOS.has(e.tipo)) return [];
+    if ("imagenId" in e) {
+      const imagen = imagenes.get(e.imagenId);
+      if (!imagen || !imagenDisponible(imagen.archivo)) return [];
+    }
+    return [e];
   });
 }
 
