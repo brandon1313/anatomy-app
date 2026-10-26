@@ -6,6 +6,7 @@ import {
   type Imagen,
   PaqueteContenido,
 } from "@anatomia/contenido";
+import { mismoJson } from "../comun/json";
 
 export interface ContenidoAprobado {
   curso: Curso | null;
@@ -20,6 +21,7 @@ export type ResultadoPaquete = { ok: true; paquete: PaqueteContenido } | { ok: f
 export interface Estados {
   fichas: Map<string, string>;
   ejercicios: Map<string, string>;
+  imagenes?: Map<string, string>;
 }
 
 const porId = <T extends { id: string }>(xs: T[]) => [...xs].sort((a, b) => a.id.localeCompare(b.id));
@@ -48,12 +50,20 @@ function sinAprobar(c: ContenidoAprobado & { curso: Curso }, estados: Estados) {
       }
     }
   }
+  const imagenes = new Set(c.imagenes.map((i) => i.id));
   for (const e of c.ejercicios) {
     for (const id of e.fichaIds) {
       const estado = estados.fichas.get(id);
       if (!fichas.has(id) && estado) {
         errores.push(`Ejercicio ${e.id}: su ficha ${id} está ${ESTADO_FICHA[estado] ?? estado}; apruébala primero`);
         reemplazados.add(`Ejercicio ${e.id}: la ficha ${id} no existe`);
+      }
+    }
+    if ("imagenId" in e) {
+      const estado = estados.imagenes?.get(e.imagenId);
+      if (!imagenes.has(e.imagenId) && estado) {
+        errores.push(`Ejercicio ${e.id}: su imagen ${e.imagenId} está ${ESTADO_FICHA[estado] ?? estado}; apruébala primero`);
+        reemplazados.add(`Ejercicio ${e.id}: la imagen ${e.imagenId} no existe`);
       }
     }
   }
@@ -86,20 +96,8 @@ export function armarPaquete(
   return errores.length ? { ok: false, errores } : { ok: true, paquete: r.data };
 }
 
-/** JSON con las llaves ordenadas: Postgres guarda el JSONB con otro orden que el original. */
-function jsonCanonico(v: unknown): string {
-  if (Array.isArray(v)) return `[${v.map(jsonCanonico).join(",")}]`;
-  if (v && typeof v === "object") {
-    const pares = Object.entries(v)
-      .filter(([, x]) => x !== undefined)
-      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
-    return `{${pares.map(([k, x]) => `${JSON.stringify(k)}:${jsonCanonico(x)}`).join(",")}}`;
-  }
-  return JSON.stringify(v);
-}
-
 /** Compara contenido sin la versión, para no publicar dos veces lo mismo. */
 export function mismoContenido(a: PaqueteContenido, b: PaqueteContenido): boolean {
-  const sinVersion = ({ version: _v, ...resto }: PaqueteContenido) => jsonCanonico(resto);
-  return sinVersion(a) === sinVersion(b);
+  const sinVersion = ({ version: _v, ...resto }: PaqueteContenido) => resto;
+  return mismoJson(sinVersion(a), sinVersion(b));
 }

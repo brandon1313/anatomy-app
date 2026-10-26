@@ -3,9 +3,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import type { z } from "zod";
-import { api, type RespuestaEjercicio } from "../api";
+import { api, type RespuestaEjercicio, type RespuestaImagen } from "../api";
 import { AccionesRevision } from "../componentes/AccionesRevision";
 import { Errores, Estado, NOMBRES_TIPO } from "../componentes/comun";
+import { VistaImagen } from "../componentes/VistaImagen";
 
 type Borrador = z.infer<typeof EjercicioBase>;
 type ConOpciones = Extract<Borrador, { opciones: unknown }>;
@@ -42,11 +43,27 @@ function Opciones({ e, onChange }: { e: ConOpciones; onChange: (e: ConOpciones) 
   );
 }
 
+/** La imagen del ejercicio con la zona que pregunta (en la app, la de tocar no se resalta hasta responder). */
+function ImagenDelEjercicio({ e }: { e: Extract<Borrador, { imagenId: string }> }) {
+  const { data } = useQuery({ queryKey: ["imagen", e.imagenId], queryFn: () => api<RespuestaImagen>(`/admin/imagenes/${e.imagenId}`) });
+  if (!data) return <p className="vacio">Cargando la imagen…</p>;
+  return (
+    <>
+      <VistaImagen imagen={data.imagen} resaltada={e.tipo === "identificar_imagen" ? e.zonaResaltada : e.zonaCorrecta} />
+      <p className="nota-pie">
+        Zona <code>{e.tipo === "identificar_imagen" ? e.zonaResaltada : e.zonaCorrecta}</code> de <Link to={`/imagenes/${e.imagenId}`}>{e.imagenId}</Link>
+        {e.tipo === "tocar_estructura" && " (en la app se marca después de responder)"}
+      </p>
+    </>
+  );
+}
+
 /** Vista previa parecida a la app (sin barajar, con la correcta marcada). */
 function VistaPrevia({ e }: { e: Borrador }) {
   return (
     <div className="vista-previa">
       <h2>Vista previa</h2>
+      {"imagenId" in e && <ImagenDelEjercicio e={e} />}
       {e.tipo === "caso_clinico" && <p className="caso">{e.caso}</p>}
       <p className="enunciado">{e.tipo === "caso_clinico" ? e.pregunta : "enunciado" in e ? e.enunciado : "¿Qué estructura está resaltada?"}</p>
       {"opciones" in e && (
@@ -119,7 +136,11 @@ export function EditorEjercicio() {
 
       <div className="columnas">
         <div>
-          {deImagen && <p className="aviso">Los ejercicios de imagen se editan con el editor de zonas (semana 2).</p>}
+          {deImagen && (
+            <p className="nota-pie">
+              La zona y las opciones salen de la imagen y se recalculan al aprobarla; el enunciado, la explicación y la dificultad que escribas se conservan.
+            </p>
+          )}
           <label>
             Dificultad
             <select value={b.dificultad} onChange={(e) => setB({ ...b, dificultad: Number(e.target.value) as 1 | 2 | 3 })}>

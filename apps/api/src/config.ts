@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "node:path";
 import { z } from "zod";
 
 const Entorno = z.object({
@@ -10,6 +11,8 @@ const Entorno = z.object({
   CORS_ORIGENES: z.string().default(""),
   LLM_PROVEEDOR: z.enum(["anthropic", "ejemplo"]).default("anthropic"),
   LLM_MODELO: z.string().default("claude-opus-5-5"),
+  /** Carpeta de archivos públicos en local (relativa a apps/api). */
+  ALMACEN_DIR: z.string().default("almacen").transform((p) => path.resolve(p)),
 });
 
 export const config = Entorno.parse(process.env);

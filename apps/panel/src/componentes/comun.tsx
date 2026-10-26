@@ -10,6 +10,7 @@ export const NOMBRES_ESTADO: Record<EstadoRevision, string> = {
 
 export const NOMBRES_TIPO: Record<string, string> = {
   ficha: "Ficha",
+  imagen: "Imagen",
   opcion_multiple: "Opción múltiple",
   emparejar: "Emparejar",
   caso_clinico: "Caso clínico",

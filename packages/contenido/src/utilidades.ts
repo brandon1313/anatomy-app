@@ -25,18 +25,32 @@ export function distanciaABorde(punto: Punto, zona: Zona): number {
 }
 
 /**
- * Regla del toque: acierta si cae dentro de la zona correcta, o si está a menos de la tolerancia
- * de su borde y no cae dentro de ninguna otra zona.
+ * La zona que recibe el toque. `zonas` va en orden de dibujo: la última queda encima, así que
+ * donde un músculo cubre a otro gana el de arriba.
+ */
+export function zonaTocada(punto: Punto, zonas: Zona[]): Zona | undefined {
+  for (let i = zonas.length - 1; i >= 0; i--) {
+    if (puntoEnZona(punto, zonas[i])) return zonas[i];
+  }
+  return undefined;
+}
+
+/**
+ * Regla del toque del PRD, para zonas que pueden superponerse: acierta si la zona de más arriba
+ * bajo el toque es la correcta, o si el toque no cae en ninguna zona y está a menos de la tolerancia
+ * del borde de la correcta. Sin superposiciones equivale a la regla original ("dentro de la zona
+ * correcta, o cerca de su borde sin caer dentro de otra").
  */
 export function esToqueCorrecto(
   punto: Punto,
-  zonaCorrecta: Zona,
-  otrasZonas: Zona[],
+  idCorrecta: string,
+  zonas: Zona[],
   tolerancia = TOLERANCIA_TOQUE,
 ): boolean {
-  if (puntoEnZona(punto, zonaCorrecta)) return true;
-  if (distanciaABorde(punto, zonaCorrecta) >= tolerancia) return false;
-  return !otrasZonas.some((z) => z.id !== zonaCorrecta.id && puntoEnZona(punto, z));
+  const tocada = zonaTocada(punto, zonas);
+  if (tocada) return tocada.id === idCorrecta;
+  const correcta = zonas.find((z) => z.id === idCorrecta);
+  return correcta !== undefined && distanciaABorde(punto, correcta) < tolerancia;
 }
 
 /**

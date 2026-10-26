@@ -5,7 +5,8 @@ App de lecciones cortas de anatomía con contenido redactado por IA y aprobado p
 | Paquete | Qué es |
 | --- | --- |
 | `packages/contenido` | Esquema zod (contrato de datos), `distanciaABorde`, regla del toque y validación de la salida del generador |
-| `apps/api` | NestJS + Prisma + PostgreSQL: autenticación, cola de revisión y generador |
+| `apps/api` | NestJS + Prisma + PostgreSQL: autenticación, cola de revisión, generador, láminas e imágenes |
+| `contenido/laminas` | Láminas vectoriales (HTML con el dibujo en SVG): fuente de las imágenes, sus zonas y fichas |
 | `apps/panel` | React + Vite: panel interno para la revisora y el admin |
 | `apps/mobile` | Expo SDK 58 + Expo Router: registro, descarga del paquete, ruta de lecciones y los 3 ejercicios de texto |
 
@@ -38,7 +39,7 @@ pnpm --filter @anatomia/mobile start   # QR para Expo Go; tecla w abre la versi�
 - **En tu teléfono, con Expo Go:** la app tiene que llegar a la API por la red local. Arranca con `EXPO_PUBLIC_API_URL=http://<IP de tu computadora>:3000`.
 - **En web** (solo para desarrollo): agrega `http://localhost:8081` a `CORS_ORIGENES` en `apps/api/.env`. En web, los tokens y el paquete se guardan en `localStorage` (`*.web.ts`). En el teléfono, los tokens van en el llavero del sistema (`expo-secure-store`) y el paquete en un archivo (`expo-file-system`).
 - **Contenido local:** el paquete se valida con `PaqueteContenido` antes de reemplazar la copia local. Sin conexión, la app sigue con la última copia. Las lecciones completadas se guardan por usuario en el dispositivo.
-- **Pendiente para la semana 3:** los ejercicios de imagen (por ahora se omiten), el repaso con ts-fsrs, la racha, los recordatorios, los intentos en SQLite con `/sync`, reportar error, el perfil, borrar la cuenta y la pantalla de Premium.
+- **Pendiente para la semana 3:** mostrar los ejercicios de imagen (el paquete ya los trae; la app los omite por ahora), el repaso con ts-fsrs, la racha, los recordatorios, los intentos en SQLite con `/sync`, reportar error, el perfil, borrar la cuenta y la pantalla de Premium.
 
 ## Generador
 
@@ -50,6 +51,24 @@ También desde el panel, en **Generar**. Cada músculo produce 1 ficha y 4 ejerc
 
 - `LLM_PROVEEDOR=anthropic` usa Claude (`LLM_MODELO`, por defecto `claude-opus-5-5`) con salida estructurada. Las credenciales salen de `ANTHROPIC_API_KEY` o del perfil de `ant auth login`.
 - `LLM_PROVEEDOR=ejemplo` devuelve la salida de ejemplo del recto femoral, sin llamar a ningún LLM. Sirve para probar el flujo.
+
+## Láminas e imágenes
+
+```bash
+pnpm --filter @anatomia/api importar-lamina --archivo ../../contenido/laminas/muslo-derecho-anterior.html \
+  --id muslo-anterior --titulo "Muslo derecho, vista anterior"
+```
+
+- **Qué importa.** Una lámina es un HTML con el dibujo en SVG, donde cada estructura es un `<g class="part" data-id>`, y sus datos en `const P = {...}`. El importador crea:
+  - Las fichas de sus músculos, como borrador. Nunca pisa una ficha que ya existe.
+  - Una imagen por capa (superficial y profunda), renderizada a WebP de 1200 px (unos 230 KB), con una zona por músculo sacada del contorno del dibujo.
+  - Los ejercicios de tocar e identificar de cada zona, como borrador.
+- **Orden de las zonas.** Van en orden de dibujo. Donde se superponen (por ejemplo, el sartorio sobre el recto femoral), el toque lo recibe la de más arriba. Sin superposiciones, el resultado es el mismo que la regla del PRD.
+- **Archivos.** En local se guardan en `apps/api/almacen` (`ALMACEN_DIR`) y la API los sirve en `/archivos/<clave>`. La clave lleva el hash del contenido, así que se cachean para siempre. En producción irán a S3.
+- **Aprobar una imagen** exige la casilla "Ya borré los nombres impresos" y que cada zona tenga una ficha existente. Al aprobarla se crean o actualizan sus ejercicios: se recalcula lo que depende de las zonas (zona, opciones, correcta) y se conserva lo que escribió la revisora (enunciado, explicación, dificultad).
+- **Orden de aprobación.** Un ejercicio de imagen no se puede aprobar antes que su imagen.
+- **Distractores.** En los de identificar son las 3 zonas más cercanas con otra ficha.
+- **Pendiente:** subir imágenes raster y dibujar zonas a mano en el panel (`POST /admin/imagenes`). Por ahora las imágenes salen de láminas.
 
 ## Pruebas
 

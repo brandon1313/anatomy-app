@@ -1,4 +1,4 @@
-import type { Ejercicio, EstadoRevision, FichaMusculo } from "@anatomia/contenido";
+import type { Ejercicio, EstadoRevision, FichaMusculo, Imagen } from "@anatomia/contenido";
 
 export interface Usuario {
   id: string;
@@ -113,7 +113,7 @@ export async function cerrarSesion() {
 
 // ───────────── Tipos de respuesta ─────────────
 
-export type Coleccion = "fichas" | "ejercicios";
+export type Coleccion = "fichas" | "ejercicios" | "imagenes";
 
 export interface ElementoCola {
   coleccion: Coleccion;
@@ -141,6 +141,15 @@ export interface RespuestaEjercicio {
   ejercicio: Ejercicio;
   fichas: { id: string; nombre: string; estado: EstadoRevision }[];
 }
+
+export interface RespuestaImagen {
+  imagen: Imagen;
+  fichas: { id: string; nombre: string; estado: EstadoRevision }[];
+  ejercicios: Ejercicio[];
+}
+
+/** URL de un archivo del almacén (el proxy de Vite manda /api a la API). */
+export const urlArchivo = (clave: string) => `/api/archivos/${clave}`;
 
 export interface Conteos {
   lecciones: number;

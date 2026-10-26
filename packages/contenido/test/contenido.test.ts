@@ -48,20 +48,51 @@ describe("distanciaABorde", () => {
 });
 
 describe("esToqueCorrecto", () => {
+  const zonas = [cuadrado, vecina];
+
   it("acierta dentro de la zona", () => {
-    expect(esToqueCorrecto([0.3, 0.3], cuadrado, [vecina])).toBe(true);
+    expect(esToqueCorrecto([0.3, 0.3], "zona-a", zonas)).toBe(true);
   });
 
   it("acierta cerca del borde si no cae en otra zona", () => {
-    expect(esToqueCorrecto([0.3, 0.19], cuadrado, [vecina])).toBe(true);
+    expect(esToqueCorrecto([0.3, 0.19], "zona-a", zonas)).toBe(true);
   });
 
   it("falla cerca del borde si cae dentro de otra zona", () => {
-    expect(esToqueCorrecto([0.41, 0.3], cuadrado, [vecina])).toBe(false);
+    expect(esToqueCorrecto([0.41, 0.3], "zona-a", zonas)).toBe(false);
   });
 
   it("falla lejos de la zona", () => {
-    expect(esToqueCorrecto([0.3, 0.17], cuadrado, [vecina])).toBe(false);
+    expect(esToqueCorrecto([0.3, 0.17], "zona-a", zonas)).toBe(false);
+  });
+
+  it("falla si la zona correcta no existe", () => {
+    expect(esToqueCorrecto([0.3, 0.3], "no-existe", zonas)).toBe(false);
+  });
+
+  describe("con zonas superpuestas (como el sartorio sobre el recto femoral)", () => {
+    // Banda horizontal dibujada encima del cuadrado: lo cruza entre y=0.28 y y=0.32.
+    const banda: Zona = { id: "banda", fichaId: "ficha-banda", puntos: [[0.1, 0.28], [0.5, 0.28], [0.5, 0.32], [0.1, 0.32]] };
+
+    it("gana la zona de arriba donde se cubren", () => {
+      expect(esToqueCorrecto([0.3, 0.3], "zona-a", [cuadrado, banda])).toBe(false);
+      expect(esToqueCorrecto([0.3, 0.3], "banda", [cuadrado, banda])).toBe(true);
+    });
+
+    it("la parte visible de la zona de abajo sigue siendo acierto", () => {
+      expect(esToqueCorrecto([0.3, 0.25], "zona-a", [cuadrado, banda])).toBe(true);
+    });
+
+    it("el orden de dibujo decide quién está encima", () => {
+      expect(esToqueCorrecto([0.3, 0.3], "zona-a", [banda, cuadrado])).toBe(true);
+    });
+
+    it("la tolerancia no vale si el toque cae sobre otra zona, aunque esté debajo", () => {
+      // Justo fuera de la banda (borde y=0.32) pero dentro del cuadrado, que está debajo.
+      expect(esToqueCorrecto([0.3, 0.325], "banda", [cuadrado, banda])).toBe(false);
+      // Justo fuera de la banda y fuera de todo: acierto por tolerancia.
+      expect(esToqueCorrecto([0.45, 0.325], "banda", [cuadrado, banda])).toBe(true);
+    });
   });
 });
 

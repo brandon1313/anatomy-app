@@ -15,6 +15,8 @@
  *  - ProgresoFicha: `dificultad` acepta 0 (ts-fsrs crea las tarjetas nuevas con difficulty 0) y se
  *    agregan `diasProgramados`, `pasosAprendizaje` (necesarios para reconstruir la tarjeta de ts-fsrs)
  *    y `ultimoEjercicioId` (el repaso usa un ejercicio distinto al de la última vez).
+ *  - Imagen.zonas va en orden de dibujo (la última queda encima). Con zonas superpuestas, el toque
+ *    lo recibe la de más arriba (ver `esToqueCorrecto` en utilidades.ts).
  */
 import { z } from "zod";
 
@@ -111,6 +113,7 @@ export const Imagen = z.object({
   }),
   /** Confirma que se borraron los nombres impresos en la ilustración (si no, regalan la respuesta). */
   sinEtiquetas: z.boolean(),
+  /** En orden de dibujo: la última queda encima y recibe el toque donde se superponen. */
   zonas: z.array(Zona).min(1),
   ...Revisable,
 });

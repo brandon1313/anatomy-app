@@ -8,6 +8,7 @@ import { Cola } from "./paginas/Cola";
 import { Curso } from "./paginas/Curso";
 import { EditorEjercicio } from "./paginas/EditorEjercicio";
 import { EditorFicha } from "./paginas/EditorFicha";
+import { EditorImagen } from "./paginas/EditorImagen";
 import { Generar } from "./paginas/Generar";
 import { Login } from "./paginas/Login";
 import { Publicar } from "./paginas/Publicar";
@@ -50,6 +51,7 @@ function App() {
           <Route path="/cola" element={<Cola />} />
           <Route path="/fichas/:id" element={<EditorFicha />} />
           <Route path="/ejercicios/:id" element={<EditorEjercicio />} />
+          <Route path="/imagenes/:id" element={<EditorImagen />} />
           <Route path="/generar" element={<Generar />} />
           <Route path="/curso" element={<Curso />} />
           {usuario.rol === "admin" && <Route path="/publicar" element={<Publicar />} />}

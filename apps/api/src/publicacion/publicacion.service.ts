@@ -30,7 +30,7 @@ export class PublicacionService {
       this.prisma.paquete.findFirst({ orderBy: { version: "desc" } }),
       this.curso(),
       this.prisma.ficha.findMany({ select: { id: true, estado: true, data: true } }),
-      this.prisma.imagen.findMany({ where: { estado: "aprobada" } }),
+      this.prisma.imagen.findMany({ select: { id: true, estado: true, data: true } }),
       this.prisma.ejercicio.findMany({ select: { id: true, estado: true, data: true } }),
     ]);
     const aprobados = <T>(xs: { estado: string; data: unknown }[]) => xs.filter((x) => x.estado === "aprobada").map((x) => x.data as T);
@@ -39,12 +39,13 @@ export class PublicacionService {
       {
         curso,
         fichas: aprobados<FichaMusculo>(fichas),
-        imagenes: imagenes.map((i) => i.data as Imagen),
+        imagenes: aprobados<Imagen>(imagenes),
         ejercicios: aprobados<Ejercicio>(ejercicios),
       },
       {
         fichas: new Map(fichas.map((f) => [f.id, f.estado])),
         ejercicios: new Map(ejercicios.map((e) => [e.id, e.estado])),
+        imagenes: new Map(imagenes.map((i) => [i.id, i.estado])),
       },
     );
     const sinCambios = resultado.ok && !!ultima && mismoContenido(resultado.paquete, ultima.contenido as PaqueteContenido);
