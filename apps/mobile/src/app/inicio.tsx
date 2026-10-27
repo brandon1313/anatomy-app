@@ -45,6 +45,16 @@ export default function Inicio() {
 
   const todas = lecciones(paquete);
   const unidad = paquete.curso.unidades[0];
+  // Lecciones con ejercicios en 3D (tienen presentación): su imagen trae modelo y ya está en el teléfono.
+  const imagenes = new Map(paquete.imagenes.map((img) => [img.id, img]));
+  const ejercicios = new Map(paquete.ejercicios.map((e) => [e.id, e]));
+  const con3D = (ids: string[]) =>
+    Platform.OS !== "web" &&
+    ids.some((id) => {
+      const e = ejercicios.get(id);
+      const m = e && "imagenId" in e ? imagenes.get(e.imagenId)?.modelo3d : undefined;
+      return !!m && uriImagen(m.archivo) !== null && uriImagen(m.datos) !== null;
+    });
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
@@ -82,6 +92,17 @@ export default function Inicio() {
                 <Text style={[estilos.tituloLeccion, estado === "bloqueada" && { color: color.bloqueado }]} numberOfLines={2}>
                   {l.titulo}
                 </Text>
+                {estado !== "bloqueada" && n > 0 && con3D(l.ejercicioIds) && (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Ver la presentación de ${l.titulo}`}
+                    onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: l.id, presentacion: "1" } })}
+                    style={({ pressed }) => [estilos.verPresentacion, pressed && { opacity: 0.7 }]}
+                    hitSlop={6}
+                  >
+                    <Text style={estilos.verPresentacionTexto}>▶ Ver presentación</Text>
+                  </Pressable>
+                )}
               </View>
             );
           })}
@@ -117,5 +138,7 @@ const estilos = StyleSheet.create({
   hundido: { borderBottomWidth: 0, marginTop: 6 },
   icono: { color: "#fff", fontSize: 30, fontFamily: fuente.titulo },
   empezar: { marginTop: espacio.xs, fontSize: 13, fontFamily: fuente.titulo, color: color.verde, letterSpacing: 0.8 },
+  verPresentacion: { marginTop: espacio.xs, minHeight: 36, paddingHorizontal: espacio.m, borderRadius: 18, borderWidth: 2, borderColor: color.acentoBorde, backgroundColor: color.acentoSuave, justifyContent: "center" },
+  verPresentacionTexto: { fontSize: 14, fontFamily: fuente.negrita, color: color.acento },
   tituloLeccion: { marginTop: espacio.xs, fontSize: 15, fontFamily: fuente.negrita, color: color.texto, textAlign: "center" },
 });

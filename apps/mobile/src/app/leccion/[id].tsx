@@ -51,7 +51,8 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 }
 
 export default function Leccion() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  /** `presentacion=1`: abrir con la presentación aunque ya se haya visto (botón "Ver presentación" de Inicio). */
+  const { id, presentacion } = useLocalSearchParams<{ id: string; presentacion?: string }>();
   const { paquete, completar } = useApp();
   const insets = useSafeAreaInsets();
   const leccion = useMemo(() => (paquete ? lecciones(paquete).find((l) => l.id === id) : undefined), [paquete, id]);
@@ -96,15 +97,19 @@ export default function Leccion() {
     }
     return { musculos: [...musculos.values()], ocultas };
   }, [ejercicios, imagenes, nombres, modelo]);
-  /** null mientras se lee si ya se vio; sale sola la primera vez y después con el botón ▶. */
+  /**
+   * null mientras se lee si ya se vio. Sale sola la primera vez; después, con el ▶ de la barra o con
+   * "Ver presentación" en Inicio.
+   */
   const [presentando, setPresentando] = useState<boolean | null>(null);
   useEffect(() => {
     if (!leccion || recorrido.musculos.length === 0) return setPresentando(false);
+    if (presentacion === "1") return setPresentando(true);
     leerJson<string[]>(CLAVE_PRESENTACIONES).then(
       (vistas) => setPresentando(!(vistas ?? []).includes(leccion.id)),
       () => setPresentando(false),
     );
-  }, [leccion, recorrido]);
+  }, [leccion, recorrido, presentacion]);
   // Si el 3D falla, no hay presentación: la lección sigue con las imágenes.
   useEffect(() => {
     if (fallo3D) setPresentando(false);
@@ -194,9 +199,22 @@ export default function Leccion() {
             <View style={estilos.brillo} />
           </View>
         </View>
-        {presentando === false && recorrido.musculos.length > 0 && !fallo3D && sesion.indice === 0 && !comprobado && (
-          <Pressable accessibilityRole="button" accessibilityLabel="Ver la presentación de la lección" onPress={() => setPresentando(true)} style={estilos.cerrar} hitSlop={8}>
-            <Text style={estilos.ver}>▶</Text>
+        {/* Volver a ver la presentación en cualquier pregunta, mientras no se haya comprobado. */}
+        {presentando === false && recorrido.musculos.length > 0 && !fallo3D && !comprobado && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Ver otra vez la presentación de la lección"
+            onPress={() => {
+              // Al volver, el ejercicio empieza de nuevo: la elección anterior ya no vale.
+              setEleccion(null);
+              setPresentando(true);
+            }}
+            style={estilos.cerrar}
+            hitSlop={8}
+          >
+            <View style={estilos.botonVer}>
+              <Text style={estilos.ver}>▶</Text>
+            </View>
           </Pressable>
         )}
       </View>
@@ -286,7 +304,8 @@ const estilos = StyleSheet.create({
   barra: { flexDirection: "row", alignItems: "center", gap: espacio.s, paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   cerrar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
   x: { fontSize: 24, color: color.bloqueado },
-  ver: { fontSize: 22, color: color.acento },
+  botonVer: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.acentoSuave, borderWidth: 2, borderColor: color.acentoBorde, alignItems: "center", justifyContent: "center" },
+  ver: { fontSize: 14, color: color.acento, marginLeft: 2 },
   progreso: { flex: 1, height: 16, borderRadius: 8, backgroundColor: color.borde, overflow: "hidden" },
   relleno: { height: "100%", backgroundColor: color.verdeBoton, borderRadius: 8 },
   brillo: { position: "absolute", left: 8, right: 8, top: 4, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.35)" },
