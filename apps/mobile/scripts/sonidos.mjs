@@ -1,4 +1,4 @@
-// Genera los sonidos de la app (acierto, error y fin de lección) como WAV de 16 bits.
+// Genera los sonidos de la app (acierto, error, fin de lección y paso de la presentación) como WAV de 16 bits.
 // Son propios, sintetizados por código: no dependen de licencias de terceros.
 //   node scripts/sonidos.mjs   → assets/sonidos/*.wav
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -39,6 +39,8 @@ function wav(datos) {
 const SONIDOS = {
   acierto: [[880, 0, 0.14, "triangular", 0.5], [1318.5, 0.08, 0.34, "triangular", 0.5]],
   error: [[233, 0, 0.16, "cuadrada", 0.18], [174.6, 0.12, 0.3, "cuadrada", 0.18]],
+  // Cada músculo de la presentación de la lección: una nota corta y suave.
+  paso: [[659.25, 0, 0.12, "triangular", 0.25]],
   fin: [523.25, 659.25, 783.99, 1046.5].map((f, k) => [f, k * 0.11, k === 3 ? 0.7 : 0.18, "triangular", 0.45]),
 };
 

@@ -11,6 +11,8 @@ import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
 import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import type { Eleccion } from "../../ejercicios/tipos";
 import { actual, ejerciciosDeLeccion, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { type MusculoPresentado, Presentacion3D } from "../../ejercicios/Presentacion3D";
+import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
 import { useApp } from "../../lib/estado";
 import { uriImagen } from "../../lib/imagenes";
@@ -18,6 +20,8 @@ import { color, espacio, fuente, TOQUE_MINIMO } from "../../tema";
 import { type ControlEscena, EscenaLeccion, type Toque } from "../../visor3d/EscenaLeccion";
 
 const ELOGIOS = ["¡Excelente!", "¡Muy bien!", "¡Correcto!", "¡Así se hace!"];
+/** Lecciones cuya presentación ya se vio en este teléfono. */
+const CLAVE_PRESENTACIONES = "presentaciones-vistas";
 
 function salirConConfirmacion() {
   const mensaje = "Si sales ahora, perderás el avance de esta lección.";
@@ -78,6 +82,34 @@ export default function Leccion() {
   const [escenaLista, setEscenaLista] = useState(0);
   const onListo3D = useCallback(() => setEscenaLista((n) => n + 1), []);
 
+  // Presentación: los músculos de los ejercicios 3D, sin repetir y en el orden en que aparecen.
+  const recorrido = useMemo(() => {
+    const musculos = new Map<string, MusculoPresentado>();
+    let ocultas: string[] = [];
+    for (const e of ejercicios) {
+      const imagen = "imagenId" in e ? imagenes.get(e.imagenId) : undefined;
+      const d = modelo ? en3D(e, imagen, modelo.archivo) : null;
+      if (!d || !imagen || musculos.has(d.estructura)) continue;
+      const fichaId = Object.entries(imagen.modelo3d?.estructuras ?? {}).find(([, s]) => s === d.estructura)?.[0];
+      musculos.set(d.estructura, { estructura: d.estructura, nombre: (fichaId && nombres.get(fichaId)) || d.estructura });
+      ocultas = d.ocultas;
+    }
+    return { musculos: [...musculos.values()], ocultas };
+  }, [ejercicios, imagenes, nombres, modelo]);
+  /** null mientras se lee si ya se vio; sale sola la primera vez y después con el botón ▶. */
+  const [presentando, setPresentando] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!leccion || recorrido.musculos.length === 0) return setPresentando(false);
+    leerJson<string[]>(CLAVE_PRESENTACIONES).then(
+      (vistas) => setPresentando(!(vistas ?? []).includes(leccion.id)),
+      () => setPresentando(false),
+    );
+  }, [leccion, recorrido]);
+  // Si el 3D falla, no hay presentación: la lección sigue con las imágenes.
+  useEffect(() => {
+    if (fallo3D) setPresentando(false);
+  }, [fallo3D]);
+
   const [sesion, setSesion] = useState(() => iniciar(ejercicios.map((e) => e.id)));
   const [eleccion, setEleccion] = useState<Eleccion | null>(null);
   const [comprobado, setComprobado] = useState(false);
@@ -134,6 +166,16 @@ export default function Leccion() {
     efecto(eleccion.correcto ? "acierto" : "error");
   }
 
+  function terminarPresentacion() {
+    setPresentando(false);
+    inicio.current = Date.now();
+    if (!leccion) return;
+    const lid = leccion.id;
+    leerJson<string[]>(CLAVE_PRESENTACIONES)
+      .then((vistas) => (vistas?.includes(lid) ? undefined : guardarJson(CLAVE_PRESENTACIONES, [...(vistas ?? []), lid])))
+      .catch(() => {});
+  }
+
   function continuar() {
     setSesion(siguiente);
     setEleccion(null);
@@ -152,11 +194,25 @@ export default function Leccion() {
             <View style={estilos.brillo} />
           </View>
         </View>
+        {presentando === false && recorrido.musculos.length > 0 && !fallo3D && sesion.indice === 0 && !comprobado && (
+          <Pressable accessibilityRole="button" accessibilityLabel="Ver la presentación de la lección" onPress={() => setPresentando(true)} style={estilos.cerrar} hitSlop={8}>
+            <Text style={estilos.ver}>▶</Text>
+          </Pressable>
+        )}
       </View>
       {sesion.indice >= sesion.original && <Text style={estilos.repaso}>Repasemos el que fallaste</Text>}
 
-      <View style={{ flex: 1 }}>
-        {d3 && (ejercicio.tipo === "tocar_estructura" || ejercicio.tipo === "identificar_imagen") ? (
+      <View style={{ flex: 1, paddingBottom: presentando ? insets.bottom : 0 }}>
+        {presentando === null ? null : presentando ? (
+          <Presentacion3D
+            musculos={recorrido.musculos}
+            ocultas={recorrido.ocultas}
+            escena={control}
+            escenaLista={escenaLista}
+            onHueco={setHueco}
+            onTerminar={terminarPresentacion}
+          />
+        ) : d3 && (ejercicio.tipo === "tocar_estructura" || ejercicio.tipo === "identificar_imagen") ? (
           <Ejercicio3D
             key={sesion.indice}
             ejercicio={ejercicio}
@@ -181,18 +237,18 @@ export default function Leccion() {
             ) : null}
           </ScrollView>
         )}
-        {/* La escena 3D vive toda la lección; se coloca sobre el hueco del ejercicio 3D o se esconde. */}
+        {/* La escena 3D vive toda la lección; se coloca sobre el hueco de la presentación o del ejercicio 3D, o se esconde. */}
         {modelo && !fallo3D && (
           <View
-            style={d3 && hueco ? { position: "absolute", left: hueco.x, top: hueco.y, width: hueco.width, height: hueco.height } : estilos.escondida}
-            pointerEvents={d3 ? "auto" : "none"}
+            style={(presentando || (d3 && presentando === false)) && hueco ? { position: "absolute", left: hueco.x, top: hueco.y, width: hueco.width, height: hueco.height } : estilos.escondida}
+            pointerEvents={presentando || d3 ? "auto" : "none"}
           >
             <EscenaLeccion ref={escena} modelo={modelo} onToque={(t) => alTocar.current?.(t)} onListo={onListo3D} onError={onError3D} />
           </View>
         )}
       </View>
 
-      <View
+      {presentando === false && <View
         style={[
           estilos.pie,
           comprobado && eleccion && (eleccion.correcto ? estilos.pieBien : estilos.pieMal),
@@ -219,7 +275,7 @@ export default function Leccion() {
           deshabilitado={!comprobado && !eleccion}
           onPress={comprobado ? continuar : comprobar}
         />
-      </View>
+      </View>}
     </SafeAreaView>
   );
 }
@@ -230,6 +286,7 @@ const estilos = StyleSheet.create({
   barra: { flexDirection: "row", alignItems: "center", gap: espacio.s, paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   cerrar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
   x: { fontSize: 24, color: color.bloqueado },
+  ver: { fontSize: 22, color: color.acento },
   progreso: { flex: 1, height: 16, borderRadius: 8, backgroundColor: color.borde, overflow: "hidden" },
   relleno: { height: "100%", backgroundColor: color.verdeBoton, borderRadius: 8 },
   brillo: { position: "absolute", left: 8, right: 8, top: 4, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.35)" },

@@ -43,6 +43,7 @@ function aplicar(v: Visor, orden: OrdenVisor) {
   if (orden.tipo === "vista") v.verDesde(orden.vista);
   else if (orden.tipo === "enfocar") v.verDesde(vistas[orden.id] ?? "ant");
   else if (orden.tipo === "ocultar") v.ocultar(orden.ids);
+  else if (orden.tipo === "girar") v.girar(orden.activo);
   else if (orden.tipo === "pintar") v.pintar(new Map(Object.entries(orden.marcas)), orden);
 }
 

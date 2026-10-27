@@ -54,6 +54,8 @@ export interface Visor {
   pintar(marcas: Map<string, string>, opciones?: { aislar?: boolean; tinte?: number }): void;
   /** Oculta estas estructuras y muestra las demás; lo oculto no se puede tocar. */
   ocultar(ids: string[]): void;
+  /** Gira despacio alrededor del eje vertical, aunque nadie lo toque. */
+  girar(activo: boolean): void;
   /** Se llama cuando el estudiante toca sin arrastrar, con la estructura que quedó bajo el dedo o null. */
   alTocar: (id: string | null) => void;
   /** Dibuja un cuadro ya, para medir el primero. */
@@ -224,6 +226,10 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     ocultar(ids) {
       for (const p of piezas) p.malla.visible = !ids.includes(p.id);
       pedirCuadro();
+    },
+    girar(activo) {
+      // Una vuelta cada ~50 s: se nota el volumen sin que el músculo mostrado salga de la vista.
+      Object.assign(controles, { autoRotate: activo, autoRotateSpeed: 1.2 });
     },
     alTocar: () => {},
     dibujar: () => renderer.render(escena, camara),

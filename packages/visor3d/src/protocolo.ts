@@ -13,6 +13,8 @@ export type OrdenVisor =
   | { tipo: "enfocar"; id: string }
   /** Oculta estas estructuras y muestra las demás (la capa profunda quita las superficiales). */
   | { tipo: "ocultar"; ids: string[] }
+  /** El modelo gira despacio solo (la presentación de la lección). */
+  | { tipo: "girar"; activo: boolean }
   /** `marcas`: id de la estructura → color. Con `aislar`, el resto se vuelve translúcido. */
   | { tipo: "pintar"; marcas: Record<string, string>; aislar?: boolean; tinte?: number };
 
