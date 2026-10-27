@@ -75,6 +75,8 @@ export default function Leccion() {
   const registrarToque = useCallback((f: ((t: Toque) => void) | null) => (alTocar.current = f), []);
   const [hueco, setHueco] = useState<LayoutRectangle | null>(null);
   const onError3D = useCallback(() => setFallo3D(true), []);
+  const [escenaLista, setEscenaLista] = useState(0);
+  const onListo3D = useCallback(() => setEscenaLista((n) => n + 1), []);
 
   const [sesion, setSesion] = useState(() => iniciar(ejercicios.map((e) => e.id)));
   const [eleccion, setEleccion] = useState<Eleccion | null>(null);
@@ -161,6 +163,7 @@ export default function Leccion() {
             estructura={d3.estructura}
             ocultas={d3.ocultas}
             escena={control}
+            escenaLista={escenaLista}
             registrarToque={registrarToque}
             onHueco={setHueco}
             {...props}
@@ -184,7 +187,7 @@ export default function Leccion() {
             style={d3 && hueco ? { position: "absolute", left: hueco.x, top: hueco.y, width: hueco.width, height: hueco.height } : estilos.escondida}
             pointerEvents={d3 ? "auto" : "none"}
           >
-            <EscenaLeccion ref={escena} modelo={modelo} onToque={(t) => alTocar.current?.(t)} onError={onError3D} />
+            <EscenaLeccion ref={escena} modelo={modelo} onToque={(t) => alTocar.current?.(t)} onListo={onListo3D} onError={onError3D} />
           </View>
         )}
       </View>

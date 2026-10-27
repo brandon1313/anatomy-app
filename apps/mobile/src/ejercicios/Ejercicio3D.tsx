@@ -1,4 +1,5 @@
 import type { Ejercicio } from "@anatomia/contenido";
+import type { OrdenVisor } from "@anatomia/visor3d";
 import { useEffect, useRef, useState } from "react";
 import { type LayoutRectangle, StyleSheet, Text, View } from "react-native";
 import { efecto } from "../lib/efectos";
@@ -26,6 +27,7 @@ export function Ejercicio3D({
   estructura,
   ocultas,
   escena,
+  escenaLista,
   registrarToque,
   onHueco,
   comprobado,
@@ -36,6 +38,8 @@ export function Ejercicio3D({
   estructura: string;
   ocultas: string[];
   escena: ControlEscena;
+  /** Sube cada vez que la escena termina de cargar el modelo: entonces se vuelve a mandar todo. */
+  escenaLista: number;
   registrarToque: (alTocar: ((t: Toque) => void) | null) => void;
   /** Dónde poner la escena, relativo a este componente. */
   onHueco: (hueco: LayoutRectangle) => void;
@@ -43,21 +47,33 @@ export function Ejercicio3D({
   const tocar = e.tipo === "tocar_estructura";
   const [elegida, setElegida] = useState<string | null>(null);
   const elegidaRef = useRef<string | null>(null);
+  const comprobadoRef = useRef(comprobado);
+  comprobadoRef.current = comprobado;
 
+  /** Lo que la escena debe pintar según lo elegido y si ya se comprobó. */
+  function pintura(sel: string | null, comp: boolean): OrdenVisor {
+    if (!comp) {
+      // Identificar: en su color y con solo el contorno, el músculo no se distinguía en el teléfono.
+      return tocar ? { tipo: "pintar", marcas: sel ? { [sel]: AZUL } : {} } : { tipo: "pintar", marcas: { [estructura]: AZUL }, aislar: true };
+    }
+    const ok = !tocar || sel === estructura;
+    return { tipo: "pintar", marcas: ok || !sel ? { [estructura]: VERDE } : { [sel]: ROJO, [estructura]: VERDE }, aislar: !tocar || !ok };
+  }
+
+  // Al montar y cada vez que la escena termina de cargar el modelo: estado completo. Si una orden se
+  // perdió mientras la página cargaba, esta lo repone.
   useEffect(() => {
     escena.enviar({ tipo: "ocultar", ids: ocultas });
-    // Identificar: el músculo preguntado se tiñe de azul (en su color, con solo el contorno, no se distinguía en el teléfono).
-    escena.enviar(tocar ? { tipo: "pintar", marcas: {} } : { tipo: "pintar", marcas: { [estructura]: AZUL }, aislar: true });
+    escena.enviar(pintura(elegidaRef.current, comprobadoRef.current));
     escena.enviar({ tipo: "enfocar", id: estructura });
-    // Solo al montar: cada ejercicio es un componente nuevo (la lección le pone `key`).
-  }, []);
+  }, [escenaLista]);
 
   useEffect(() => {
     if (!tocar || comprobado) return;
     registrarToque((t) => {
       elegidaRef.current = t.id;
       setElegida(t.id);
-      escena.enviar({ tipo: "pintar", marcas: t.id ? { [t.id]: AZUL } : {} });
+      escena.enviar(pintura(t.id, false));
       if (!t.id) return onElegir(null);
       efecto("elegir");
       const ok = t.id === estructura;
@@ -69,11 +85,9 @@ export function Ejercicio3D({
 
   useEffect(() => {
     if (!comprobado) return;
-    const sel = elegidaRef.current;
-    const ok = !tocar || sel === estructura;
-    escena.enviar({ tipo: "pintar", marcas: ok || !sel ? { [estructura]: VERDE } : { [sel]: ROJO, [estructura]: VERDE }, aislar: !tocar || !ok });
-    if (!ok) escena.enviar({ tipo: "enfocar", id: estructura });
-  }, [comprobado, tocar, estructura, escena]);
+    escena.enviar(pintura(elegidaRef.current, true));
+    if (tocar && elegidaRef.current !== estructura) escena.enviar({ tipo: "enfocar", id: estructura });
+  }, [comprobado]);
 
   return (
     <View style={estilos.raiz}>

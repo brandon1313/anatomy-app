@@ -46,8 +46,12 @@ function aplicar(v: Visor, orden: OrdenVisor) {
   else if (orden.tipo === "pintar") v.pintar(new Map(Object.entries(orden.marcas)), orden);
 }
 
+let iniciando = false;
+
 async function iniciar(orden: Extract<OrdenVisor, { tipo: "iniciar" }>) {
-  if (visor) return;
+  // Una sola escena: un segundo "iniciar" crearía otra encima, sin las órdenes que ya recibió la primera.
+  if (visor || iniciando) return;
+  iniciando = true;
   const [datos, bin] =
     orden.modo === "archivo"
       ? await Promise.all([leer<DatosModelo>(orden.json, "json"), leer<ArrayBuffer>(orden.bin, "arraybuffer")])

@@ -25,7 +25,7 @@ pnpm --filter @anatomia/api dev                     # API en :3000
 pnpm --filter @anatomia/panel dev                   # panel en :5174 (redirige /api a :3000)
 ```
 
-`pnpm install` también arma la página del visor 3D (`packages/visor3d/src/generado/`, fuera de git). Para rehacerla después de cambiar el visor: `pnpm --filter @anatomia/visor3d build`.
+`pnpm install` también arma la página del visor 3D (`packages/visor3d/src/generado/`, fuera de git). Para rehacerla después de cambiar el visor: `pnpm --filter @anatomia/visor3d build`. Metro no siempre ve ese archivo generado: si la app sigue con la página anterior, reinicia Expo con `--clear`.
 
 El primer editor o admin se crea registrándose (`POST /auth/registro`) y cambiando el rol:
 

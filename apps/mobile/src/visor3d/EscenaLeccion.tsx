@@ -21,11 +21,14 @@ export function EscenaLeccion({
   ref,
   modelo,
   onToque,
+  onListo,
   onError,
 }: {
   ref: Ref<ControlEscena>;
   modelo: Modelo3D;
   onToque: (t: Toque) => void;
+  /** El modelo terminó de cargar: quien muestra algo en la escena vuelve a mandar su estado completo. */
+  onListo: () => void;
   onError: (mensaje: string) => void;
 }) {
   const [pagina, setPagina] = useState<string | null>(null);
@@ -53,12 +56,17 @@ export function EscenaLeccion({
 
   function alAvisar(e: WebViewMessageEvent) {
     const aviso = JSON.parse(e.nativeEvent.data) as AvisoVisor;
+    if (__DEV__) console.log("visor3d:", aviso.tipo === "listo" ? `listo en ${Math.round(aviso.tiempos.primerCuadro)} ms` : JSON.stringify(aviso));
     if (aviso.tipo === "cargada") {
+      // Si la página se recarga (iOS puede reiniciar el proceso de la WebView), vuelve a cargar el modelo.
       cargada.current = true;
       inyectar({ tipo: "iniciar", modo: "archivo", json: rutaDesdeVisor(modelo.datos), bin: rutaDesdeVisor(modelo.archivo) });
       for (const o of cola.current) inyectar(o);
       cola.current = [];
-    } else if (aviso.tipo === "listo") setListo(true);
+    } else if (aviso.tipo === "listo") {
+      setListo(true);
+      onListo();
+    }
     else if (aviso.tipo === "toque") onToque(aviso);
     else onError(aviso.mensaje);
   }

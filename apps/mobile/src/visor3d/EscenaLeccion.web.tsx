@@ -13,6 +13,12 @@ export interface Toque {
 }
 
 /** En web no hay WebView: la lección nunca pide 3D ahí y usa las imágenes. */
-export function EscenaLeccion(_props: { ref: Ref<ControlEscena>; modelo: Modelo3D; onToque: (t: Toque) => void; onError: (m: string) => void }) {
+export function EscenaLeccion(_props: {
+  ref: Ref<ControlEscena>;
+  modelo: Modelo3D;
+  onToque: (t: Toque) => void;
+  onListo: () => void;
+  onError: (m: string) => void;
+}) {
   return null;
 }
