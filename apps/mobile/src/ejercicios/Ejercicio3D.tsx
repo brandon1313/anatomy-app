@@ -19,7 +19,7 @@ type TImagen = Extract<Ejercicio, { tipo: "tocar_estructura" | "identificar_imag
  * todos los ejercicios); este componente le dice qué mostrar y deja un hueco donde la lección la pone.
  *  - Tocar: tocar un músculo lo selecciona en azul (se puede cambiar). Al comprobar, el correcto queda
  *    en verde; si falló, el elegido en rojo, el resto translúcido y la cámara gira hasta el correcto.
- *  - Identificar: el músculo preguntado en su color con contorno y el resto translúcido.
+ *  - Identificar: el músculo preguntado teñido de azul con contorno y el resto translúcido.
  */
 export function Ejercicio3D({
   ejercicio: e,
@@ -46,7 +46,8 @@ export function Ejercicio3D({
 
   useEffect(() => {
     escena.enviar({ tipo: "ocultar", ids: ocultas });
-    escena.enviar(tocar ? { tipo: "pintar", marcas: {} } : { tipo: "pintar", marcas: { [estructura]: AZUL }, aislar: true, tinte: 0 });
+    // Identificar: el músculo preguntado se tiñe de azul (en su color, con solo el contorno, no se distinguía en el teléfono).
+    escena.enviar(tocar ? { tipo: "pintar", marcas: {} } : { tipo: "pintar", marcas: { [estructura]: AZUL }, aislar: true });
     escena.enviar({ tipo: "enfocar", id: estructura });
     // Solo al montar: cada ejercicio es un componente nuevo (la lección le pone `key`).
   }, []);

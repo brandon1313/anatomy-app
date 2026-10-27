@@ -137,7 +137,7 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     const malla = new Mesh(g, material(m.id, m.kind));
     // Contorno propio por malla (caras traseras infladas), para poder pintarlo de azul, verde o rojo.
     const contorno = new Mesh(g, new ShaderMaterial({
-      uniforms: { color: { value: new Color("#1aa3ec") }, w: { value: 0.0019 } },
+      uniforms: { color: { value: new Color("#1aa3ec") }, w: { value: 0.003 } },
       vertexShader: "uniform float w; void main(){ vec3 p = position + normalize(normal) * w; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }",
       fragmentShader: "uniform vec3 color; void main(){ gl_FragColor = vec4(color, 1.0); }",
       side: BackSide,
