@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
@@ -77,6 +77,13 @@ export default function Inicio() {
             );
           })}
         </View>
+
+        {/* Prueba técnica del visor 3D (docs/PLAN-REDISENO.md): solo en desarrollo y en el teléfono. */}
+        {__DEV__ && Platform.OS !== "web" && (
+          <View style={{ marginTop: espacio.xl }}>
+            <Boton titulo="Prueba del visor 3D" variante="secundario" onPress={() => router.push("/prueba-3d")} />
+          </View>
+        )}
 
         <View style={{ marginTop: espacio.xl }}>
           <Boton titulo="Cerrar sesión" variante="secundario" onPress={async () => { await salir(); router.replace("/bienvenida"); }} />

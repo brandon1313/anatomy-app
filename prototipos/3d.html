@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anatomía · prototipo 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#4fc21a; --verde-osc:#3f9f12; --verde-s:#dcfcc4; --verde-txt:#3a8f10;
+  --azul:#1aa3ec; --azul-osc:#1287c9; --azul-s:#ddf4ff;
+  --rojo:#f04848; --rojo-osc:#c93636; --rojo-s:#ffe0e0; --rojo-txt:#d33b3b;
+  --gris:#e5e5e5; --texto:#3c3c3c; --tenue:#7a7a7a;
+  color-scheme: light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#fff;color:var(--texto);font-family:Nunito,system-ui,sans-serif}
+button{font:inherit;color:inherit}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;padding-top:env(safe-area-inset-top)}
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px 4px}
+.icono-btn{width:44px;height:44px;border:0;background:none;font-size:22px;color:#afafaf;cursor:pointer;display:grid;place-items:center;border-radius:12px}
+.progreso{flex:1;height:16px;border-radius:999px;background:var(--gris);overflow:hidden}
+.relleno{height:100%;width:0;background:var(--verde);border-radius:999px;position:relative;transition:width .45s cubic-bezier(.3,1.4,.6,1)}
+.relleno::after{content:"";position:absolute;left:10px;right:10px;top:4px;height:4px;border-radius:999px;background:rgba(255,255,255,.35)}
+main{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;padding:8px 16px 12px}
+h1{font-size:22px;font-weight:900;margin:4px 0 0;line-height:1.25}
+.pista{color:var(--tenue);font-weight:700;margin:-6px 0 0;font-size:15px}
+
+/* escena 3D */
+.escena{flex:1;min-height:220px;position:relative;border:2px solid var(--gris);border-radius:18px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,#ffffff 0%,#eef2f4 70%,#e3e8eb 100%)}
+.escena[hidden]{display:none}
+.escena canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+.cargando{position:absolute;inset:0;display:grid;place-items:center;color:var(--tenue);font-weight:800}
+.vistas{position:absolute;left:8px;right:8px;bottom:8px;display:flex;justify-content:center;gap:6px;pointer-events:none}
+.vistas button{pointer-events:auto;height:34px;padding:0 10px;border-radius:10px;border:2px solid var(--gris);border-bottom-width:3px;background:rgba(255,255,255,.92);font-weight:800;font-size:13px;color:var(--tenue);cursor:pointer}
+.vistas button.activa{border-color:#84d8ff;color:var(--azul-osc);background:var(--azul-s)}
+.gesto{position:absolute;top:8px;left:0;right:0;width:max-content;margin:0 auto;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.85);font-size:12px;font-weight:800;color:#8a969b;pointer-events:none;transition:opacity .3s}
+
+/* opciones */
+.opciones{display:grid;gap:10px}
+.opciones.dos{grid-template-columns:1fr 1fr}
+.opciones:empty{display:none}
+.opcion{min-height:54px;padding:10px 12px;border:2px solid var(--gris);border-bottom-width:4px;border-radius:16px;background:#fff;font-weight:800;font-size:16px;text-align:left;cursor:pointer}
+.opcion:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+.opcion.sel{border-color:#84d8ff;background:var(--azul-s);color:var(--azul-osc)}
+.opcion.bien{border-color:var(--verde);background:var(--verde-s);color:var(--verde-txt)}
+.opcion.mal{border-color:var(--rojo);background:var(--rojo-s);color:var(--rojo-txt)}
+.opcion:disabled{cursor:default}
+
+/* pie */
+.pie{padding:16px 16px calc(16px + env(safe-area-inset-bottom));border-top:2px solid var(--gris);background:#fff}
+.pie.bien{background:var(--verde-s);border-top-color:transparent}
+.pie.mal{background:var(--rojo-s);border-top-color:transparent}
+.retro{display:none;margin-bottom:14px}
+.pie.bien .retro,.pie.mal .retro{display:block;animation:sube .28s cubic-bezier(.2,1.2,.4,1)}
+@keyframes sube{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.retro .titulo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900}
+.retro .sello{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:20px}
+.pie.bien .titulo{color:var(--verde-txt)} .pie.bien .sello{background:var(--verde)}
+.pie.mal .titulo{color:var(--rojo-txt)} .pie.mal .sello{background:var(--rojo)}
+.retro .detalle{font-weight:800;margin-top:6px}
+.pie.bien .detalle{color:var(--verde-txt)} .pie.mal .detalle{color:var(--rojo-txt)}
+.retro .explicacion{margin-top:6px;font-weight:600;line-height:1.4}
+.btn{width:100%;height:52px;border:0;border-radius:16px;font-weight:900;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--verde);box-shadow:0 4px 0 var(--verde-osc);cursor:pointer}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:none}
+.btn:disabled{background:var(--gris);color:#afafaf;box-shadow:none;cursor:default}
+.pie.mal .btn{background:var(--rojo);box-shadow:0 4px 0 var(--rojo-osc)}
+
+/* final */
+.final{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;overflow:hidden;z-index:5}
+.final .trofeo{font-size:84px;animation:salta .9s cubic-bezier(.3,1.6,.5,1)}
+@keyframes salta{from{transform:scale(.2) rotate(-20deg)}to{transform:none}}
+.final h2{font-size:28px;font-weight:900;margin:0;color:#e6a100}
+.cifras{display:flex;gap:12px;width:100%;max-width:420px}
+.cifra{flex:1;border:2px solid;border-radius:16px;overflow:hidden}
+.cifra .et{color:#fff;font-weight:900;font-size:13px;padding:4px;text-transform:uppercase;letter-spacing:.05em}
+.cifra .va{font-size:24px;font-weight:900;padding:12px 4px}
+.c1{border-color:#ffc800}.c1 .et{background:#ffc800}.c1 .va{color:#e6a100}
+.c2{border-color:var(--verde)}.c2 .et{background:var(--verde)}.c2 .va{color:var(--verde-txt)}
+.final .btn{max-width:420px}
+.confeti{position:absolute;top:-20px;width:8px;height:14px;border-radius:2px;animation:cae linear forwards}
+@keyframes cae{to{transform:translateY(110vh) rotate(720deg)}}
+.credito{font-size:10px;color:#a0a0a0;text-align:center;margin:-6px 0 0}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="icono-btn" aria-label="Salir" onclick="location.reload()">✕</button>
+    <div class="progreso" role="progressbar" aria-label="Progreso"><div class="relleno" id="relleno"></div></div>
+    <button class="icono-btn" id="sonido" aria-label="Sonido activado">🔊</button>
+  </header>
+  <main>
+    <h1 id="enunciado">Cargando…</h1>
+    <p class="pista" id="pista" hidden></p>
+    <div class="escena" id="escena">
+      <div class="cargando" id="cargando">Cargando el modelo 3D…</div>
+      <div class="gesto" id="gesto">Gira con el dedo · pellizca para acercar</div>
+      <div class="vistas" id="vistas">
+        <button data-v="ant">Anterior</button><button data-v="lat">Lateral</button><button data-v="med">Medial</button><button data-v="post">Posterior</button>
+      </div>
+    </div>
+    <div class="opciones" id="opciones"></div>
+    <p class="credito">Modelo: BodyParts3D, © The Database Center for Life Science, CC BY 4.0</p>
+  </main>
+  <footer class="pie" id="pie">
+    <div class="retro" aria-live="polite">
+      <div class="titulo"><span class="sello" id="sello"></span><span id="titulo"></span></div>
+      <div class="detalle" id="detalle"></div>
+      <div class="explicacion" id="explicacion"></div>
+    </div>
+    <button class="btn" id="boton" disabled>Comprobar</button>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const [P, buf] = await Promise.all([
+  fetch("modelo.json").then((r) => r.json()),
+  fetch("modelo.bin").then((r) => r.arrayBuffer()),
+]);
+const D = P.data;
+const nombre = (id) => D[id].name;
+const conArticulo = (id) => `${D[id].art} ${D[id].name.toLowerCase()}`;
+const fila = (id, k) => D[id].rows.find((r) => r[0] === k)?.[1];
+
+// ───────────── escena (adaptada de "Muslo derecho en 3D") ─────────────
+const escena = $("escena");
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.95;
+renderer.setClearColor(0x000000, 0);
+escena.prepend(renderer.domElement);
+THREE.ColorManagement.legacyMode = false;
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(28, 1, 0.01, 10);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+Object.assign(controls, { enableDamping: true, dampingFactor: 0.09, rotateSpeed: 0.8, minDistance: 0.35, maxDistance: 3.2, enablePan: false });
+scene.add(new THREE.HemisphereLight(0xfff6f2, 0x3a2224, 0.35));
+for (const [color, k, pos] of [[0xffffff, 1.15, [-1.2, 2.2, 2.4]], [0xffe6e0, 0.3, [2.2, 0.4, 1.2]], [0xffffff, 0.55, [0.5, 1.5, -2.5]]]) {
+  const l = new THREE.DirectionalLight(color, k);
+  l.position.set(...pos);
+  camera.add(l);
+}
+scene.add(camera);
+
+const TONOS = {
+  sartorio: "#c45563", recto_femoral: "#bd4957", vasto_lateral: "#b1404f", vasto_medial: "#ba4553", vasto_intermedio: "#a63a48",
+  tensor_fascia_lata: "#b94a5b", iliopsoas: "#ac404f", pectineo: "#bd4858", aductor_largo: "#c24e5c", aductor_corto: "#b14352",
+  aductor_mayor: "#a63d4c", gracil: "#c55260", semitendinoso: "#a93e4c", semimembranoso: "#a33a48", biceps_femoral: "#ad414f",
+  gluteo_mayor: "#a9404e", gluteo_medio: "#b24654",
+};
+function material(id, kind) {
+  const M = (o) => new THREE.MeshPhysicalMaterial(o);
+  const m =
+    kind === "muscle" ? M({ color: TONOS[id] || "#b4434f", roughness: 0.55, clearcoat: 0.3, clearcoatRoughness: 0.5 })
+    : kind === "bone" ? M({ color: "#e7dbc3", roughness: 0.62, clearcoat: 0.1 })
+    : kind === "artery" ? M({ color: "#c3242e", roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.25 })
+    : kind === "vein" ? M({ color: id === "vena_safena_mayor" ? "#5a82c8" : "#3a63b0", roughness: 0.34, clearcoat: 0.55, clearcoatRoughness: 0.3 })
+    : kind === "nerve" ? M({ color: "#e3c25a", roughness: 0.42, clearcoat: 0.45, clearcoatRoughness: 0.35 })
+    : M({ color: "#efe7da", roughness: 0.28, clearcoat: 0.8, clearcoatRoughness: 0.2, transparent: true, opacity: 0.62, depthWrite: false, side: THREE.DoubleSide });
+  m.envMapIntensity = 0.35;
+  m.userData.base = { color: m.color.clone(), opacity: m.opacity, transparent: m.transparent, depthWrite: m.depthWrite };
+  return m;
+}
+const { lo, hi } = P.meta, span = hi.map((h, i) => h - lo[i]);
+const centro = new THREE.Vector3((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2);
+const meshes = [], porId = {};
+for (const m of P.meta.meshes) {
+  const q = new Uint16Array(buf, m.p, m.v * 3), pos = new Float32Array(m.v * 3);
+  for (let i = 0; i < pos.length; i++) pos[i] = lo[i % 3] + (q[i] / 65535) * span[i % 3] - centro.getComponent(i % 3);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  g.setAttribute("normal", new THREE.BufferAttribute(new Int8Array(buf, m.n, m.v * 3), 3, true));
+  g.setIndex(new THREE.BufferAttribute(new Uint16Array(buf, m.x, m.i), 1));
+  g.computeBoundingSphere();
+  const mesh = new THREE.Mesh(g, material(m.id, m.kind));
+  mesh.userData = { id: m.id, kind: m.kind };
+  // Contorno propio por malla, para poder pintarlo de azul, verde o rojo.
+  const contorno = new THREE.Mesh(g, new THREE.ShaderMaterial({
+    uniforms: { color: { value: new THREE.Color("#1aa3ec") }, w: { value: 0.0019 } },
+    vertexShader: "uniform float w; void main(){ vec3 p = position + normalize(normal) * w; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }",
+    fragmentShader: "uniform vec3 color; void main(){ gl_FragColor = vec4(color, 1.0); }",
+    side: THREE.BackSide,
+  }));
+  contorno.visible = false;
+  contorno.raycast = () => {};
+  mesh.add(contorno);
+  mesh.userData.contorno = contorno;
+  scene.add(mesh);
+  meshes.push(mesh);
+  (porId[m.id] ??= []).push(mesh);
+}
+$("cargando").remove();
+
+const VISTAS = { ant: [0, 0, 1], med: [1, 0, 0.15], lat: [-1, 0, 0.15], post: [0, 0, -1] };
+// Distancia a la que el muslo entero cabe en la escena; `ajustar` la recalcula cuando la escena cambia de tamaño.
+const ALTO = span[1], ANCHO = Math.max(span[0], span[2]);
+let distancia = 1.6, tween = null;
+function verDesde(v, inmediato = false) {
+  document.querySelectorAll("#vistas button").forEach((b) => b.classList.toggle("activa", b.dataset.v === v));
+  // Gira alrededor del eje vertical, por el lado más corto, en vez de pasar por encima del modelo.
+  const s0 = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+  const s1 = new THREE.Spherical().setFromVector3(new THREE.Vector3(...VISTAS[v]));
+  const giro = ((s1.theta - s0.theta + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+  const objetivo0 = controls.target.clone(), t0 = performance.now(), s = new THREE.Spherical();
+  tween = (ahora) => {
+    const k = inmediato ? 1 : Math.min(1, (ahora - t0) / 600), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    s.set(s0.radius + (distancia - s0.radius) * e, s0.phi + (s1.phi - s0.phi) * e, s0.theta + giro * e);
+    controls.target.copy(objetivo0).multiplyScalar(1 - e);
+    camera.position.setFromSpherical(s).add(controls.target);
+    if (k >= 1) tween = null;
+  };
+  if (inmediato) tween(t0);
+}
+document.querySelectorAll("#vistas button").forEach((b) => (b.onclick = () => verDesde(b.dataset.v)));
+/** El estudiante movió el modelo: se corta la animación y ninguna vista queda marcada. */
+function soltarVista() {
+  tween = null;
+  $("gesto").style.opacity = "0";
+  document.querySelectorAll("#vistas button").forEach((b) => b.classList.remove("activa"));
+}
+renderer.domElement.addEventListener("wheel", soltarVista, { passive: true });
+function ajustar() {
+  const w = escena.clientWidth, h = escena.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  distancia = 1.05 * Math.max(ALTO / 2 / t, ANCHO / 2 / (t * camera.aspect)) + ANCHO / 2;
+}
+new ResizeObserver(ajustar).observe(escena);
+ajustar();
+verDesde("ant", true);
+(function bucle(ahora) {
+  if (tween) tween(ahora);
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(bucle);
+})(performance.now());
+
+/**
+ * Marca estructuras con un color: las tiñe (`tinte` de 0 a 1) y les pone contorno.
+ * Con `aislar`, el resto se vuelve translúcido.
+ */
+const tono = new THREE.Color();
+function pintar(marcas = new Map(), { aislar = false, tinte = 0.72 } = {}) {
+  for (const m of meshes) {
+    const mat = m.material, b = mat.userData.base, color = marcas.get(m.userData.id);
+    mat.color.copy(b.color);
+    if (color) { mat.color.lerp(tono.set(color), tinte); m.userData.contorno.material.uniforms.color.value.set(color); }
+    m.userData.contorno.visible = !!color;
+    if (aislar && !color) { mat.transparent = true; mat.opacity = m.userData.kind === "bone" ? 0.28 : 0.16; mat.depthWrite = false; }
+    else { mat.transparent = b.transparent; mat.opacity = b.opacity; mat.depthWrite = b.depthWrite; }
+    m.renderOrder = color ? 3 : mat.transparent ? 2 : 0;
+    mat.needsUpdate = true;
+  }
+}
+
+// Toque: lo que queda bajo el dedo (primero lo sólido). Arrastrar o usar dos dedos es girar o acercar, no tocar.
+const rayo = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let abajo = null, dedos = 0;
+const lienzo = renderer.domElement;
+lienzo.addEventListener("pointerdown", (e) => {
+  if (++dedos > 1) { if (abajo) abajo.giro = true; return; }
+  abajo = { x: e.clientX, y: e.clientY, t: performance.now(), giro: false };
+});
+lienzo.addEventListener("pointermove", (e) => {
+  if (abajo && !abajo.giro && Math.hypot(e.clientX - abajo.x, e.clientY - abajo.y) > 8) { abajo.giro = true; soltarVista(); }
+});
+lienzo.addEventListener("pointercancel", () => { dedos = Math.max(0, dedos - 1); abajo = null; });
+lienzo.addEventListener("pointerup", (e) => {
+  dedos = Math.max(0, dedos - 1);
+  if (!abajo) return;
+  const { giro, t } = abajo;
+  abajo = null;
+  if (giro || performance.now() - t > 600) return;
+  alTocar(estructuraEn(e.clientX, e.clientY));
+});
+/** Si el dedo cae justo fuera de un borde, busca alrededor (hasta 18 px), como la tolerancia del toque en 2D. */
+function estructuraEn(x, y) {
+  const r = lienzo.getBoundingClientRect();
+  for (const radio of [0, 9, 18]) {
+    for (let k = 0; k < (radio ? 8 : 1); k++) {
+      const a = (k / 8) * 2 * Math.PI;
+      ndc.set(((x + radio * Math.cos(a) - r.left) / r.width) * 2 - 1, -((y + radio * Math.sin(a) - r.top) / r.height) * 2 + 1);
+      rayo.setFromCamera(ndc, camera);
+      const hits = rayo.intersectObjects(meshes, false);
+      const solido = hits.find((h) => !h.object.material.transparent) ?? hits[0];
+      if (solido) return solido.object.userData.id;
+    }
+  }
+  return null;
+}
+
+// ───────────── sonidos sintetizados ─────────────
+let ctx;
+function audio() { ctx ??= new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); return ctx; }
+function nota(f, t0, dur, tipo = "triangle", vol = 0.22) {
+  const a = audio(), o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0;
+  o.type = tipo; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.02);
+}
+const sonar = {
+  acierto: () => { nota(880, 0, 0.14); nota(1318.5, 0.08, 0.34); },
+  error: () => { nota(233, 0, 0.16, "square", 0.06); nota(174.6, 0.12, 0.3, "square", 0.06); },
+  fin: () => [523.25, 659.25, 783.99, 1046.5].forEach((f, k) => nota(f, k * 0.11, k === 3 ? 0.7 : 0.18)),
+};
+let sonido = true;
+function efecto(n, vib) { if (sonido) sonar[n](); navigator.vibrate?.(vib); }
+$("sonido").onclick = () => { sonido = !sonido; $("sonido").textContent = sonido ? "🔊" : "🔇"; if (sonido) audio(); };
+
+// ───────────── lección ─────────────
+const AZUL = "#1aa3ec", VERDE = "#4fc21a", ROJO = "#f04848";
+const EJ = [
+  { tipo: "identificar", id: "recto_femoral", opciones: ["recto_femoral", "vasto_lateral", "vasto_medial", "sartorio"] },
+  { tipo: "tocar", id: "sartorio" },
+  { tipo: "opcion", pregunta: "¿Qué nervio inerva el recto femoral?", opciones: ["Nervio femoral", "Nervio obturador", "Nervio ciático", "Nervio glúteo superior"], correcta: "Nervio femoral",
+    explicacion: "Todo el cuádriceps, incluido el recto femoral, está inervado por el nervio femoral (L2–L4)." },
+  { tipo: "tocar", id: "biceps_femoral" },
+  { tipo: "identificar", id: "semitendinoso", opciones: ["semitendinoso", "semimembranoso", "biceps_femoral", "gracil"] },
+  { tipo: "tocar", id: "aductor_largo" },
+  { tipo: "identificar", id: "gluteo_medio", opciones: ["gluteo_medio", "gluteo_mayor", "tensor_fascia_lata", "vasto_lateral"] },
+];
+const ELOGIOS = ["¡Excelente!", "¡Muy bien!", "¡Correcto!", "¡Así se hace!"];
+const st = { i: 0, sel: null, hecho: false, aciertos: 0, inicio: Date.now() };
+const barajar = (xs) => xs.map((x) => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+const explicacion = (e) => e.explicacion ?? fila(e.id, "Dato clave") ?? fila(e.id, "Acción");
+
+function render() {
+  const e = EJ[st.i];
+  $("relleno").style.width = `${(st.i / EJ.length) * 100}%`;
+  $("pie").className = "pie";
+  $("boton").textContent = "Comprobar";
+  $("boton").disabled = true;
+  $("pista").hidden = e.tipo !== "tocar";
+  $("escena").hidden = e.tipo === "opcion";
+  const op = $("opciones");
+  op.className = e.tipo === "identificar" ? "opciones dos" : "opciones";
+  if (e.tipo === "identificar") {
+    $("enunciado").textContent = "¿Qué músculo está resaltado?";
+    e.orden ??= barajar(e.opciones);
+    op.innerHTML = e.orden.map((o) => `<button class="opcion" data-v="${o}">${nombre(o)}</button>`).join("");
+    pintar(new Map([[e.id, AZUL]]), { aislar: true, tinte: 0 });
+    verDesde(P.views[e.id] || "ant");
+  } else if (e.tipo === "tocar") {
+    $("enunciado").textContent = `Toca ${conArticulo(e.id)}`;
+    $("pista").textContent = "Gíralo si hace falta, toca el músculo y luego comprueba.";
+    op.innerHTML = "";
+    pintar();
+    verDesde(P.views[e.id] || "ant");
+  } else {
+    $("enunciado").textContent = e.pregunta;
+    e.orden ??= barajar(e.opciones);
+    op.innerHTML = e.orden.map((o) => `<button class="opcion" data-v="${o}">${o}</button>`).join("");
+  }
+  op.querySelectorAll(".opcion").forEach((b) => (b.onclick = () => elegir(b.dataset.v)));
+}
+
+/** Elegir no califica: se puede cambiar hasta tocar Comprobar. */
+function elegir(v) {
+  if (st.hecho) return;
+  audio();
+  st.sel = v;
+  document.querySelectorAll(".opcion").forEach((b) => b.classList.toggle("sel", b.dataset.v === v));
+  $("boton").disabled = false;
+}
+function alTocar(id) {
+  const e = EJ[st.i];
+  if (st.hecho || e.tipo !== "tocar") return;
+  audio();
+  st.sel = id;
+  pintar(id ? new Map([[id, AZUL]]) : new Map());
+  $("boton").disabled = !id;
+}
+
+function comprobar() {
+  const e = EJ[st.i];
+  let ok, detalle = "";
+  if (e.tipo === "tocar") {
+    ok = st.sel === e.id;
+    pintar(new Map(ok ? [[e.id, VERDE]] : [[st.sel, ROJO], [e.id, VERDE]]), { aislar: !ok });
+    if (!ok) { detalle = `Elegiste ${conArticulo(st.sel)}. El correcto está en verde.`; verDesde(P.views[e.id] || "ant"); }
+  } else {
+    const correcta = e.tipo === "identificar" ? e.id : e.correcta;
+    ok = st.sel === correcta;
+    document.querySelectorAll(".opcion").forEach((b) => {
+      b.disabled = true;
+      b.classList.remove("sel");
+      if (b.dataset.v === correcta) b.classList.add("bien");
+      else if (b.dataset.v === st.sel) b.classList.add("mal");
+    });
+    if (e.tipo === "identificar") pintar(new Map([[e.id, VERDE]]), { aislar: true });
+    if (!ok) detalle = `Respuesta correcta: ${e.tipo === "identificar" ? nombre(correcta) : correcta}`;
+  }
+  st.hecho = true;
+  if (ok) st.aciertos++;
+  efecto(ok ? "acierto" : "error", ok ? 25 : [30, 40, 30]);
+  $("pie").className = `pie ${ok ? "bien" : "mal"}`;
+  $("sello").textContent = ok ? "✓" : "✕";
+  $("titulo").textContent = ok ? ELOGIOS[Math.floor(Math.random() * ELOGIOS.length)] : "Casi…";
+  $("detalle").textContent = detalle;
+  $("explicacion").textContent = explicacion(e);
+  $("boton").textContent = "Continuar";
+}
+
+function fin() {
+  $("relleno").style.width = "100%";
+  const s = Math.round((Date.now() - st.inicio) / 1000);
+  const final = document.createElement("div");
+  final.className = "final";
+  final.innerHTML = `${Array.from({ length: 36 }, () => `<span class="confeti" style="left:${Math.random() * 100}%;background:${["#4fc21a", "#1aa3ec", "#ffc800", "#f04848", "#ce82ff"][Math.floor(Math.random() * 5)]};animation-duration:${2 + Math.random() * 2}s;animation-delay:${Math.random() * 0.6}s"></span>`).join("")}
+    <div class="trofeo">🏆</div><h2>¡Lección completada!</h2>
+    <div class="cifras"><div class="cifra c1"><div class="et">Aciertos</div><div class="va">${st.aciertos}/${EJ.length}</div></div>
+    <div class="cifra c2"><div class="et">Tiempo</div><div class="va">${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</div></div></div>
+    <button class="btn" onclick="location.reload()">Continuar</button>`;
+  document.body.append(final);
+  efecto("fin", [20, 30, 20, 30, 60]);
+}
+
+$("boton").onclick = () => {
+  if (!st.hecho) return comprobar();
+  st.i++;
+  st.sel = null;
+  st.hecho = false;
+  if (st.i >= EJ.length) fin();
+  else render();
+};
+render();
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ App de lecciones cortas de anatomía con contenido redactado por IA y aprobado p
 | `contenido/laminas` | Láminas vectoriales (HTML con el dibujo en SVG): fuente de las imágenes, sus zonas y fichas |
 | `apps/panel` | React + Vite: panel interno para la revisora y el admin |
 | `apps/mobile` | Expo SDK 58 + Expo Router: registro, descarga del paquete y sus imágenes, ruta de lecciones, los 3 ejercicios de texto y los 2 de imagen |
+| `packages/visor3d` | Visor 3D: la escena con three.js (`escena.ts`) y la página que la app abre en una WebView, armada en un solo HTML sin CDN (`scripts/construir.mjs`) |
 
 ## Arrancar en local
 
@@ -23,6 +24,8 @@ pnpm --filter @anatomia/api prisma:deploy
 pnpm --filter @anatomia/api dev                     # API en :3000
 pnpm --filter @anatomia/panel dev                   # panel en :5174 (redirige /api a :3000)
 ```
+
+`pnpm install` también arma la página del visor 3D (`packages/visor3d/src/generado/`, fuera de git). Para rehacerla después de cambiar el visor: `pnpm --filter @anatomia/visor3d build`.
 
 El primer editor o admin se crea registrándose (`POST /auth/registro`) y cambiando el rol:
 
@@ -45,6 +48,16 @@ pnpm --filter @anatomia/mobile start   # QR para Expo Go; tecla w abre la versi�
   - **Tocar:** califica con `esToqueCorrecto`. Al responder, resalta en verde la parte visible de la zona correcta (el contorno completo va punteado) y marca dónde tocó el estudiante. Si falló, dice qué tocó.
   - **Posición del toque:** en el teléfono viene en `locationX/Y`. En web se calcula con el rectángulo del elemento (`ejercicios/posicion.web.ts`), porque el clic del navegador no trae `locationX`.
   - **Sin imagen:** un ejercicio cuya imagen no se descargó se salta.
+- **Prueba del visor 3D** (solo en desarrollo y en el teléfono; botón al final de Inicio):
+  - Guarda la página del visor y el modelo del muslo en el teléfono, los abre en una WebView y mide cuánto tarda en verse el modelo.
+  - **Leer archivo:** la página lee el modelo del teléfono. **Por el puente:** la app se lo manda en base64. **Repetir** mide otra vez con todo ya guardado.
+  - El modelo se baja de la API. Hasta que venga en el paquete, se copia a mano al almacén:
+
+    ```bash
+    mkdir -p apps/api/almacen/modelos
+    cp prototipos/modelo.json apps/api/almacen/modelos/muslo-derecho.json
+    cp prototipos/modelo.bin apps/api/almacen/modelos/muslo-derecho.bin
+    ```
 - **Pendiente para la semana 3:** el repaso con ts-fsrs, la racha, los recordatorios, los intentos en SQLite con `/sync`, reportar error, el perfil, borrar la cuenta y la pantalla de Premium.
 
 ## Generador

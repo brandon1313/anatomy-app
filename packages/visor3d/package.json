@@ -1,0 +1,23 @@
+{
+  "name": "@anatomia/visor3d",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "react-native": "src/index.ts",
+  "scripts": {
+    "build": "node scripts/construir.mjs",
+    "prepare": "node scripts/construir.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "three": "0.147.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.147.1",
+    "esbuild": "0.28.2",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anatomía · prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#4fc21a; --verde-osc:#3f9f12; --verde-s:#dcfcc4; --verde-txt:#3a8f10;
+  --azul:#1aa3ec; --azul-osc:#1287c9; --azul-s:#ddf4ff;
+  --rojo:#f04848; --rojo-osc:#c93636; --rojo-s:#ffe0e0; --rojo-txt:#d33b3b;
+  --gris:#e5e5e5; --gris-osc:#cfcfcf; --texto:#3c3c3c; --tenue:#7a7a7a; --fondo:#ffffff;
+  color-scheme: light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--fondo);color:var(--texto);font-family:Nunito,system-ui,sans-serif}
+button{font:inherit;color:inherit}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;padding-top:env(safe-area-inset-top)}
+
+/* cabecera */
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px 4px}
+.icono-btn{width:44px;height:44px;border:0;background:none;font-size:22px;color:#afafaf;cursor:pointer;display:grid;place-items:center;border-radius:12px}
+.progreso{flex:1;height:16px;border-radius:999px;background:var(--gris);overflow:hidden}
+.relleno{height:100%;width:0;background:var(--verde);border-radius:999px;position:relative;transition:width .45s cubic-bezier(.3,1.4,.6,1)}
+.relleno::after{content:"";position:absolute;left:10px;right:10px;top:4px;height:4px;border-radius:999px;background:rgba(255,255,255,.35)}
+
+/* ejercicio */
+main{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;padding:8px 16px 12px}
+h1{font-size:22px;font-weight:900;margin:4px 0 0;line-height:1.25}
+.pista{color:var(--tenue);font-weight:700;margin:-6px 0 0;font-size:15px}
+
+/* imagen */
+.marco{flex:1;min-height:180px;position:relative;border:2px solid var(--gris);border-radius:18px;background:#fbfbfb;overflow:hidden}
+.lienzo{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;padding:6px}
+.lienzo.ampliar{display:block;overflow-y:auto;padding:0}
+.caja{position:relative;aspect-ratio:304/882}
+.lienzo:not(.ampliar) .caja{height:100%;max-width:100%}
+.lienzo.ampliar .caja{width:100%}
+.caja svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.capa{cursor:pointer;touch-action:manipulation}
+.punto{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid #fff;background:var(--azul);box-shadow:0 1px 4px rgba(0,0,0,.3);pointer-events:none}
+.zoom{position:absolute;right:10px;bottom:10px;height:40px;padding:0 14px;border-radius:12px;border:2px solid var(--gris);border-bottom-width:4px;background:#fff;font-weight:800;color:var(--tenue);cursor:pointer;display:flex;align-items:center;gap:6px}
+.zoom:active{transform:translateY(2px);border-bottom-width:2px}
+
+/* opciones */
+.opciones{display:grid;gap:10px}
+.opciones.dos{grid-template-columns:1fr 1fr}
+.opcion{min-height:56px;padding:12px 14px;border:2px solid var(--gris);border-bottom-width:4px;border-radius:16px;background:#fff;font-weight:800;font-size:17px;text-align:left;cursor:pointer;transition:transform .05s}
+.opcion:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+.opcion.sel{border-color:#84d8ff;background:var(--azul-s);color:var(--azul-osc)}
+.opcion.bien{border-color:var(--verde);background:var(--verde-s);color:var(--verde-txt)}
+.opcion.mal{border-color:var(--rojo);background:var(--rojo-s);color:var(--rojo-txt)}
+.opcion:disabled{cursor:default}
+
+/* pie: botón principal y retroalimentación */
+.pie{padding:16px 16px calc(16px + env(safe-area-inset-bottom));border-top:2px solid var(--gris);background:#fff}
+.pie.bien{background:var(--verde-s);border-top-color:transparent}
+.pie.mal{background:var(--rojo-s);border-top-color:transparent}
+.retro{display:none;margin-bottom:14px}
+.pie.bien .retro,.pie.mal .retro{display:block;animation:sube .28s cubic-bezier(.2,1.2,.4,1)}
+@keyframes sube{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.retro .titulo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900}
+.retro .sello{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:20px}
+.pie.bien .titulo{color:var(--verde-txt)} .pie.bien .sello{background:var(--verde)}
+.pie.mal .titulo{color:var(--rojo-txt)} .pie.mal .sello{background:var(--rojo)}
+.retro .detalle{font-weight:800;margin-top:6px}
+.pie.bien .detalle{color:var(--verde-txt)} .pie.mal .detalle{color:var(--rojo-txt)}
+.retro .explicacion{margin-top:6px;font-weight:600;line-height:1.4}
+.btn{width:100%;height:52px;border:0;border-radius:16px;font-weight:900;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--verde);box-shadow:0 4px 0 var(--verde-osc);cursor:pointer;transition:transform .05s}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:none}
+.btn:disabled{background:var(--gris);color:#afafaf;box-shadow:none;cursor:default}
+.pie.mal .btn{background:var(--rojo);box-shadow:0 4px 0 var(--rojo-osc)}
+
+/* final */
+.final{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;position:relative;overflow:hidden}
+.final .trofeo{font-size:84px;animation:salta .9s cubic-bezier(.3,1.6,.5,1)}
+@keyframes salta{from{transform:scale(.2) rotate(-20deg)}to{transform:none}}
+.final h2{font-size:28px;font-weight:900;margin:0;color:#e6a100}
+.cifras{display:flex;gap:12px;width:100%}
+.cifra{flex:1;border:2px solid;border-radius:16px;overflow:hidden}
+.cifra .et{color:#fff;font-weight:900;font-size:13px;padding:4px;text-transform:uppercase;letter-spacing:.05em}
+.cifra .va{font-size:24px;font-weight:900;padding:12px 4px}
+.c1{border-color:#ffc800}.c1 .et{background:#ffc800}.c1 .va{color:#e6a100}
+.c2{border-color:var(--verde)}.c2 .et{background:var(--verde)}.c2 .va{color:var(--verde-txt)}
+.confeti{position:absolute;top:-20px;width:8px;height:14px;border-radius:2px;animation:cae linear forwards}
+@keyframes cae{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.part.oculta{display:none}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <button class="icono-btn" aria-label="Salir" onclick="location.reload()">✕</button>
+    <div class="progreso" role="progressbar" aria-label="Progreso"><div class="relleno" id="relleno"></div></div>
+    <button class="icono-btn" id="sonido" aria-label="Sonido activado">🔊</button>
+  </header>
+  <main id="main"></main>
+  <footer class="pie" id="pie">
+    <div class="retro" aria-live="polite">
+      <div class="titulo"><span class="sello" id="sello"></span><span id="titulo"></span></div>
+      <div class="detalle" id="detalle"></div>
+      <div class="explicacion" id="explicacion"></div>
+    </div>
+    <button class="btn" id="boton" disabled>Comprobar</button>
+  </footer>
+</div>
+
+<script type="module">
+import { esToqueCorrecto, zonaTocada } from "./toque.js";
+
+const L = await (await fetch("lamina.json")).json();
+const estilo = document.createElement("style");
+estilo.textContent = L.css;
+document.head.append(estilo);
+
+const NOMBRE = {
+  "recto-femoral": "Recto femoral", "vasto-lateral": "Vasto lateral", "vasto-medial": "Vasto medial",
+  "vasto-intermedio": "Vasto intermedio", "sartorio": "Sartorio", "gracil": "Grácil",
+  "aductor-largo": "Aductor largo", "aductor-corto": "Aductor corto", "aductor-mayor": "Aductor mayor",
+  "pectineo": "Pectíneo", "iliopsoas": "Iliopsoas", "tensor-fascia-lata": "Tensor de la fascia lata",
+};
+const EJERCICIOS = [
+  { tipo: "identificar", capa: "superficial", zona: "recto-femoral", opciones: ["recto-femoral", "vasto-lateral", "sartorio", "vasto-medial"],
+    explicacion: "Es la única cabeza del cuádriceps que cruza la cadera: extiende la rodilla y flexiona la cadera." },
+  { tipo: "tocar", capa: "superficial", zona: "sartorio",
+    explicacion: "Es el músculo más largo del cuerpo: cruza el muslo en diagonal hasta la pata de ganso." },
+  { tipo: "opcion", pregunta: "¿Qué nervio inerva el recto femoral?", opciones: ["Nervio femoral", "Nervio obturador", "Nervio ciático", "Nervio glúteo superior"], correcta: "Nervio femoral",
+    explicacion: "Todo el cuádriceps, incluido el recto femoral, está inervado por el nervio femoral (L2–L4)." },
+  { tipo: "tocar", capa: "superficial", zona: "aductor-largo",
+    explicacion: "Su borde medial limita por dentro el triángulo femoral." },
+  { tipo: "identificar", capa: "profunda", zona: "vasto-intermedio", opciones: ["vasto-intermedio", "recto-femoral", "vasto-lateral", "vasto-medial"],
+    explicacion: "Queda oculto bajo el recto femoral; por eso solo se ve en la capa profunda." },
+  { tipo: "tocar", capa: "profunda", zona: "aductor-corto",
+    explicacion: "Queda detrás del pectíneo y del aductor largo." },
+];
+const ELOGIOS = ["¡Excelente!", "¡Muy bien!", "¡Correcto!", "¡Así se hace!"];
+
+const $ = (id) => document.getElementById(id);
+const st = { i: 0, sel: null, hecho: false, aciertos: 0, inicio: Date.now(), ampliar: false, sonido: true };
+const barajar = (xs) => xs.map((x) => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+const puntos = (z) => z.puntos.map((p) => p.join(",")).join(" ");
+
+// ───────────── sonidos (sintetizados, sin archivos) ─────────────
+let ctx;
+function audio() {
+  ctx ??= new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === "suspended") ctx.resume();
+  return ctx;
+}
+function nota(f, t0, dur, tipo = "triangle", vol = 0.22) {
+  const a = audio(), o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0;
+  o.type = tipo;
+  o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination);
+  o.start(t);
+  o.stop(t + dur + 0.02);
+}
+const sonar = {
+  acierto: () => { nota(880, 0, 0.14); nota(1318.5, 0.08, 0.34); },
+  error: () => { nota(233, 0, 0.16, "square", 0.06); nota(174.6, 0.12, 0.3, "square", 0.06); },
+  fin: () => [523.25, 659.25, 783.99, 1046.5].forEach((f, k) => nota(f, k * 0.11, k === 3 ? 0.7 : 0.18)),
+};
+function efecto(nombre, vibracion) {
+  if (st.sonido) sonar[nombre]();
+  navigator.vibrate?.(vibracion);
+}
+$("sonido").onclick = () => {
+  st.sonido = !st.sonido;
+  $("sonido").textContent = st.sonido ? "🔊" : "🔇";
+  $("sonido").setAttribute("aria-label", st.sonido ? "Sonido activado" : "Sonido apagado");
+  if (st.sonido) audio();
+};
+
+// ───────────── imagen con zonas ─────────────
+function zonas(e) {
+  return L.zonas[e.capa];
+}
+function marcoImagen(e) {
+  return `<div class="marco"><div class="lienzo${st.ampliar ? " ampliar" : ""}" id="lienzo"><div class="caja">
+      <svg class="lamina" viewBox="${L.viewBox.join(" ")}" preserveAspectRatio="none" aria-hidden="true">${L.defs}${L.art}</svg>
+      <svg class="capa" id="capa" viewBox="0 0 1 1" preserveAspectRatio="none" role="img" aria-label="Dibujo del muslo"></svg>
+      <div id="punto"></div>
+    </div></div>
+    <button class="zoom" id="zoom">${st.ampliar ? "⤡ Ajustar" : "🔍 Ampliar"}</button></div>`;
+}
+function prepararImagen(e) {
+  document.querySelectorAll("#lienzo .part").forEach((p) => p.classList.toggle("oculta", L.ocultas[e.capa].includes(p.dataset.id)));
+  $("zoom").onclick = () => {
+    st.ampliar = !st.ampliar;
+    $("lienzo").classList.toggle("ampliar", st.ampliar);
+    $("zoom").textContent = st.ampliar ? "⤡ Ajustar" : "🔍 Ampliar";
+    centrarEn(e.tipo === "identificar" ? `zona-${e.zona}` : st.sel?.zona);
+  };
+}
+/** Pinta una zona solo en su parte visible (las de arriba la tapan) y su contorno. */
+function pintarZona(lista, id, relleno, borde, punteado) {
+  const k = lista.findIndex((z) => z.id === id);
+  if (k < 0) return "";
+  const z = lista[k], m = `m-${id}-${relleno.slice(1)}`;
+  return `<mask id="${m}" maskUnits="userSpaceOnUse" x="0" y="0" width="1" height="1"><rect width="1" height="1" fill="black"/>
+      <polygon points="${puntos(z)}" fill="white"/>${lista.slice(k + 1).map((o) => `<polygon points="${puntos(o)}" fill="black"/>`).join("")}</mask>
+    <polygon points="${puntos(z)}" fill="${relleno}" fill-opacity=".5" mask="url(#${m})"/>
+    <polygon points="${puntos(z)}" fill="none" stroke="${borde}" stroke-width="2.5" vector-effect="non-scaling-stroke"${punteado ? ' stroke-dasharray="7 5"' : ""}/>`;
+}
+function centrarEn(zonaId) {
+  const l = $("lienzo");
+  const z = zonaId && zonas(EJERCICIOS[st.i]).find((x) => x.id === zonaId);
+  if (!l || !st.ampliar || !z) return;
+  const ys = z.puntos.map((p) => p[1]), alto = l.querySelector(".caja").getBoundingClientRect().height;
+  l.scrollTo({ top: ((Math.min(...ys) + Math.max(...ys)) / 2) * alto - l.clientHeight / 2, behavior: "smooth" });
+}
+
+// ───────────── ejercicios ─────────────
+function render() {
+  const e = EJERCICIOS[st.i];
+  $("relleno").style.width = `${(st.i / EJERCICIOS.length) * 100}%`;
+  $("pie").className = "pie";
+  $("boton").textContent = "Comprobar";
+  $("boton").disabled = true;
+  const main = $("main");
+  if (e.tipo === "identificar") {
+    e.orden ??= barajar(e.opciones);
+    main.innerHTML = `<h1>¿Qué músculo está resaltado?</h1>${marcoImagen(e)}
+      <div class="opciones dos">${e.orden.map((o) => `<button class="opcion" data-v="${o}">${NOMBRE[o]}</button>`).join("")}</div>`;
+    prepararImagen(e);
+    $("capa").innerHTML = pintarZona(zonas(e), `zona-${e.zona}`, "#1aa3ec", "#1287c9");
+    setTimeout(() => centrarEn(`zona-${e.zona}`), 50);
+  } else if (e.tipo === "tocar") {
+    main.innerHTML = `<h1>Toca el ${NOMBRE[e.zona].toLowerCase()}</h1><p class="pista">Elige el músculo en el dibujo y luego comprueba.</p>${marcoImagen(e)}`;
+    prepararImagen(e);
+    $("capa").onclick = (ev) => {
+      if (st.hecho) return;
+      const r = $("capa").getBoundingClientRect();
+      const p = [(ev.clientX - r.left) / r.width, (ev.clientY - r.top) / r.height];
+      elegir({ p, zona: zonaTocada(p, zonas(e))?.id });
+    };
+  } else {
+    e.orden ??= barajar(e.opciones);
+    main.innerHTML = `<h1>${e.pregunta}</h1><div class="opciones">${e.orden.map((o) => `<button class="opcion" data-v="${o}">${o}</button>`).join("")}</div>`;
+  }
+  main.querySelectorAll(".opcion").forEach((b) => (b.onclick = () => elegir(b.dataset.v)));
+}
+
+/** Elegir no califica: se puede cambiar hasta tocar Comprobar. */
+function elegir(valor) {
+  if (st.hecho) return;
+  audio();
+  st.sel = valor;
+  const e = EJERCICIOS[st.i];
+  if (e.tipo === "tocar") {
+    $("capa").innerHTML = valor.zona ? pintarZona(zonas(e), valor.zona, "#1aa3ec", "#1287c9") : "";
+    $("punto").innerHTML = valor.zona ? "" : `<div class="punto" style="left:${valor.p[0] * 100}%;top:${valor.p[1] * 100}%"></div>`;
+  } else {
+    document.querySelectorAll(".opcion").forEach((b) => b.classList.toggle("sel", b.dataset.v === valor));
+  }
+  $("boton").disabled = false;
+}
+
+function comprobar() {
+  const e = EJERCICIOS[st.i];
+  let ok, detalle = "";
+  if (e.tipo === "tocar") {
+    ok = esToqueCorrecto(st.sel.p, `zona-${e.zona}`, zonas(e));
+    const lista = zonas(e);
+    $("capa").innerHTML = (!ok && st.sel.zona ? pintarZona(lista, st.sel.zona, "#f04848", "#c93636") : "") + pintarZona(lista, `zona-${e.zona}`, "#4fc21a", "#3f9f12", true);
+    if (!ok) detalle = st.sel.zona ? `Elegiste el ${NOMBRE[st.sel.zona.replace("zona-", "")].toLowerCase()}. El correcto está en verde.` : "No elegiste ningún músculo. El correcto está en verde.";
+    if (!ok) centrarEn(`zona-${e.zona}`);
+  } else {
+    const correcta = e.tipo === "identificar" ? e.zona : e.correcta;
+    ok = st.sel === correcta;
+    document.querySelectorAll(".opcion").forEach((b) => {
+      b.disabled = true;
+      b.classList.remove("sel");
+      if (b.dataset.v === correcta) b.classList.add("bien");
+      else if (b.dataset.v === st.sel) b.classList.add("mal");
+    });
+    if (!ok) detalle = `Respuesta correcta: ${e.tipo === "identificar" ? NOMBRE[correcta] : correcta}`;
+  }
+  st.hecho = true;
+  if (ok) st.aciertos++;
+  efecto(ok ? "acierto" : "error", ok ? 25 : [30, 40, 30]);
+  $("pie").className = `pie ${ok ? "bien" : "mal"}`;
+  $("sello").textContent = ok ? "✓" : "✕";
+  $("titulo").textContent = ok ? ELOGIOS[Math.floor(Math.random() * ELOGIOS.length)] : "Casi…";
+  $("detalle").textContent = detalle;
+  $("explicacion").textContent = e.explicacion;
+  $("boton").textContent = "Continuar";
+}
+
+function fin() {
+  $("relleno").style.width = "100%";
+  const s = Math.round((Date.now() - st.inicio) / 1000);
+  $("main").innerHTML = `<div class="final">
+      ${Array.from({ length: 36 }, () => `<span class="confeti" style="left:${Math.random() * 100}%;background:${["#4fc21a", "#1aa3ec", "#ffc800", "#f04848", "#ce82ff"][Math.floor(Math.random() * 5)]};animation-duration:${2 + Math.random() * 2}s;animation-delay:${Math.random() * 0.6}s"></span>`).join("")}
+      <div class="trofeo">🏆</div><h2>¡Lección completada!</h2>
+      <div class="cifras">
+        <div class="cifra c1"><div class="et">Aciertos</div><div class="va">${st.aciertos}/${EJERCICIOS.length}</div></div>
+        <div class="cifra c2"><div class="et">Tiempo</div><div class="va">${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</div></div>
+      </div></div>`;
+  $("pie").className = "pie";
+  $("boton").disabled = false;
+  $("boton").textContent = "Continuar";
+  efecto("fin", [20, 30, 20, 30, 60]);
+  st.i = EJERCICIOS.length;
+}
+
+$("boton").onclick = () => {
+  if (st.i >= EJERCICIOS.length) return location.reload();
+  if (!st.hecho) return comprobar();
+  st.i++;
+  st.sel = null;
+  st.hecho = false;
+  if (st.i >= EJERCICIOS.length) fin();
+  else render();
+};
+render();
+</script>
+</body>
+</html>
