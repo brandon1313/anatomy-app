@@ -3,7 +3,7 @@ import type { AvisoVisor, OrdenVisor } from "@anatomia/visor3d";
 import { type Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
-import { color, fuente } from "../tema";
+import { color, espacio, fuente } from "../tema";
 import { carpetaApp, prepararPagina, rutaDesdeVisor } from "./archivos";
 
 export interface ControlEscena {
@@ -92,9 +92,12 @@ export function EscenaLeccion({
         />
       )}
       {!listo && <ActivityIndicator style={StyleSheet.absoluteFill} color={color.acento} />}
-      <Text style={estilos.credito} numberOfLines={1} pointerEvents="none">
-        {modelo.licencia.atribucion}
-      </Text>
+      {/* Crédito de la licencia (CC BY 4.0) en su propia franja: encima del modelo se cortaba y tapaba el dibujo. */}
+      <View style={estilos.franja}>
+        <Text style={estilos.credito} numberOfLines={2}>
+          {modelo.licencia.atribucion}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -102,5 +105,6 @@ export function EscenaLeccion({
 const estilos = StyleSheet.create({
   marco: { flex: 1, borderRadius: 18, borderWidth: 2, borderColor: color.borde, overflow: "hidden", backgroundColor: "#eef2f4" },
   web: { flex: 1, backgroundColor: "transparent" },
-  credito: { position: "absolute", left: 8, right: 8, bottom: 4, fontSize: 9, fontFamily: fuente.normal, color: "#8a969b", textAlign: "center" },
+  franja: { paddingHorizontal: espacio.s, paddingVertical: 4, backgroundColor: color.superficie, borderTopWidth: 1, borderTopColor: color.borde },
+  credito: { fontSize: 10, lineHeight: 13, fontFamily: fuente.normal, color: color.tenue, textAlign: "center" },
 });
