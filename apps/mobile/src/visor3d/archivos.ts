@@ -18,6 +18,7 @@ const MODELO = { json: "modelos/muslo-derecho.json", bin: "modelos/muslo-derecho
 /** Rutas del modelo vistas desde la página: visor3d/ y archivos/ son carpetas hermanas. */
 export const RUTAS_MODELO = { json: `../archivos/${MODELO.json}`, bin: `../archivos/${MODELO.bin}` };
 
+
 export interface Preparacion {
   pagina: File;
   json: File;
@@ -28,19 +29,26 @@ export interface Preparacion {
   descargoModelo: boolean;
 }
 
-/** Deja en el teléfono la página del visor (un archivo por versión) y el modelo. */
-export async function prepararVisor(): Promise<Preparacion> {
+/** Deja en el teléfono la página del visor (un archivo por versión); `escribio` si no estaba. */
+export async function prepararPagina(): Promise<{ pagina: File; escribio: boolean }> {
   const pagina = new File(carpetaVisor, `visor-${VERSION_VISOR}.html`);
-  const escribioPagina = !pagina.exists;
-  if (escribioPagina) {
-    carpetaVisor.create({ intermediates: true, idempotent: true });
-    // Borra las versiones anteriores y un temporal que haya quedado a medias.
-    for (const vieja of carpetaVisor.list()) vieja.delete();
-    const temporal = new File(carpetaVisor, "visor.html.escribiendo");
-    temporal.create();
-    await temporal.write(HTML_VISOR);
-    await temporal.move(pagina);
-  }
+  if (pagina.exists) return { pagina, escribio: false };
+  carpetaVisor.create({ intermediates: true, idempotent: true });
+  // Borra las versiones anteriores y un temporal que haya quedado a medias.
+  for (const vieja of carpetaVisor.list()) vieja.delete();
+  const temporal = new File(carpetaVisor, "visor.html.escribiendo");
+  temporal.create();
+  await temporal.write(HTML_VISOR);
+  await temporal.move(pagina);
+  return { pagina, escribio: true };
+}
+
+/** Un archivo del almacén ya descargado (imágenes y modelos), visto desde la página del visor. */
+export const rutaDesdeVisor = (clave: string) => `../archivos/${clave}`;
+
+/** Prueba técnica: la página y el modelo fijo de MODELO. */
+export async function prepararVisor(): Promise<Preparacion> {
+  const { pagina, escribio: escribioPagina } = await prepararPagina();
   const json = new File(carpetaApp, "archivos", ...MODELO.json.split("/"));
   const bin = new File(carpetaApp, "archivos", ...MODELO.bin.split("/"));
   const descargoModelo = !json.exists || !bin.exists;

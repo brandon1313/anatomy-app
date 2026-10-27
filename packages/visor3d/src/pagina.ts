@@ -35,6 +35,16 @@ function leer<T>(ruta: string, tipo: "json" | "arraybuffer"): Promise<T> {
 }
 
 let visor: Visor | null = null;
+let vistas: DatosModelo["views"] = {};
+/** Órdenes que llegan antes de que el modelo esté listo; se aplican al terminar de cargarlo. */
+let pendientes: OrdenVisor[] = [];
+
+function aplicar(v: Visor, orden: OrdenVisor) {
+  if (orden.tipo === "vista") v.verDesde(orden.vista);
+  else if (orden.tipo === "enfocar") v.verDesde(vistas[orden.id] ?? "ant");
+  else if (orden.tipo === "ocultar") v.ocultar(orden.ids);
+  else if (orden.tipo === "pintar") v.pintar(new Map(Object.entries(orden.marcas)), orden);
+}
 
 async function iniciar(orden: Extract<OrdenVisor, { tipo: "iniciar" }>) {
   if (visor) return;
@@ -45,13 +55,16 @@ async function iniciar(orden: Extract<OrdenVisor, { tipo: "iniciar" }>) {
   tiempos.modelo = performance.now();
 
   const v = crearVisor(document.getElementById("escena")!, datos, bin);
-  v.alTocar = (id) => avisar({ tipo: "toque", id, nombre: id ? datos.data[id]?.name : undefined });
+  v.alTocar = (id) => avisar({ tipo: "toque", id, nombre: id ? datos.data[id]?.name : undefined, articulo: id ? datos.data[id]?.art : undefined });
   v.lienzo.addEventListener("webglcontextlost", () => avisar({ tipo: "error", mensaje: "El teléfono liberó el contexto WebGL" }));
   v.verDesde("ant", true);
   tiempos.entorno = v.entornoListo;
   tiempos.mallas = performance.now();
   v.dibujar();
   visor = v;
+  vistas = datos.views;
+  for (const orden of pendientes) aplicar(v, orden);
+  pendientes = [];
 
   // El cuadro ya se mandó a pantalla cuando llega el siguiente requestAnimationFrame.
   requestAnimationFrame(() => {
@@ -71,8 +84,8 @@ async function iniciar(orden: Extract<OrdenVisor, { tipo: "iniciar" }>) {
 window.visor = {
   recibir(orden) {
     if (orden.tipo === "iniciar") iniciar(orden).catch((e: unknown) => avisar({ tipo: "error", mensaje: String(e) }));
-    else if (orden.tipo === "vista") visor?.verDesde(orden.vista);
-    else if (orden.tipo === "pintar") visor?.pintar(new Map(Object.entries(orden.marcas)), orden);
+    else if (visor) aplicar(visor, orden);
+    else pendientes.push(orden);
   },
 };
 avisar({ tipo: "cargada" });

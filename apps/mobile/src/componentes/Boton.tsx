@@ -1,14 +1,22 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
-import { color, espacio, TOQUE_MINIMO } from "../tema";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { color, espacio, fuente, TOQUE_MINIMO } from "../tema";
 
+const VARIANTES = {
+  principal: { fondo: color.verdeBoton, sombra: color.verdeSombra, texto: "#fff" },
+  secundario: { fondo: color.superficie, sombra: color.borde, texto: color.acento },
+  exito: { fondo: color.verdeBoton, sombra: color.verdeSombra, texto: "#fff" },
+  error: { fondo: color.rojoBoton, sombra: color.rojoSombra, texto: "#fff" },
+};
+
+/** Botón con relieve: un borde inferior más oscuro que se hunde al presionarlo. */
 export function Boton(props: {
   titulo: string;
   onPress: () => void;
-  variante?: "principal" | "secundario" | "exito" | "error";
+  variante?: keyof typeof VARIANTES;
   deshabilitado?: boolean;
   cargando?: boolean;
 }) {
-  const v = props.variante ?? "principal";
+  const v = VARIANTES[props.variante ?? "principal"];
   const inactivo = props.deshabilitado || props.cargando;
   return (
     <Pressable
@@ -17,24 +25,32 @@ export function Boton(props: {
       accessibilityState={{ disabled: !!inactivo, busy: !!props.cargando }}
       disabled={inactivo}
       onPress={props.onPress}
-      style={({ pressed }) => [estilos.base, estilos[v], inactivo && estilos.inactivo, pressed && estilos.presionado]}
     >
-      {props.cargando ? (
-        <ActivityIndicator color={v === "secundario" ? color.texto : "#fff"} />
-      ) : (
-        <Text style={[estilos.texto, v === "secundario" && { color: color.texto }]}>{props.titulo}</Text>
+      {({ pressed }) => (
+        <View
+          style={[
+            estilos.base,
+            { backgroundColor: v.fondo, borderColor: v.sombra },
+            props.variante === "secundario" && estilos.contorno,
+            inactivo && estilos.inactivo,
+            pressed && !inactivo && estilos.presionado,
+          ]}
+        >
+          {props.cargando ? (
+            <ActivityIndicator color={v.texto} />
+          ) : (
+            <Text style={[estilos.texto, { color: inactivo ? color.bloqueado : v.texto }]}>{props.titulo}</Text>
+          )}
+        </View>
       )}
     </Pressable>
   );
 }
 
 const estilos = StyleSheet.create({
-  base: { minHeight: TOQUE_MINIMO + 8, borderRadius: 12, paddingHorizontal: espacio.m, alignItems: "center", justifyContent: "center", borderWidth: 1 },
-  principal: { backgroundColor: color.acento, borderColor: color.acento },
-  secundario: { backgroundColor: color.superficie, borderColor: color.borde },
-  exito: { backgroundColor: color.verde, borderColor: color.verde },
-  error: { backgroundColor: color.rojo, borderColor: color.rojo },
-  inactivo: { opacity: 0.45 },
-  presionado: { opacity: 0.8 },
-  texto: { color: "#fff", fontSize: 17, fontWeight: "600" },
+  base: { minHeight: TOQUE_MINIMO + 8, borderRadius: 16, paddingHorizontal: espacio.m, alignItems: "center", justifyContent: "center", borderBottomWidth: 4 },
+  contorno: { borderWidth: 2, borderBottomWidth: 4 },
+  inactivo: { backgroundColor: color.borde, borderColor: color.borde },
+  presionado: { borderBottomWidth: 0, marginTop: 4 },
+  texto: { fontSize: 18, fontFamily: fuente.negrita, letterSpacing: 0.8, textTransform: "uppercase" },
 });

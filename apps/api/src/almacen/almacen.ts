@@ -7,7 +7,7 @@ import { config } from "../config";
  * en ALMACEN_DIR y la API los sirve en /archivos/; en producción irán a un bucket tipo S3.
  * Las claves llevan el hash del contenido, así que nunca cambian y se pueden cachear para siempre.
  */
-const CLAVE = /^[a-z0-9]+(?:[-/][a-z0-9]+)*\.(webp|png|svg|json)$/;
+const CLAVE = /^[a-z0-9]+(?:[-/][a-z0-9]+)*\.(webp|png|svg|json|bin)$/;
 
 export const PREFIJO_ARCHIVOS = "/archivos/";
 

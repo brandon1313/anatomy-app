@@ -48,6 +48,9 @@ Antes de tocar el esquema, se monta el visor 3D dentro de la app, en Expo Go, y 
   - Mide por separado: preparar los archivos, abrir la WebView con three.js, leer el modelo, la luz de ambiente, armar las mallas y el primer cuadro.
   - En el navegador de la computadora funcionan los dos modos: leer el archivo y recibirlo por el puente.
   - Falta medir en el iPhone y en un Android de gama baja, y anotar aquí los resultados.
+- **Hecho después (sin esperar la medición, a pedido del dueño del producto):**
+  - Rediseño común en los 5 tipos, camino de inicio y pantalla final.
+  - Lecciones con 3D. Se tomó un atajo sobre lo propuesto abajo: en lugar de una entidad `Modelo3D` aparte, el modelo va como `modelo3d` dentro de cada imagen. Así se revisa con ella, no hace falta otra tabla y los ejercicios de tocar e identificar son los mismos.
 
 ### Contenido y API
 

@@ -9,6 +9,10 @@ export type OrdenVisor =
    */
   | { tipo: "iniciar"; modo: "archivo" | "puente"; json: string; bin: string }
   | { tipo: "vista"; vista: Vista }
+  /** Gira la cámara a la mejor vista de esa estructura (la que trae el modelo). */
+  | { tipo: "enfocar"; id: string }
+  /** Oculta estas estructuras y muestra las demás (la capa profunda quita las superficiales). */
+  | { tipo: "ocultar"; ids: string[] }
   /** `marcas`: id de la estructura → color. Con `aislar`, el resto se vuelve translúcido. */
   | { tipo: "pintar"; marcas: Record<string, string>; aislar?: boolean; tinte?: number };
 
@@ -18,7 +22,7 @@ export type AvisoVisor =
   | { tipo: "cargada" }
   | { tipo: "listo"; tiempos: TiemposVisor; mallas: number; triangulos: number; memoriaMB?: number }
   /** El estudiante tocó sin arrastrar: la estructura que quedó bajo el dedo, o null. */
-  | { tipo: "toque"; id: string | null; nombre?: string }
+  | { tipo: "toque"; id: string | null; nombre?: string; articulo?: string }
   | { tipo: "error"; mensaje: string };
 
 /** Milisegundos desde que la WebView empezó a cargar la página (el `performance.now()` de la página). */

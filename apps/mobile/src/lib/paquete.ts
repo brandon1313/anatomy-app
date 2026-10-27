@@ -7,8 +7,10 @@ const CLAVE = "paquete";
 
 export const paqueteLocal = () => leerJson<PaqueteContenido>(CLAVE);
 
+/** Imágenes y modelos 3D (la misma descarga sirve para cualquier archivo del almacén). */
 async function descargarImagenes(p: PaqueteContenido) {
-  for (const imagen of p.imagenes) await descargarImagen(imagen.archivo);
+  const claves = new Set(p.imagenes.flatMap((i) => [i.archivo, ...(i.modelo3d ? [i.modelo3d.archivo, i.modelo3d.datos] : [])]));
+  for (const clave of claves) await descargarImagen(clave);
 }
 
 /**

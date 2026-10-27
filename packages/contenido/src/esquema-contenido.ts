@@ -17,6 +17,8 @@
  *    y `ultimoEjercicioId` (el repaso usa un ejercicio distinto al de la última vez).
  *  - Imagen.zonas va en orden de dibujo (la última queda encima). Con zonas superpuestas, el toque
  *    lo recibe la de más arriba (ver `esToqueCorrecto` en utilidades.ts).
+ *  - Imagen.modelo3d (opcional): el modelo 3D de la misma región. Si la ficha de un ejercicio de
+ *    tocar o identificar está en el modelo, la app lo muestra en 3D; si no, con la imagen.
  */
 import { z } from "zod";
 
@@ -100,6 +102,25 @@ export const Zona = z.object({
   puntos: z.array(Punto).min(3),
 });
 
+/**
+ * Modelo 3D de la región de una imagen. Se revisa y se aprueba con la imagen: los ejercicios de
+ * tocar e identificar son los mismos y la app elige 3D cuando el modelo tiene la ficha.
+ */
+export const Modelo3D = z.object({
+  /** Claves en el almacén: mallas (.bin) y nombres, vistas y capas (.json). */
+  archivo: z.string().min(1),
+  datos: z.string().min(1),
+  /** fichaId → id de la estructura en el modelo, solo para las fichas que el modelo tiene. */
+  estructuras: z.record(Id, z.string().min(1)),
+  /** Estructuras que se ocultan con esta imagen (la capa profunda quita las superficiales). */
+  ocultas: z.array(z.string().min(1)),
+  licencia: z.object({
+    tipo: z.enum(["dominio_publico", "cc_by", "cc_by_sa", "propia"]),
+    fuente: z.url().optional(),
+    atribucion: z.string().min(1),
+  }),
+});
+
 export const Imagen = z.object({
   id: Id, // "muslo-anterior"
   titulo: z.string().min(1), // "Muslo, vista anterior"
@@ -115,6 +136,7 @@ export const Imagen = z.object({
   sinEtiquetas: z.boolean(),
   /** En orden de dibujo: la última queda encima y recibe el toque donde se superponen. */
   zonas: z.array(Zona).min(1),
+  modelo3d: Modelo3D.optional(),
   ...Revisable,
 });
 
@@ -278,6 +300,7 @@ export const ProgresoFicha = z.object({
 export type FichaMusculo = z.infer<typeof FichaMusculo>;
 export type Imagen = z.infer<typeof Imagen>;
 export type Zona = z.infer<typeof Zona>;
+export type Modelo3D = z.infer<typeof Modelo3D>;
 export type Ejercicio = z.infer<typeof Ejercicio>;
 export type EjercicioBase = z.infer<typeof EjercicioBase>;
 export type FichaMusculoBase = z.infer<typeof FichaMusculoBase>;
@@ -319,6 +342,9 @@ export function erroresDeConsistencia(p: PaqueteContenido): string[] {
       if (!fichas.has(zona.fichaId)) {
         errores.push(`Imagen ${img.id}, zona ${zona.id}: la ficha ${zona.fichaId} no existe`);
       }
+    }
+    for (const fichaId of Object.keys(img.modelo3d?.estructuras ?? {})) {
+      if (!fichas.has(fichaId)) errores.push(`Imagen ${img.id}, modelo 3D: la ficha ${fichaId} no existe`);
     }
   }
 

@@ -52,6 +52,8 @@ export interface Visor {
   verDesde(vista: Vista, inmediato?: boolean): void;
   /** Tiñe (`tinte` de 0 a 1) y contornea estructuras: id → color. Con `aislar`, el resto se vuelve translúcido. */
   pintar(marcas: Map<string, string>, opciones?: { aislar?: boolean; tinte?: number }): void;
+  /** Oculta estas estructuras y muestra las demás; lo oculto no se puede tocar. */
+  ocultar(ids: string[]): void;
   /** Se llama cuando el estudiante toca sin arrastrar, con la estructura que quedó bajo el dedo o null. */
   alTocar: (id: string | null) => void;
   /** Dibuja un cuadro ya, para medir el primero. */
@@ -219,6 +221,10 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     entornoListo,
     verDesde,
     pintar,
+    ocultar(ids) {
+      for (const p of piezas) p.malla.visible = !ids.includes(p.id);
+      pedirCuadro();
+    },
     alTocar: () => {},
     dibujar: () => renderer.render(escena, camara),
   };
@@ -259,7 +265,7 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     for (const [px, py] of puntosDeBusqueda(x, y)) {
       ndc.set(((px - r.left) / r.width) * 2 - 1, -((py - r.top) / r.height) * 2 + 1);
       rayo.setFromCamera(ndc, camara);
-      const hits = rayo.intersectObjects(objetos, false);
+      const hits = rayo.intersectObjects(objetos.filter((o) => o.visible), false);
       const elegido = hits.find((h) => !porMalla.get(h.object)?.malla.material.transparent) ?? hits[0];
       if (elegido) return porMalla.get(elegido.object)?.id ?? null;
     }

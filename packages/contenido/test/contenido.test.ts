@@ -190,6 +190,18 @@ describe("erroresDeConsistencia", () => {
       "Ejercicio tocar-zona-recto-femoral: la zona zona-recto-femoral es de otra ficha (recto-femoral)",
     ]);
   });
+
+  it("revisa que las fichas del modelo 3D existan", () => {
+    const p = base();
+    p.imagenes[0].modelo3d = {
+      archivo: "modelos/muslo-derecho-abc.bin",
+      datos: "modelos/muslo-derecho-abc.json",
+      estructuras: { "recto-femoral": "recto_femoral", sartorio: "sartorio" },
+      ocultas: [],
+      licencia: { tipo: "cc_by", atribucion: "BodyParts3D, © The Database Center for Life Science, CC BY 4.0" },
+    };
+    expect(erroresDeConsistencia(p)).toEqual(["Imagen muslo-anterior, modelo 3D: la ficha sartorio no existe"]);
+  });
 });
 
 describe("ProgresoFicha", () => {

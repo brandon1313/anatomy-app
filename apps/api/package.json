@@ -10,6 +10,7 @@
     "test": "vitest run",
     "generar": "nest build && node dist/generador/generar.cli.js",
     "importar-lamina": "nest build && node dist/laminas/importar.cli.js",
+    "importar-modelo": "nest build && node dist/modelos/importar.cli.js",
     "rol": "tsx src/usuarios/rol.cli.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",

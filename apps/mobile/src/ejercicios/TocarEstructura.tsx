@@ -1,57 +1,61 @@
 import { type Ejercicio, esToqueCorrecto, type Imagen, zonaTocada } from "@anatomia/contenido";
 import { useState } from "react";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { color, espacio } from "../tema";
-import { ImagenConZonas, type Marca } from "./ImagenConZonas";
+import { Text, useWindowDimensions, View } from "react-native";
+import { efecto } from "../lib/efectos";
+import { espacio } from "../tema";
+import { ImagenConZonas } from "./ImagenConZonas";
+import { estilosTexto } from "./OpcionMultiple";
+import type { PropsEjercicio } from "./tipos";
 
 type TTocar = Extract<Ejercicio, { tipo: "tocar_estructura" }>;
 
 /**
- * "Toca el recto femoral." Califica con la regla del toque (esToqueCorrecto). Al responder se resalta
- * en verde la zona correcta y se marca dónde tocó; si falló, la ventana se desplaza hasta la correcta.
+ * "Toca el recto femoral." Tocar selecciona el músculo entero (la zona se pinta de azul) y se puede
+ * cambiar. Al comprobar califica con la regla del toque (esToqueCorrecto): la correcta queda en verde y
+ * se marca dónde tocó; si falló, la ventana se desplaza hasta la correcta.
  */
 export function TocarEstructura({
   ejercicio: e,
   imagen,
   nombres,
-  onResponder,
-}: {
+  comprobado,
+  onElegir,
+}: PropsEjercicio & {
   ejercicio: TTocar;
   imagen: Imagen;
   /** fichaId → nombre, para decir qué tocó si se equivocó. */
   nombres: Map<string, string>;
-  onResponder: (correcto: boolean, detalle?: string) => void;
 }) {
   const { height } = useWindowDimensions();
-  const [marca, setMarca] = useState<Marca | null>(null);
+  const [toque, setToque] = useState<{ punto: [number, number]; zona: string } | null>(null);
 
   function tocar(punto: [number, number]) {
     const acierto = esToqueCorrecto(punto, e.zonaCorrecta, imagen.zonas);
-    setMarca({ punto, acierto });
-    if (acierto) return onResponder(true);
-    const tocada = zonaTocada(punto, imagen.zonas);
-    const nombre = tocada && (nombres.get(tocada.fichaId) ?? tocada.fichaId);
-    onResponder(false, nombre ? `Tocaste el ${nombre.toLowerCase()}.` : "Tocaste fuera de los músculos.");
+    // Junto al borde de la correcta (dentro de la tolerancia) cuenta como la correcta.
+    const zona = zonaTocada(punto, imagen.zonas) ?? (acierto ? imagen.zonas.find((z) => z.id === e.zonaCorrecta) : undefined);
+    if (!zona) {
+      setToque(null);
+      return onElegir(null);
+    }
+    setToque({ punto, zona: zona.id });
+    efecto("elegir");
+    const nombre = nombres.get(zona.fichaId) ?? zona.fichaId;
+    onElegir({ correcto: acierto, detalle: acierto ? undefined : `Tocaste el ${nombre.toLowerCase()}. El correcto está en verde.` });
   }
 
   return (
     <View style={{ gap: espacio.s }}>
-      <Text style={estilos.enunciado} accessibilityRole="header">{e.enunciado}</Text>
-      <Text style={estilos.ayuda}>{marca ? " " : "Toca el músculo en el dibujo. Puedes deslizarlo."}</Text>
+      <Text style={estilosTexto.enunciado} accessibilityRole="header">{e.enunciado}</Text>
+      <Text style={estilosTexto.ayuda}>Toca el músculo en el dibujo y luego comprueba. Puedes deslizarlo.</Text>
       <ImagenConZonas
         imagen={imagen}
-        altoVentana={Math.round(height * 0.55)}
-        resaltada={marca ? e.zonaCorrecta : undefined}
-        tono="correcta"
-        marca={marca ?? undefined}
-        enfocar={marca && !marca.acierto ? e.zonaCorrecta : undefined}
-        onToque={marca ? undefined : tocar}
+        altoVentana={Math.round(height * 0.5)}
+        resaltada={comprobado ? e.zonaCorrecta : toque?.zona}
+        tono={comprobado ? "correcta" : "pregunta"}
+        marca={comprobado && toque ? { punto: toque.punto, acierto: toque.zona === e.zonaCorrecta } : undefined}
+        enfocar={comprobado && toque?.zona !== e.zonaCorrecta ? e.zonaCorrecta : undefined}
+        onToque={comprobado ? undefined : tocar}
       />
     </View>
   );
 }
-
-const estilos = StyleSheet.create({
-  enunciado: { fontSize: 20, fontWeight: "700", color: color.texto, lineHeight: 27 },
-  ayuda: { fontSize: 15, color: color.tenue },
-});

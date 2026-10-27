@@ -48,6 +48,8 @@ pnpm --filter @anatomia/mobile start   # QR para Expo Go; tecla w abre la versi�
   - **Tocar:** califica con `esToqueCorrecto`. Al responder, resalta en verde la parte visible de la zona correcta (el contorno completo va punteado) y marca dónde tocó el estudiante. Si falló, dice qué tocó.
   - **Posición del toque:** en el teléfono viene en `locationX/Y`. En web se calcula con el rectángulo del elemento (`ejercicios/posicion.web.ts`), porque el clic del navegador no trae `locationX`.
   - **Sin imagen:** un ejercicio cuya imagen no se descargó se salta.
+- **Lección (rediseño, docs/PLAN-REDISENO.md):** en los 5 tipos, tocar una opción o una estructura solo la selecciona y se puede cambiar. **Comprobar** califica y abre una banda verde o roja con el detalle y la explicación. Hay sonidos (`expo-audio`, archivos propios hechos con `scripts/sonidos.mjs`; respetan el modo silencio) y vibración (`expo-haptics`). La fuente es Nunito.
+- **En 3D:** si la imagen de un ejercicio de tocar o identificar trae `modelo3d` y el modelo tiene su ficha, el ejercicio va sobre el modelo (`ejercicios/Ejercicio3D.tsx`). La escena es una sola WebView por lección (`visor3d/EscenaLeccion.tsx`) que lee la página y el modelo del teléfono. En web, o si el 3D falla, el ejercicio va con la imagen.
 - **Prueba del visor 3D** (solo en desarrollo y en el teléfono; botón al final de Inicio):
   - Guarda la página del visor y el modelo del muslo en el teléfono, los abre en una WebView y mide cuánto tarda en verse el modelo.
   - **Leer archivo:** la página lee el modelo del teléfono. **Por el puente:** la app se lo manda en base64. **Repetir** mide otra vez con todo ya guardado.
@@ -88,6 +90,19 @@ pnpm --filter @anatomia/api importar-lamina --archivo ../../contenido/laminas/mu
 - **Orden de aprobación.** Un ejercicio de imagen no se puede aprobar antes que su imagen.
 - **Distractores.** En los de identificar son las 3 zonas más cercanas con otra ficha.
 - **Pendiente:** subir imágenes raster y dibujar zonas a mano en el panel (`POST /admin/imagenes`). Por ahora las imágenes salen de láminas.
+
+### Modelo 3D
+
+```bash
+pnpm --filter @anatomia/api importar-modelo --datos ../../prototipos/modelo.json --bin ../../prototipos/modelo.bin \
+  --id muslo-derecho --imagenes muslo-anterior-superficial,muslo-anterior-profunda
+```
+
+- Guarda el modelo en el almacén (claves con hash) y lo pone como `modelo3d` en cada imagen.
+- **Capa:** sale del final del id de la imagen. En la profunda se ocultan las estructuras superficiales, y esas no se preguntan.
+- **Estructuras:** solo los músculos con una ficha existente (el id del modelo con guiones). Vasos y nervio quedan fuera de los ejercicios.
+- **Revisión:** editar la imagen la regresa a revisión. El modelo llega a la app cuando la revisora vuelve a aprobar la imagen y se publica.
+- **Licencia:** BodyParts3D, CC BY 4.0, con el aviso de que se modificó. Se muestra en cada ejercicio 3D.
 
 ## Pruebas
 
