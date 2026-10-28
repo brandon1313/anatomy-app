@@ -1,4 +1,4 @@
-import { fusionarProgreso, fusionarRacha, type Intento, type Racha } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import { openDatabaseAsync, type SQLiteDatabase } from "expo-sqlite";
 import type { Progreso } from "../repaso/espaciado";
 
@@ -8,6 +8,7 @@ import type { Progreso } from "../repaso/espaciado";
  *  - Intentos: solo los que faltan subir; al subirlos se borran.
  *  - Progreso: el de cada ficha, con `pendiente` si cambió en este teléfono y falta subirlo.
  *  - Racha: una fila, también con `pendiente`.
+ *  - Reportes de error: los que faltan enviar a /reportes; al enviarlos se borran.
  */
 let base: Promise<SQLiteDatabase> | null = null;
 
@@ -21,6 +22,7 @@ function abrir(): Promise<SQLiteDatabase> {
         PRIMARY KEY (usuario_id, ficha_id)
       );
       CREATE TABLE IF NOT EXISTS racha (usuario_id TEXT PRIMARY KEY NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS reportes (id TEXT PRIMARY KEY NOT NULL, usuario_id TEXT NOT NULL, datos TEXT NOT NULL);
     `);
     return db;
   });
@@ -128,4 +130,20 @@ export async function guardarRachaDelServidor(usuarioId: string, servidor: Racha
     JSON.stringify(racha),
     JSON.stringify(racha) === JSON.stringify(servidor) ? 0 : 1,
   );
+}
+
+export async function guardarReporte(usuarioId: string, reporte: NuevoReporte): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("INSERT OR IGNORE INTO reportes (id, usuario_id, datos) VALUES (?, ?, ?)", reporte.id, usuarioId, JSON.stringify(reporte));
+}
+
+export async function reportesPorEnviar(usuarioId: string): Promise<NuevoReporte[]> {
+  const db = await abrir();
+  const filas = await db.getAllAsync<{ datos: string }>("SELECT datos FROM reportes WHERE usuario_id = ?", usuarioId);
+  return filas.map((f) => JSON.parse(f.datos) as NuevoReporte);
+}
+
+export async function borrarReporte(id: string): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("DELETE FROM reportes WHERE id = ?", id);
 }

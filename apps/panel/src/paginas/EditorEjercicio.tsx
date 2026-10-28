@@ -6,6 +6,7 @@ import type { z } from "zod";
 import { api, type RespuestaEjercicio, type RespuestaImagen } from "../api";
 import { AccionesRevision } from "../componentes/AccionesRevision";
 import { Errores, Estado, NOMBRES_TIPO } from "../componentes/comun";
+import { ReportesDelEjercicio } from "../componentes/ReportesDelEjercicio";
 import { VistaImagen } from "../componentes/VistaImagen";
 
 type Borrador = z.infer<typeof EjercicioBase>;
@@ -113,6 +114,7 @@ export function EditorEjercicio() {
           <span key={f.id}><Link to={`/fichas/${f.id}`}>{f.nombre}</Link> <Estado estado={f.estado} /> </span>
         ))}
       </p>
+      <ReportesDelEjercicio ejercicioId={id} />
       <AccionesRevision
         coleccion="ejercicios"
         id={id}

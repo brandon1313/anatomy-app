@@ -7,6 +7,7 @@ import {
   esToqueCorrecto,
   fusionarProgreso,
   fusionarRacha,
+  NuevoReporte,
   PeticionSync,
   PaqueteContenido,
   ProgresoFicha,
@@ -267,6 +268,14 @@ describe("PeticionSync", () => {
     const progreso = { fichaId: "sartorio", estado: "repaso", estabilidad: 3.2, dificultad: 5.1, repeticiones: 1, lapsos: 0, proximaRevision: "2026-10-30T15:00:00Z" };
     expect(PeticionSync.safeParse({ intentos: [intento], progreso: [progreso] }).success).toBe(true);
     expect(PeticionSync.safeParse({ intentos: Array(201).fill(intento), progreso: [] }).success).toBe(false);
+  });
+
+  it("un reporte nuevo lleva id y fecha del teléfono, uno de los 4 motivos y un comentario corto", () => {
+    const reporte = { id: "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d", ejercicioId: "tocar-sartorio", motivo: "imagen", creado: "2026-10-27T15:00:00Z" };
+    expect(NuevoReporte.safeParse(reporte).success).toBe(true);
+    expect(NuevoReporte.safeParse({ ...reporte, comentario: "La zona no coincide con el músculo." }).success).toBe(true);
+    expect(NuevoReporte.safeParse({ ...reporte, motivo: "spam" }).success).toBe(false);
+    expect(NuevoReporte.safeParse({ ...reporte, comentario: "x".repeat(501) }).success).toBe(false);
   });
 
   it("la racha es opcional y su día va como AAAA-MM-DD", () => {

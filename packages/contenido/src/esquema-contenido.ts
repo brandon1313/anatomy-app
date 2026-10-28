@@ -270,14 +270,20 @@ export const SalidaGenerador = z.object({
 
 // ───────────────────────── Datos del usuario (solo backend) ─────────────────────────
 
+/** Por qué un estudiante reporta un ejercicio (PRD, "Reportar error"). */
+export const MotivoReporte = z.enum(["respuesta_incorrecta", "texto_confuso", "imagen", "otro"]);
+
 export const ReporteError = z.object({
   id: z.uuid(),
   ejercicioId: Id,
   usuarioId: z.uuid(),
-  motivo: z.enum(["respuesta_incorrecta", "texto_confuso", "imagen", "otro"]),
+  motivo: MotivoReporte,
   comentario: z.string().max(500).optional(),
   creado: z.iso.datetime(),
 });
+
+/** POST /reportes: el id y la fecha los pone el teléfono (reenviarlo no lo duplica); el usuario sale del token. */
+export const NuevoReporte = ReporteError.omit({ usuarioId: true });
 
 /** Estado del repaso espaciado por usuario y ficha (los campos que usa FSRS). */
 export const ProgresoFicha = z.object({
@@ -346,6 +352,8 @@ export type Curso = z.infer<typeof Curso>;
 export type PaqueteContenido = z.infer<typeof PaqueteContenido>;
 export type SalidaGenerador = z.infer<typeof SalidaGenerador>;
 export type ReporteError = z.infer<typeof ReporteError>;
+export type MotivoReporte = z.infer<typeof MotivoReporte>;
+export type NuevoReporte = z.infer<typeof NuevoReporte>;
 export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
 export type Intento = z.infer<typeof Intento>;
 export type ProgresoSync = z.infer<typeof ProgresoSync>;

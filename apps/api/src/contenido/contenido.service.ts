@@ -41,7 +41,7 @@ export interface ResumenEjercicios {
 const json = (v: unknown) => v as Prisma.InputJsonValue;
 const sinRevision = <T extends { revision: unknown; version: unknown }>({ revision: _r, version: _v, ...base }: T) => base;
 
-function tituloEjercicio(e: Ejercicio): string {
+export function tituloEjercicio(e: Ejercicio): string {
   switch (e.tipo) {
     case "caso_clinico":
       return e.pregunta;

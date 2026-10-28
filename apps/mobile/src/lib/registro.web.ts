@@ -1,9 +1,9 @@
-import { fusionarProgreso, fusionarRacha, type Intento, type Racha } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 
 /**
  * En web (solo para desarrollo) el registro va en localStorage, con las mismas reglas que la versión de
- * SQLite (registro.ts): intentos por subir, y progreso por ficha y racha con `pendiente`.
+ * SQLite (registro.ts): intentos y reportes por enviar, y progreso por ficha y racha con `pendiente`.
  */
 type Fila = { datos: Progreso; pendiente: boolean };
 
@@ -102,4 +102,21 @@ export async function guardarRachaDelServidor(usuarioId: string, servidor: Racha
   const datos = f ? fusionarRacha(f.datos, servidor) : servidor;
   if (f && JSON.stringify(datos) === JSON.stringify(f.datos)) return;
   escribir(claveRacha(usuarioId), { datos, pendiente: (f?.pendiente ?? false) || JSON.stringify(datos) !== JSON.stringify(servidor) });
+}
+
+const claveReportes = (u: string) => `anatomia.reportes.${u}`;
+
+export async function guardarReporte(usuarioId: string, reporte: NuevoReporte): Promise<void> {
+  const reportes = leer<NuevoReporte[]>(claveReportes(usuarioId), []);
+  if (!reportes.some((r) => r.id === reporte.id)) escribir(claveReportes(usuarioId), [...reportes, reporte]);
+}
+
+export async function reportesPorEnviar(usuarioId: string): Promise<NuevoReporte[]> {
+  return leer<NuevoReporte[]>(claveReportes(usuarioId), []);
+}
+
+export async function borrarReporte(id: string): Promise<void> {
+  for (const k of Object.keys(localStorage).filter((k) => k.startsWith("anatomia.reportes."))) {
+    escribir(k, leer<NuevoReporte[]>(k, []).filter((r) => r.id !== id));
+  }
 }

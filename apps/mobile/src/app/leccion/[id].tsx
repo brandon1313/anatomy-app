@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, type LayoutRectangle, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Boton } from "../../componentes/Boton";
+import { ReportarError } from "../../componentes/ReportarError";
 import { Ejercicio3D } from "../../ejercicios/Ejercicio3D";
 import { Emparejar } from "../../ejercicios/Emparejar";
 import { IdentificarImagen } from "../../ejercicios/IdentificarImagen";
@@ -133,6 +134,9 @@ export default function Leccion() {
   const [eleccion, setEleccion] = useState<Eleccion | null>(null);
   const [comprobado, setComprobado] = useState(false);
   const [elogio, setElogio] = useState(ELOGIOS[0]);
+  const [reportando, setReportando] = useState(false);
+  /** Ejercicios ya reportados en esta sesión: en la repetición del final no se ofrece de nuevo. */
+  const [reportados, setReportados] = useState<string[]>([]);
   const inicio = useRef(Date.now());
 
   // Una sesión vacía no está terminada: todavía no empezó.
@@ -318,6 +322,17 @@ export default function Leccion() {
               <Text style={[estilos.retroTitulo, { color: eleccion.correcto ? color.verde : color.rojo }]}>
                 {eleccion.correcto ? elogio : "Casi…"}
               </Text>
+              <View style={{ flex: 1 }} />
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={reportados.includes(ejercicio.id) ? "Reporte enviado" : "Reportar un error en este ejercicio"}
+                disabled={reportados.includes(ejercicio.id)}
+                onPress={() => setReportando(true)}
+                hitSlop={8}
+                style={estilos.botonReportar}
+              >
+                <Text style={estilos.reportar}>{reportados.includes(ejercicio.id) ? "✓ Reportado" : "⚑ Reportar"}</Text>
+              </Pressable>
             </View>
             {!eleccion.correcto && eleccion.detalle && <Text style={estilos.detalle}>{eleccion.detalle}</Text>}
             <Text style={estilos.explicacion}>{ejercicio.explicacion}</Text>
@@ -330,6 +345,15 @@ export default function Leccion() {
           onPress={comprobado ? continuar : comprobar}
         />
       </View>}
+      <ReportarError
+        ejercicioId={ejercicio.id}
+        visible={reportando}
+        onCerrar={() => setReportando(false)}
+        onEnviado={() => {
+          setReportando(false);
+          setReportados((r) => [...r, ejercicio.id]);
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -358,6 +382,8 @@ const estilos = StyleSheet.create({
   retroTitulo: { fontSize: 22, fontFamily: fuente.titulo },
   detalle: { fontSize: 16, fontFamily: fuente.negrita, color: color.rojo },
   explicacion: { fontSize: 15, fontFamily: fuente.normal, color: color.texto, lineHeight: 21 },
+  botonReportar: { minHeight: TOQUE_MINIMO, justifyContent: "center", paddingHorizontal: espacio.xs },
+  reportar: { fontSize: 14, fontFamily: fuente.negrita, color: color.tenue },
   trofeo: { fontSize: 84, textAlign: "center" },
   tituloResultado: { fontSize: 28, fontFamily: fuente.titulo, color: color.marcaTexto, textAlign: "center" },
   cifras: { flexDirection: "row", gap: espacio.m },

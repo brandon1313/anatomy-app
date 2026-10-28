@@ -1,4 +1,4 @@
-import { fusionarProgreso, fusionarRacha, type PaqueteContenido, type Racha } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type MotivoReporte, type PaqueteContenido, type Racha } from "@anatomia/contenido";
 import { randomUUID } from "expo-crypto";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
@@ -10,7 +10,7 @@ import { cargarSesion, cerrarSesion, iniciarSesion, registrarse, SinConexion, ty
 import { guardarJson, leerJson } from "./almacen";
 import { programarRecordatorio } from "./notificaciones";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
-import { guardarIntento, guardarProgresoPropio, guardarRachaPropia, leerProgreso, leerRacha } from "./registro";
+import { guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
 
 interface Estado {
@@ -39,6 +39,8 @@ interface Estado {
   racha: Racha;
   /** "HH:MM" del recordatorio diario, o null si el estudiante no eligió hora. */
   horaRecordatorio: string | null;
+  /** Guarda un reporte de error en el teléfono y lo envía; sin conexión sale con la próxima sincronización. */
+  reportarError: (r: { ejercicioId: string; motivo: MotivoReporte; comentario?: string }) => Promise<void>;
 }
 
 const Contexto = createContext<Estado | null>(null);
@@ -180,6 +182,12 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     },
     racha,
     horaRecordatorio,
+    reportarError: async ({ ejercicioId, motivo, comentario }) => {
+      if (!usuario) return;
+      const usuarioId = usuario.id;
+      await guardarReporte(usuarioId, { id: randomUUID(), ejercicioId, motivo, comentario: comentario?.trim() || undefined, creado: new Date().toISOString() });
+      sincronizarAhora(usuarioId);
+    },
   };
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

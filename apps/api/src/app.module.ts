@@ -9,6 +9,7 @@ import { ContenidoModule } from "./contenido/contenido.module";
 import { GeneradorModule } from "./generador/generador.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PublicacionModule } from "./publicacion/publicacion.module";
+import { ReportesModule } from "./reportes/reportes.module";
 import { SyncModule } from "./sync/sync.module";
 import { UsuariosController } from "./usuarios/usuarios.controller";
 
@@ -21,6 +22,7 @@ import { UsuariosController } from "./usuarios/usuarios.controller";
     ContenidoModule,
     GeneradorModule,
     PublicacionModule,
+    ReportesModule,
     SyncModule,
   ],
   controllers: [UsuariosController],

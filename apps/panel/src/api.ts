@@ -1,4 +1,4 @@
-import type { Ejercicio, EstadoRevision, FichaMusculo, Imagen } from "@anatomia/contenido";
+import type { Ejercicio, EstadoRevision, FichaMusculo, Imagen, MotivoReporte } from "@anatomia/contenido";
 
 export interface Usuario {
   id: string;
@@ -149,6 +149,24 @@ export interface RespuestaImagen {
   imagen: Imagen;
   fichas: { id: string; nombre: string; estado: EstadoRevision }[];
   ejercicios: Ejercicio[];
+}
+
+export type EstadoReporte = "abierto" | "resuelto";
+
+export interface ReportePanel {
+  id: string;
+  ejercicioId: string;
+  motivo: MotivoReporte;
+  comentario: string | null;
+  creado: string;
+  estado: EstadoReporte;
+  /** null si el ejercicio ya no existe. */
+  ejercicio: { tipo: string; titulo: string; estado: EstadoRevision } | null;
+}
+
+export interface RespuestaReportes {
+  reportes: ReportePanel[];
+  conteos: Record<EstadoReporte, number>;
 }
 
 /** URL de un archivo del almacén (el proxy de Vite manda /api a la API). */

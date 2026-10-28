@@ -12,6 +12,7 @@ import { EditorImagen } from "./paginas/EditorImagen";
 import { Generar } from "./paginas/Generar";
 import { Login } from "./paginas/Login";
 import { Publicar } from "./paginas/Publicar";
+import { Reportes } from "./paginas/Reportes";
 
 const consultas = new QueryClient({ defaultOptions: { queries: { staleTime: 10_000, retry: false } } });
 
@@ -37,6 +38,7 @@ function App() {
           <NavLink to="/cola">Cola de revisión</NavLink>
           <NavLink to="/generar">Generar</NavLink>
           <NavLink to="/curso">Curso</NavLink>
+          <NavLink to="/reportes">Reportes</NavLink>
           {usuario.rol === "admin" && <NavLink to="/publicar">Publicar</NavLink>}
         </nav>
         <span className="usuario">
@@ -54,6 +56,7 @@ function App() {
           <Route path="/imagenes/:id" element={<EditorImagen />} />
           <Route path="/generar" element={<Generar />} />
           <Route path="/curso" element={<Curso />} />
+          <Route path="/reportes" element={<Reportes />} />
           {usuario.rol === "admin" && <Route path="/publicar" element={<Publicar />} />}
           <Route path="*" element={<Navigate to="/cola" replace />} />
         </Routes>

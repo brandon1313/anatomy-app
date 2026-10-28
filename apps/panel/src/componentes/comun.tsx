@@ -1,5 +1,13 @@
-import type { EstadoRevision } from "@anatomia/contenido";
+import type { EstadoRevision, MotivoReporte } from "@anatomia/contenido";
 import { ErrorApi } from "../api";
+
+/** Los mismos textos que ve el estudiante al reportar. */
+export const NOMBRES_MOTIVO: Record<MotivoReporte, string> = {
+  respuesta_incorrecta: "La respuesta correcta está mal",
+  texto_confuso: "El texto no se entiende",
+  imagen: "Problema con la imagen o el 3D",
+  otro: "Otra cosa",
+};
 
 export const NOMBRES_ESTADO: Record<EstadoRevision, string> = {
   borrador: "Borrador",
