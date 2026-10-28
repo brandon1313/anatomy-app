@@ -75,6 +75,9 @@ th { font-size: 0.85em; color: var(--tenue); font-weight: 600; }
 .estado-rechazada { background: #fbe1df; color: var(--rojo); }
 
 .acciones { position: sticky; top: 0; z-index: 1; background: var(--fondo); padding: 8px 0; border-bottom: 1px solid var(--borde); margin-bottom: 8px; }
+.paso-cola { display: flex; gap: 12px; align-items: center; margin-bottom: 6px; }
+.paso-cola .separador { flex: 1; }
+.paso-cola .tenue { color: var(--tenue); }
 .acciones .meta { display: flex; gap: 8px; align-items: center; color: var(--tenue); flex-wrap: wrap; }
 .botones { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
 

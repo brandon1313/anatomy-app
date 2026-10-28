@@ -1,9 +1,14 @@
 import type { EstadoRevision, Revision } from "@anatomia/contenido";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
 import { api, type Coleccion } from "../api";
 import { Errores, Estado } from "./comun";
+import { usePosicionEnCola } from "./NavegacionCola";
 
-/** Estado, versión, nota de revisión y los botones Guardar / Enviar / Aprobar / Rechazar. */
+/**
+ * Estado, versión, nota de revisión, los botones Guardar / Enviar / Aprobar / Rechazar y el paso
+ * por la cola: al aprobar o rechazar se abre el siguiente.
+ */
 export function AccionesRevision(props: {
   coleccion: Coleccion;
   id: string;
@@ -18,11 +23,19 @@ export function AccionesRevision(props: {
 }) {
   const { coleccion, id, estado, version, revision, sinGuardar } = props;
   const cliente = useQueryClient();
+  const navegar = useNavigate();
+  const posicion = usePosicionEnCola(coleccion, id, estado);
   const accion = useMutation({
     mutationFn: ({ ruta, cuerpo }: { ruta: string; cuerpo?: unknown }) =>
       api(`/admin/${coleccion}/${id}/${ruta}`, { metodo: "POST", cuerpo }),
-    onSuccess: () => cliente.invalidateQueries(),
+    onSuccess: (_, { ruta }) => {
+      cliente.invalidateQueries();
+      if ((ruta === "aprobar" || ruta === "rechazar") && posicion.siguiente) navegar(posicion.siguiente);
+    },
   });
+  const salir = (e: React.MouseEvent) => {
+    if (sinGuardar && !window.confirm("Hay cambios sin guardar. ¿Salir igual?")) e.preventDefault();
+  };
 
   function rechazar() {
     const nota = window.prompt("¿Qué hay que corregir? (obligatorio)");
@@ -31,6 +44,13 @@ export function AccionesRevision(props: {
 
   return (
     <div className="acciones">
+      <nav className="paso-cola" aria-label="Cola de revisión">
+        <Link to={posicion.cola} onClick={salir}>← Cola</Link>
+        {posicion.texto && <span className="tenue">{posicion.texto}</span>}
+        <span className="separador" />
+        {posicion.anterior ? <Link to={posicion.anterior} onClick={salir}>‹ Anterior</Link> : <span className="tenue">‹ Anterior</span>}
+        {posicion.siguiente ? <Link to={posicion.siguiente} onClick={salir}>Siguiente ›</Link> : <span className="tenue">Siguiente ›</span>}
+      </nav>
       <div className="meta">
         <Estado estado={estado} /> <span>versión {version}</span>
         {revision.revisadoPor && (

@@ -53,7 +53,6 @@ export function EditorFicha() {
 
   return (
     <section className="editor">
-      <p><Link to="/cola">← Cola</Link></p>
       <h1>{b.nombre.principal || id} <code>{id}</code></h1>
       <AccionesRevision
         coleccion="fichas"

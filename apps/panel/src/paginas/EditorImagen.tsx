@@ -57,7 +57,6 @@ export function EditorImagen() {
 
   return (
     <section className="editor">
-      <p><Link to="/cola">← Cola</Link></p>
       <h1>{b.titulo} <code>{id}</code></h1>
       <AccionesRevision
         coleccion="imagenes"

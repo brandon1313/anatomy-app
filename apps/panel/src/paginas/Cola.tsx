@@ -52,7 +52,7 @@ export function Cola() {
               <tr key={`${e.coleccion}-${e.id}`}>
                 <td>{NOMBRES_TIPO[e.tipo] ?? e.tipo}</td>
                 <td>
-                  <Link to={`/${e.coleccion}/${e.id}`}>{e.titulo}</Link>
+                  <Link to={`/${e.coleccion}/${e.id}?${consulta}`}>{e.titulo}</Link>
                   {e.notas && e.estado === "rechazada" && <div className="nota">{e.notas}</div>}
                 </td>
                 <td><code>{e.id}</code></td>

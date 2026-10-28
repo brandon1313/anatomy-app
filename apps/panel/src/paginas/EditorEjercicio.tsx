@@ -106,7 +106,6 @@ export function EditorEjercicio() {
 
   return (
     <section className="editor">
-      <p><Link to="/cola">← Cola</Link></p>
       <h1>{NOMBRES_TIPO[b.tipo]} <code>{id}</code></h1>
       <p>
         Fichas:{" "}
