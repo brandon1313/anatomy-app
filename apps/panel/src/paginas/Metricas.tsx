@@ -84,6 +84,27 @@ export function Metricas() {
         </table>
       )}
 
+      <h2>Prueba A/B del primer beneficio</h2>
+      <p className="nota-pie">
+        A cada estudiante le toca siempre la misma variante, según su id. La que consiga más interés dice qué construir primero para cobrar.
+      </p>
+      <table>
+        <thead>
+          <tr><th>Variante</th><th>Beneficio destacado</th><th>Vieron</th><th>Me interesa</th><th>Interés</th></tr>
+        </thead>
+        <tbody>
+          {m.premium.variantes.map((v) => (
+            <tr key={v.variante}>
+              <td>{v.variante === "sin_dato" ? "Sin dato" : v.variante.toUpperCase()}</td>
+              <td>{v.primerBeneficio ?? <span className="vacio">Antes de la prueba</span>}</td>
+              <td>{v.vieron}</td>
+              <td>{v.interesados}</td>
+              <td>{porcentaje(v.interesados, v.vieron)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <h2>Acierto por ejercicio</h2>
       <p className="nota-pie">
         Del más bajo al más alto. Los de menos de 30% con al menos 5 respuestas pueden tener un error o estar mal redactados

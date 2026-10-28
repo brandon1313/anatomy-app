@@ -1,4 +1,4 @@
-import type { Ejercicio } from "@anatomia/contenido";
+import { type Ejercicio, OFERTA_PREMIUM, OfertaPremium, ofertaParaVariante } from "@anatomia/contenido";
 import { Injectable } from "@nestjs/common";
 import { tituloEjercicio } from "../contenido/contenido.service";
 import { PrismaService } from "../prisma/prisma.service";
@@ -17,7 +17,7 @@ export class MetricasService {
   constructor(private readonly prisma: PrismaService) {}
 
   async calcular() {
-    const [actividad, eventos, aciertos, [conteos], premium, porOrigen] = await Promise.all([
+    const [actividad, eventos, aciertos, [conteos], premium, porOrigen, porVariante, configurada] = await Promise.all([
       this.prisma.$queryRawUnsafe<ActividadEstudiante[]>(`
         SELECT ${DIA("u.creado")} AS registro,
                to_char(((now() AT TIME ZONE u.zona_horaria) - interval '4 hours')::date, 'YYYY-MM-DD') AS hoy,
@@ -51,7 +51,26 @@ export class MetricasService {
         WHERE v.nombre IN ('premium_visto', 'premium_interes')
         GROUP BY 1
         ORDER BY 2 DESC, 1`,
+      // La prueba A/B del primer beneficio: lo mismo, por la variante que vio cada estudiante.
+      this.prisma.$queryRaw<{ variante: string; vieron: number; interesados: number }[]>`
+        SELECT coalesce(v.propiedades->>'variante', 'sin_dato') AS variante,
+               count(DISTINCT v.usuario_id) FILTER (WHERE v.nombre = 'premium_visto')::int AS vieron,
+               count(DISTINCT v.usuario_id) FILTER (WHERE v.nombre = 'premium_interes')::int AS interesados
+        FROM eventos v JOIN usuarios u ON u.id = v.usuario_id AND u.rol = 'estudiante'
+        WHERE v.nombre IN ('premium_visto', 'premium_interes')
+        GROUP BY 1
+        ORDER BY 1`,
+      this.prisma.configuracion.findUnique({ where: { clave: "premium" } }),
     ]);
+    const oferta = OfertaPremium.safeParse(configurada?.valor).data ?? OFERTA_PREMIUM;
+    const variantes = (["a", "b"] as const).map((variante) => ({
+      variante,
+      primerBeneficio: ofertaParaVariante(oferta, variante).beneficios[0],
+      vieron: 0,
+      interesados: 0,
+      ...porVariante.find((v) => v.variante === variante),
+    }));
+    const sinDato = porVariante.find((v) => v.variante === "sin_dato");
 
     const evento = (nombre: string) => {
       const { total = 0, usuarios = 0 } = eventos.find((e) => e.nombre === nombre) ?? {};
@@ -73,6 +92,7 @@ export class MetricasService {
         interesados: evento("premium_interes").usuarios,
         porPlan: Object.fromEntries(premium.map((p) => [p.plan, p.usuarios])),
         porOrigen,
+        variantes: sinDato ? [...variantes, { ...sinDato, primerBeneficio: null }] : variantes,
       },
       ejercicios: filas.map((f) => {
         const e = porId.get(f.ejercicioId);

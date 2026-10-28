@@ -1,4 +1,4 @@
-import { OFERTA_PREMIUM, OfertaPremium, type PlanPremium } from "@anatomia/contenido";
+import { OFERTA_PREMIUM, OfertaPremium, type PlanPremium, varianteOferta } from "@anatomia/contenido";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -15,12 +15,12 @@ export class PremiumService {
 
   /**
    * "Me interesa": una fila por toque (la métrica cuenta usuarios distintos) y su evento, con dónde apareció
-   * la oferta. No cobra nada.
+   * la oferta y la variante de la prueba A/B que vio el estudiante. No cobra nada.
    */
   async registrarInteres(usuarioId: string, plan: PlanPremium, origen?: string): Promise<void> {
     await this.prisma.$transaction([
       this.prisma.interesPremium.create({ data: { usuarioId, plan } }),
-      this.prisma.evento.create({ data: { usuarioId, nombre: "premium_interes", propiedades: { plan, ...(origen && { origen }) } } }),
+      this.prisma.evento.create({ data: { usuarioId, nombre: "premium_interes", propiedades: { plan, ...(origen && { origen }), variante: varianteOferta(usuarioId) } } }),
     ]);
   }
 }

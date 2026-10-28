@@ -213,6 +213,8 @@ export interface Metricas {
     porPlan: Record<string, number>;
     /** Por momento en que apareció la oferta; "sin_dato" es el interés de antes de guardarlo. */
     porOrigen: { origen: string; vieron: number; interesados: number }[];
+    /** Prueba A/B del primer beneficio; "sin_dato" es lo de antes de la prueba. */
+    variantes: { variante: string; primerBeneficio: string | null; vieron: number; interesados: number }[];
   };
   ejercicios: {
     ejercicioId: string;

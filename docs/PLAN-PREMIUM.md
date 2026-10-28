@@ -77,8 +77,11 @@ Regla general: la oferta aparece **cuando el estudiante acaba de querer algo que
 La beta no cobra, así que se mide **interés**: `premium_visto` y `premium_interes` por `origen`, y qué beneficio atrae más.
 
 1. **Interés por momento.** De cada `origen`, el porcentaje de estudiantes que vio la oferta y tocó "Me interesa". Así se sabe qué momentos conservar.
-2. **Interés por beneficio**, con una prueba A/B simple:
-   - A la mitad de los estudiantes (por su id), la pantalla destaca primero "Todo el cuerpo"; a la otra mitad, "Modo examen".
+2. **Interés por beneficio**, con una prueba A/B simple (hecha):
+   - La variante sale del primer carácter del id del estudiante (`varianteOferta`), así que cada uno ve siempre la misma, también sin conexión.
+   - La **A** muestra los beneficios en el orden configurado, con "Todo el cuerpo" primero. La **B** pone el segundo, "Modo examen", primero.
+   - El primer beneficio va destacado en una tarjeta. El título de la pantalla es el mismo en las dos variantes.
+   - `premium_visto` y `premium_interes` guardan la variante, y Métricas muestra la tabla "Prueba A/B del primer beneficio".
    - El ganador dice qué construir primero para cobrar: regiones nuevas (mucho contenido) o modo examen (poco código).
 3. **Anual o mensual.** El "Me interesa" ya guarda el plan elegido, y dice qué precio poner primero.
 4. **Que no espante.** Se compara la retención a 7 días entre quienes vieron la oferta en un momento nuevo y quienes no.
@@ -94,7 +97,7 @@ En orden, para decidir hasta dónde llegar en la beta:
 | 1 | ✓ Beneficios corregidos en la pantalla (sin "terminología", con "Modo examen") | Hecho, en `OFERTA_PREMIUM` | Beta |
 | 2 | ✓ Oferta al terminar unidad y región, con su `origen` | Hecho | Beta |
 | 3 | ✓ Desglose por `origen` en Métricas ("Premium por momento"); "Me interesa" guarda el `origen` desde ahora | Hecho | Beta |
-| 4 | Prueba A/B del primer beneficio | Chico | Beta |
+| 4 | ✓ Prueba A/B del primer beneficio | Hecho | Beta |
 | 5 | Regiones Premium con candado en Inicio. Necesita unidades marcadas como Premium en el curso, aunque todavía no tengan lecciones | Mediano | Beta, si se decide mostrar lo que viene |
 | 6 | Modo examen | Mediano | Primer beneficio cobrable |
 | 7 | Repaso a demanda y "Mis errores" | Mediano | Después |

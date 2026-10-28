@@ -150,5 +150,19 @@ export function fusionarMarcas(a: readonly MarcaLeccion[], b: readonly MarcaLecc
   return [...porLeccion.values()];
 }
 
+/**
+ * Prueba A/B del primer beneficio de Premium (docs/PLAN-PREMIUM.md): "a" muestra los beneficios en el orden
+ * configurado y "b" pone el segundo primero. Sale del id del usuario, así que el teléfono y el servidor
+ * eligen lo mismo, también sin conexión, y cada estudiante ve siempre la misma.
+ */
+export type VarianteOferta = "a" | "b";
+export const varianteOferta = (usuarioId: string): VarianteOferta => (parseInt(usuarioId.charAt(0), 16) % 2 === 0 ? "a" : "b");
+
+/** La oferta como la ve esa variante: en "b", el segundo beneficio pasa a ser el primero. */
+export function ofertaParaVariante<T extends Pick<OfertaPremium, "beneficios">>(oferta: T, variante: VarianteOferta): T {
+  const [primero, segundo, ...resto] = oferta.beneficios;
+  return variante === "b" && segundo ? { ...oferta, beneficios: [segundo, primero, ...resto] } : oferta;
+}
+
 /** Cuánto se ahorra, en porcentaje entero, pagando el año en vez de 12 meses (0 si no conviene). */
 export const ahorroAnual = (o: Pick<OfertaPremium, "mensual" | "anual">) => Math.max(0, Math.round((1 - o.anual / (o.mensual * 12)) * 100));

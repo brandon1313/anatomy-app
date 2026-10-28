@@ -1,4 +1,4 @@
-import { ahorroAnual, OFERTA_PREMIUM, OfertaPremium, type PlanPremium } from "@anatomia/contenido";
+import { ahorroAnual, OFERTA_PREMIUM, OfertaPremium, ofertaParaVariante, type PlanPremium, varianteOferta } from "@anatomia/contenido";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -30,7 +30,7 @@ export default function Premium() {
   useEffect(() => {
     if (vista.current || !usuario) return;
     vista.current = true;
-    void registrarEvento("premium_visto", { origen: origen ?? "otro" });
+    void registrarEvento("premium_visto", { origen: origen ?? "otro", variante: varianteOferta(usuario.id) });
   }, [usuario, origen, registrarEvento]);
 
   useEffect(() => {
@@ -69,6 +69,8 @@ export default function Premium() {
     }
   }
 
+  // Prueba A/B (docs/PLAN-PREMIUM.md): qué beneficio va primero, y destacado, depende del estudiante.
+  const { beneficios } = ofertaParaVariante(oferta, usuario ? varianteOferta(usuario.id) : "a");
   const precio = (v: number) => `${oferta.simbolo}${v.toFixed(2)}`;
   const ahorro = ahorroAnual(oferta);
 
@@ -91,10 +93,10 @@ export default function Premium() {
         )}
         <Text style={estilos.titulo}>{logro ? "Sigue con toda la anatomía, con el mismo método." : "Toda la anatomía, con el mismo método."}</Text>
         <View style={{ gap: espacio.s }}>
-          {oferta.beneficios.map((b) => (
-            <View key={b} style={estilos.beneficio}>
+          {beneficios.map((b, i) => (
+            <View key={b} style={[estilos.beneficio, i === 0 && estilos.destacado]}>
               <Text style={estilos.check}>✓</Text>
-              <Text style={estilos.texto}>{b}</Text>
+              <Text style={[estilos.texto, i === 0 && estilos.textoDestacado]}>{b}</Text>
             </View>
           ))}
         </View>
@@ -150,6 +152,8 @@ const estilos = StyleSheet.create({
   logro: { fontSize: 18, fontFamily: fuente.titulo, color: color.logroTexto },
   titulo: { fontSize: 26, fontFamily: fuente.titulo, color: color.texto },
   beneficio: { flexDirection: "row", gap: espacio.s, alignItems: "flex-start" },
+  destacado: { padding: espacio.m, borderRadius: 16, backgroundColor: color.marcaSuave },
+  textoDestacado: { fontSize: 18, fontFamily: fuente.titulo, color: color.marcaTexto, lineHeight: 24 },
   check: { fontSize: 18, fontFamily: fuente.titulo, color: color.marca },
   texto: { flex: 1, fontSize: 16, fontFamily: fuente.normal, color: color.texto, lineHeight: 22 },
   tenue: { fontSize: 14, fontFamily: fuente.normal, color: color.tenue },

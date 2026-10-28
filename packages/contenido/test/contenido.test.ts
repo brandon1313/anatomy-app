@@ -13,6 +13,7 @@ import {
   fusionarProgreso,
   fusionarRacha,
   NuevoReporte,
+  ofertaParaVariante,
   PeticionEventos,
   OFERTA_PREMIUM,
   OfertaPremium,
@@ -21,6 +22,7 @@ import {
   ProgresoFicha,
   puntoEnZona,
   SalidaGenerador,
+  varianteOferta,
   type Zona,
 } from "../src";
 
@@ -348,5 +350,24 @@ describe("marcas de lección", () => {
     expect(MarcaLeccion.safeParse(marca(11, 10)).success).toBe(false);
     expect(PeticionSync.safeParse({ intentos: [], progreso: [], marcas: [marca(9, 10)] }).success).toBe(true);
     expect(PeticionSync.safeParse({ intentos: [], progreso: [] }).success).toBe(true);
+  });
+});
+
+describe("prueba A/B de Premium", () => {
+  it("cada usuario cae siempre en la misma variante, y los ids reparten las dos", () => {
+    expect(varianteOferta("0a1b2c3d-0000-4000-8000-000000000000")).toBe("a");
+    expect(varianteOferta("fa1b2c3d-0000-4000-8000-000000000000")).toBe("b");
+    expect(varianteOferta("FA1B2C3D-0000-4000-8000-000000000000")).toBe("b");
+    const ids = "0123456789abcdef".split("").map((c) => `${c}0000000-0000-4000-8000-000000000000`);
+    expect(ids.filter((i) => varianteOferta(i) === "a")).toHaveLength(8);
+  });
+
+  it("en la variante b el segundo beneficio va primero; la a queda igual", () => {
+    expect(ofertaParaVariante(OFERTA_PREMIUM, "a")).toBe(OFERTA_PREMIUM);
+    const b = ofertaParaVariante(OFERTA_PREMIUM, "b");
+    expect(b.beneficios[0]).toBe(OFERTA_PREMIUM.beneficios[1]);
+    expect(b.beneficios[1]).toBe(OFERTA_PREMIUM.beneficios[0]);
+    expect(b.beneficios.slice(2)).toEqual(OFERTA_PREMIUM.beneficios.slice(2));
+    expect(ofertaParaVariante({ beneficios: ["solo uno"] }, "b").beneficios).toEqual(["solo uno"]);
   });
 });
