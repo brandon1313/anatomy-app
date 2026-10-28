@@ -64,13 +64,15 @@ export default function Leccion() {
   const nombres = useMemo(() => new Map((paquete?.fichas ?? []).map((f) => [f.id, f.nombre.principal])), [paquete]);
 
   // El modelo 3D de la lección: el de sus imágenes, si ya está en el teléfono. En web va todo con imágenes.
-  const modelo = useMemo(() => {
-    if (Platform.OS === "web") return undefined;
+  // La región para el indicador de vista sale del título de esa imagen ("Muslo derecho, vista anterior…").
+  const { modelo, region } = useMemo(() => {
+    if (Platform.OS === "web") return {};
     for (const e of ejercicios) {
-      const m = "imagenId" in e ? imagenes.get(e.imagenId)?.modelo3d : undefined;
-      if (m && uriImagen(m.archivo) && uriImagen(m.datos)) return m;
+      const imagen = "imagenId" in e ? imagenes.get(e.imagenId) : undefined;
+      const m = imagen?.modelo3d;
+      if (m && uriImagen(m.archivo) && uriImagen(m.datos)) return { modelo: m, region: imagen.titulo.split(",")[0].trim().toLowerCase() };
     }
-    return undefined;
+    return {};
   }, [ejercicios, imagenes]);
   const [fallo3D, setFallo3D] = useState(false);
   const escena = useRef<ControlEscena>(null);
@@ -256,7 +258,7 @@ export default function Leccion() {
             style={(presentando || (d3 && presentando === false)) && hueco ? { position: "absolute", left: hueco.x, top: hueco.y, width: hueco.width, height: hueco.height } : estilos.escondida}
             pointerEvents={presentando || d3 ? "auto" : "none"}
           >
-            <EscenaLeccion ref={escena} modelo={modelo} onToque={(t) => alTocar.current?.(t)} onListo={onListo3D} onError={onError3D} />
+            <EscenaLeccion ref={escena} modelo={modelo} region={region} onToque={(t) => alTocar.current?.(t)} onListo={onListo3D} onError={onError3D} />
           </View>
         )}
       </View>

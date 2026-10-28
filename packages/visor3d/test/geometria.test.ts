@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deBase64, distanciaParaVer, giroMasCorto, puntosDeBusqueda } from "../src/geometria";
+import { deBase64, distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, vistaDeAngulo } from "../src/geometria";
 
 describe("giroMasCorto", () => {
   it("gira por el lado más corto, también al cruzar los 180°", () => {
@@ -40,5 +40,35 @@ describe("deBase64", () => {
   it("devuelve los mismos bytes", () => {
     const bytes = new Uint8Array([0, 1, 127, 128, 254, 255]);
     expect(new Uint8Array(deBase64(btoa(String.fromCharCode(...bytes))))).toEqual(bytes);
+  });
+});
+
+describe("vistaDeAngulo", () => {
+  it("reconoce las cuatro vistas, también después de dar vueltas", () => {
+    expect(vistaDeAngulo(0)).toBe("ant");
+    expect(vistaDeAngulo(Math.atan2(1, 0.15))).toBe("med");
+    expect(vistaDeAngulo(Math.atan2(-1, 0.15))).toBe("lat");
+    expect(vistaDeAngulo(Math.PI)).toBe("post");
+    expect(vistaDeAngulo(-Math.PI)).toBe("post");
+    expect(vistaDeAngulo(2 * Math.PI + 0.1)).toBe("ant");
+  });
+});
+
+describe("ordenDesdeElCentro", () => {
+  it("va del centro hacia los extremos", () => {
+    expect(ordenDesdeElCentro(7)).toEqual([3, 2, 4, 1, 5, 0, 6]);
+    expect(ordenDesdeElCentro(2)).toEqual([0, 1]);
+    expect(ordenDesdeElCentro(0)).toEqual([]);
+  });
+});
+
+describe("Ocupacion", () => {
+  it("no deja poner nada encima de lo marcado ni fuera de la pantalla", () => {
+    const o = new Ocupacion(300, 200);
+    o.marcar(100, 100, 40, 20);
+    expect(o.libre(110, 105, 30, 10)).toBe(false);
+    expect(o.libre(10, 10, 50, 18)).toBe(true);
+    expect(o.libre(280, 10, 50, 18)).toBe(false);
+    expect(o.libre(-5, 10, 20, 10)).toBe(false);
   });
 });

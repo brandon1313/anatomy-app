@@ -20,12 +20,15 @@ export type Toque = Omit<Extract<AvisoVisor, { tipo: "toque" }>, "tipo">;
 export function EscenaLeccion({
   ref,
   modelo,
+  region,
   onToque,
   onListo,
   onError,
 }: {
   ref: Ref<ControlEscena>;
   modelo: Modelo3D;
+  /** "muslo derecho": el visor lo muestra junto a la vista ("Vista anterior · muslo derecho"). */
+  region?: string;
   onToque: (t: Toque) => void;
   /** El modelo terminó de cargar: quien muestra algo en la escena vuelve a mandar su estado completo. */
   onListo: () => void;
@@ -60,7 +63,7 @@ export function EscenaLeccion({
     if (aviso.tipo === "cargada") {
       // Si la página se recarga (iOS puede reiniciar el proceso de la WebView), vuelve a cargar el modelo.
       cargada.current = true;
-      inyectar({ tipo: "iniciar", modo: "archivo", json: rutaDesdeVisor(modelo.datos), bin: rutaDesdeVisor(modelo.archivo) });
+      inyectar({ tipo: "iniciar", modo: "archivo", json: rutaDesdeVisor(modelo.datos), bin: rutaDesdeVisor(modelo.archivo), region });
       for (const o of cola.current) inyectar(o);
       cola.current = [];
     } else if (aviso.tipo === "listo") {

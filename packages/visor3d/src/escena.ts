@@ -25,7 +25,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { distanciaParaVer, giroMasCorto, puntosDeBusqueda, suavizar } from "./geometria";
+import { distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, suavizar, vistaDeAngulo } from "./geometria";
 import type { Vista } from "./protocolo";
 
 /** Tipos de estructura. El modelo conserva las claves del archivo "Muslo derecho en 3D". */
@@ -50,7 +50,10 @@ export interface Visor {
   /** `performance.now()` al quedar lista la luz de ambiente, para medir. */
   entornoListo: number;
   verDesde(vista: Vista, inmediato?: boolean): void;
-  /** Tiñe (`tinte` de 0 a 1) y contornea estructuras: id → color. Con `aislar`, el resto se vuelve translúcido. */
+  /**
+   * Tiñe (`tinte` de 0 a 1) y contornea estructuras: id → color. Con `aislar`, los demás músculos se
+   * vuelven translúcidos; los huesos quedan sólidos y con su nombre, como referencia de dónde se está.
+   */
   pintar(marcas: Map<string, string>, opciones?: { aislar?: boolean; tinte?: number }): void;
   /** Oculta estas estructuras y muestra las demás; lo oculto no se puede tocar. */
   ocultar(ids: string[]): void;
@@ -70,6 +73,50 @@ const TONOS: Record<string, string> = {
 };
 
 const VISTAS: Record<Vista, [number, number, number]> = { ant: [0, 0, 1], med: [1, 0, 0.15], lat: [-1, 0, 0.15], post: [0, 0, -1] };
+const NOMBRE_VISTA: Record<Vista, string> = { ant: "anterior", lat: "lateral", med: "medial", post: "posterior" };
+
+/**
+ * Dónde puede ir el nombre de un hueso, en orden de preferencia: primero el eje (los centros de 7 tramos
+ * de su altura, del centro hacia los extremos) y después puntos de su superficie, también del centro
+ * hacia los extremos. Así, si lo resaltado tapa el eje (el fémur detrás del recto femoral), el nombre
+ * va en lo que sí se ve del hueso, como el trocánter o los cóndilos.
+ */
+function puntosDelHueso(g: BufferGeometry): Vector3[] {
+  const superficie = muestraDeVertices(g, 60);
+  const ys = superficie.map((p) => p.y);
+  const medio = (Math.min(...ys) + Math.max(...ys)) / 2;
+  superficie.sort((a, b) => Math.abs(a.y - medio) - Math.abs(b.y - medio));
+  return [...puntosDelEje(g), ...superficie];
+}
+
+/** Centros de 7 tramos de la altura de un hueso, del centro hacia los extremos. */
+function puntosDelEje(g: BufferGeometry, tramos = 7): Vector3[] {
+  const pos = g.getAttribute("position");
+  let min = Infinity, max = -Infinity;
+  for (let i = 0; i < pos.count; i++) {
+    min = Math.min(min, pos.getY(i));
+    max = Math.max(max, pos.getY(i));
+  }
+  const suma = Array.from({ length: tramos }, () => [0, 0, 0, 0]);
+  for (let i = 0; i < pos.count; i++) {
+    const s = suma[Math.min(tramos - 1, Math.floor(((pos.getY(i) - min) / (max - min || 1)) * tramos))];
+    s[0] += pos.getX(i);
+    s[1] += pos.getY(i);
+    s[2] += pos.getZ(i);
+    s[3]++;
+  }
+  const centros = suma.filter((s) => s[3] > 0).map((s) => new Vector3(s[0] / s[3], s[1] / s[3], s[2] / s[3]));
+  return ordenDesdeElCentro(centros.length).map((k) => centros[k]);
+}
+
+/** Hasta ~160 vértices de una malla: dónde está en pantalla lo resaltado, para no tapar con etiquetas. */
+function muestraDeVertices(g: BufferGeometry, cuantos = 160): Vector3[] {
+  const pos = g.getAttribute("position");
+  const paso = Math.max(1, Math.ceil(pos.count / cuantos));
+  const puntos: Vector3[] = [];
+  for (let i = 0; i < pos.count; i += paso) puntos.push(new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+  return puntos;
+}
 
 interface Pieza {
   id: string;
@@ -90,8 +137,11 @@ function material(id: string, tipo: TipoEstructura): MeshPhysicalMaterial {
   return new MeshPhysicalMaterial({ ...p, envMapIntensity: 0.35 });
 }
 
-/** Arma la escena del modelo dentro de `contenedor`. La escena, la luz y los materiales son los del archivo original. */
-export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: ArrayBuffer): Visor {
+/**
+ * Arma la escena del modelo dentro de `contenedor`. La escena, la luz y los materiales son los del archivo
+ * original. `region` ("muslo derecho") acompaña al indicador de vista.
+ */
+export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: ArrayBuffer, { region }: { region?: string } = {}): Visor {
   // Colores en espacio lineal, como en el archivo original (three r147). Va antes de crear cualquier color.
   ColorManagement.legacyMode = false;
   const renderer = new WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: false });
@@ -137,14 +187,17 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     g.setIndex(new BufferAttribute(new Uint16Array(bin, m.x, m.i), 1));
     g.computeBoundingSphere();
     const malla = new Mesh(g, material(m.id, m.kind));
-    // Contorno propio por malla (caras traseras infladas), para poder pintarlo de azul, verde o rojo.
+    // Contorno propio por malla (caras traseras infladas), para poder pintarlo de azul, verde o rojo. Va
+    // entre lo transparente y al final (renderOrder 4): ningún músculo translúcido lo cubre con su velo.
     const contorno = new Mesh(g, new ShaderMaterial({
       uniforms: { color: { value: new Color("#1aa3ec") }, w: { value: 0.003 } },
       vertexShader: "uniform float w; void main(){ vec3 p = position + normalize(normal) * w; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }",
       fragmentShader: "uniform vec3 color; void main(){ gl_FragColor = vec4(color, 1.0); }",
       side: BackSide,
+      transparent: true,
     }));
     contorno.visible = false;
+    contorno.renderOrder = 4;
     malla.add(contorno);
     escena.add(malla);
     const mat = malla.material;
@@ -192,7 +245,11 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
   ajustar();
 
   const tono = new Color();
+  let resaltadas: Pieza[] = [];
+  let conReferencias = false;
   function pintar(marcas: Map<string, string>, { aislar = false, tinte = 0.72 } = {}) {
+    resaltadas = piezas.filter((p) => marcas.has(p.id));
+    conReferencias = aislar;
     for (const p of piezas) {
       const mat = p.malla.material, color = marcas.get(p.id);
       mat.color.copy(p.base.color);
@@ -201,11 +258,18 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
         p.contorno.material.uniforms.color.value.set(color);
       }
       p.contorno.visible = !!color;
-      if (aislar && !color) {
+      if (aislar && !color && p.tipo !== "bone") {
         mat.transparent = true;
-        mat.opacity = p.tipo === "bone" ? 0.28 : 0.16;
+        mat.opacity = 0.16;
         mat.depthWrite = false;
+      } else if (aislar && color) {
+        // Se dibuja después de los translúcidos (que no escriben profundidad): un músculo de una capa
+        // profunda se ve completo, no detrás del velo de los que lo tapan. Un hueso delante sí lo tapa.
+        mat.transparent = true;
+        mat.opacity = p.base.opacity;
+        mat.depthWrite = true;
       } else {
+        // Sin aislar, o un hueso al aislar: tal cual, sólido.
         mat.transparent = p.base.transparent;
         mat.opacity = p.base.opacity;
         mat.depthWrite = p.base.depthWrite;
@@ -214,6 +278,99 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
       mat.needsUpdate = true;
     }
     pedirCuadro();
+  }
+
+  // Referencias (al aislar): el nombre de cada hueso, donde no tape lo resaltado. Siempre: desde dónde se mira.
+  const capaEtiquetas = document.createElement("div");
+  capaEtiquetas.className = "etiquetas";
+  const indicador = document.createElement("div");
+  indicador.className = "vista";
+  const guiasSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  guiasSvg.setAttribute("class", "guias");
+  capaEtiquetas.append(guiasSvg);
+  contenedor.append(capaEtiquetas, indicador);
+  const etiquetas = piezas
+    .filter((p) => p.tipo === "bone")
+    .map((p) => {
+      const el = document.createElement("div");
+      el.className = "etiqueta";
+      el.textContent = datos.data[p.id]?.name ?? p.id;
+      capaEtiquetas.append(el);
+      return { pieza: p, el, candidatos: puntosDelHueso(p.malla.geometry), vertices: muestraDeVertices(p.malla.geometry, Infinity) };
+    });
+  const muestras = new Map<Pieza, Vector3[]>();
+  const proyectado = new Vector3(), orbita = new Spherical();
+
+  function anotar() {
+    orbita.setFromVector3(proyectado.copy(camara.position).sub(controles.target));
+    const texto = `Vista ${NOMBRE_VISTA[vistaDeAngulo(orbita.theta)]}${region ? ` · ${region}` : ""}`;
+    if (indicador.textContent !== texto) indicador.textContent = texto;
+
+    const w = lienzo.clientWidth, h = lienzo.clientHeight;
+    capaEtiquetas.style.display = conReferencias ? "" : "none";
+    if (!conReferencias || !w || !h) return;
+    const enPantalla = (q: Vector3): [number, number] => {
+      proyectado.copy(q).project(camara);
+      return [((proyectado.x + 1) / 2) * w, ((1 - proyectado.y) / 2) * h];
+    };
+    const ocupado = new Ocupacion(w, h);
+    ocupado.marcar(0, 0, indicador.offsetWidth + 16, indicador.offsetHeight + 16);
+    for (const p of resaltadas) {
+      if (!muestras.has(p)) muestras.set(p, muestraDeVertices(p.malla.geometry));
+      for (const q of muestras.get(p)!) {
+        const [x, y] = enPantalla(q);
+        ocupado.marcar(x - 9, y - 9, 18, 18);
+      }
+    }
+    // Profundidad aproximada de los huesos (la distancia más corta a la cámara por celda de 10 px): un punto
+    // de un hueso tapado por otro (la rótula, mirando desde atrás) no lleva nombre.
+    const celda = (x: number, y: number) => Math.floor(y / 10) * 100000 + Math.floor(x / 10);
+    const cercania = new Map<number, number>();
+    for (const e of etiquetas) {
+      if (!e.pieza.malla.visible) continue;
+      for (const q of e.vertices) {
+        const [x, y] = enPantalla(q);
+        const c = celda(x, y), d = q.distanceTo(camara.position);
+        if (!(cercania.get(c)! <= d)) cercania.set(c, d);
+      }
+    }
+    const seVe = (q: Vector3, x: number, y: number) => q.distanceTo(camara.position) <= (cercania.get(celda(x, y)) ?? Infinity) + 0.02;
+
+    // Cada nombre va sobre un punto visible del hueso que lo resaltado no tapa: encima del punto si cabe y,
+    // si no, a un lado, con un punto en el hueso y una línea hasta el nombre.
+    const guias: string[] = [];
+    for (const e of etiquetas) {
+      const ew = e.el.offsetWidth || 60, eh = e.el.offsetHeight || 18;
+      let lugar: { x: number; y: number; px: number; py: number } | undefined;
+      for (const q of e.pieza.malla.visible ? e.candidatos : []) {
+        const [px, py] = enPantalla(q);
+        if (!seVe(q, px, py) || !ocupado.libre(px - 3, py - 3, 6, 6)) continue;
+        const opciones: [number, number][] = [
+          [px - ew / 2, py - eh / 2],
+          [px + 14, py - eh / 2],
+          [px - 14 - ew, py - eh / 2],
+          [px - ew / 2, py - 14 - eh],
+          [px - ew / 2, py + 14],
+        ];
+        const libre = opciones.find(([x, y]) => ocupado.libre(x, y, ew, eh));
+        if (libre) {
+          lugar = { x: libre[0], y: libre[1], px, py };
+          break;
+        }
+      }
+      e.el.style.visibility = lugar ? "visible" : "hidden";
+      if (!lugar) continue;
+      e.el.style.transform = `translate(${Math.round(lugar.x)}px, ${Math.round(lugar.y)}px)`;
+      ocupado.marcar(lugar.x - 4, lugar.y - 2, ew + 8, eh + 4);
+      const cx = lugar.x + ew / 2, cy = lugar.y + eh / 2;
+      if (Math.hypot(cx - lugar.px, cy - lugar.py) > 4) {
+        // La línea llega al borde del nombre más cercano al punto, no a su centro.
+        const bx = Math.min(Math.max(lugar.px, lugar.x), lugar.x + ew), by = Math.min(Math.max(lugar.py, lugar.y), lugar.y + eh);
+        guias.push(`<line x1="${lugar.px}" y1="${lugar.py}" x2="${bx}" y2="${by}"/><circle cx="${lugar.px}" cy="${lugar.py}" r="2.5"/>`);
+        ocupado.marcar(Math.min(lugar.px, bx) - 2, Math.min(lugar.py, by) - 2, Math.abs(bx - lugar.px) + 4, Math.abs(by - lugar.py) + 4);
+      }
+    }
+    guiasSvg.innerHTML = guias.join("");
   }
 
   const visor: Visor = {
@@ -272,7 +429,8 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
       ndc.set(((px - r.left) / r.width) * 2 - 1, -((py - r.top) / r.height) * 2 + 1);
       rayo.setFromCamera(ndc, camara);
       const hits = rayo.intersectObjects(objetos.filter((o) => o.visible), false);
-      const elegido = hits.find((h) => !porMalla.get(h.object)?.malla.material.transparent) ?? hits[0];
+      // Sólido es opacidad completa: lo resaltado al aislar va en la pasada transparente, pero no es translúcido.
+      const elegido = hits.find((h) => (porMalla.get(h.object)?.malla.material.opacity ?? 0) >= 0.99) ?? hits[0];
       if (elegido) return porMalla.get(elegido.object)?.id ?? null;
     }
     return null;
@@ -287,6 +445,7 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     if (sucio) {
       sucio = false;
       renderer.render(escena, camara);
+      anotar();
     }
     requestAnimationFrame(bucle);
   }

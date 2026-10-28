@@ -30,6 +30,11 @@ const html = `<!doctype html>
 html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#fff 0%,#eef2f4 70%,#e3e8eb 100%);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 #escena{position:fixed;inset:0}
 canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+.vista{position:absolute;top:8px;left:8px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.9);border:1.5px solid #e5e5e5;font:700 12px/1.3 -apple-system,system-ui,sans-serif;color:#5f5f5a;pointer-events:none}
+.vista:empty{display:none}
+.etiquetas{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.guias{position:absolute;inset:0;width:100%;height:100%;stroke:#6e5a32;stroke-width:1.2;fill:#6e5a32}
+.etiqueta{position:absolute;left:0;top:0;padding:1px 7px;border-radius:8px;background:rgba(255,255,255,.92);border:1px solid #d9cba9;font:700 11px/1.4 -apple-system,system-ui,sans-serif;color:#6e5a32;white-space:nowrap;visibility:hidden}
 </style>
 </head>
 <body>

@@ -59,7 +59,7 @@ async function iniciar(orden: Extract<OrdenVisor, { tipo: "iniciar" }>) {
       : [JSON.parse(orden.json) as DatosModelo, deBase64(orden.bin)];
   tiempos.modelo = performance.now();
 
-  const v = crearVisor(document.getElementById("escena")!, datos, bin);
+  const v = crearVisor(document.getElementById("escena")!, datos, bin, { region: orden.region });
   v.alTocar = (id) => avisar({ tipo: "toque", id, nombre: id ? datos.data[id]?.name : undefined, articulo: id ? datos.data[id]?.art : undefined });
   v.lienzo.addEventListener("webglcontextlost", () => avisar({ tipo: "error", mensaje: "El teléfono liberó el contexto WebGL" }));
   v.verDesde("ant", true);

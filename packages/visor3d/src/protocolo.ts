@@ -7,7 +7,7 @@ export type OrdenVisor =
    * Carga el modelo. Con `modo: "archivo"`, `json` y `bin` son rutas relativas a la página y el visor
    * los lee del teléfono. Con `modo: "puente"`, la app manda el JSON como texto y el `.bin` en base64.
    */
-  | { tipo: "iniciar"; modo: "archivo" | "puente"; json: string; bin: string }
+  | { tipo: "iniciar"; modo: "archivo" | "puente"; json: string; bin: string; /** "muslo derecho", para el indicador de vista. */ region?: string }
   | { tipo: "vista"; vista: Vista }
   /** Gira la cámara a la mejor vista de esa estructura (la que trae el modelo). */
   | { tipo: "enfocar"; id: string }
@@ -15,7 +15,10 @@ export type OrdenVisor =
   | { tipo: "ocultar"; ids: string[] }
   /** El modelo gira despacio solo (la presentación de la lección). */
   | { tipo: "girar"; activo: boolean }
-  /** `marcas`: id de la estructura → color. Con `aislar`, el resto se vuelve translúcido. */
+  /**
+   * `marcas`: id de la estructura → color. Con `aislar`, los demás músculos se vuelven translúcidos y los
+   * huesos quedan sólidos, con su nombre.
+   */
   | { tipo: "pintar"; marcas: Record<string, string>; aislar?: boolean; tinte?: number };
 
 /** Avisos del visor a la app, por `window.ReactNativeWebView.postMessage`. */

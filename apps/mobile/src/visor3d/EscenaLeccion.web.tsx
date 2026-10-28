@@ -16,6 +16,7 @@ export interface Toque {
 export function EscenaLeccion(_props: {
   ref: Ref<ControlEscena>;
   modelo: Modelo3D;
+  region?: string;
   onToque: (t: Toque) => void;
   onListo: () => void;
   onError: (m: string) => void;
