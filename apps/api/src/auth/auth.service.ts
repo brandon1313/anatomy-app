@@ -77,7 +77,8 @@ export class AuthService {
       },
     });
     return {
-      usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol },
+      // La hora del recordatorio va con la sesión: el teléfono programa la notificación (PRD, "Recordatorio diario").
+      usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol, horaRecordatorio: usuario.horaRecordatorio },
       tokenAcceso,
       tokenRenovacion,
     };

@@ -26,7 +26,8 @@
       "expo-secure-store",
       "expo-audio",
       "expo-font",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-notifications"
     ],
     "scheme": "anatomia",
     "experiments": {

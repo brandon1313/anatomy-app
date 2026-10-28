@@ -8,6 +8,8 @@ export interface Usuario {
   email: string;
   nombre: string;
   rol: "estudiante" | "editor" | "admin";
+  /** "HH:MM" del recordatorio diario, en la hora del teléfono. Falta en sesiones guardadas antes de que existiera. */
+  horaRecordatorio?: string | null;
 }
 
 interface Sesion {
@@ -117,3 +119,6 @@ export async function cerrarSesion() {
 
 /** Si la sesión se cerró en otra parte (token de renovación rechazado). */
 export const haySesion = () => sesion !== null;
+
+/** El usuario de la sesión vigente: al renovarla llega con los datos al día del servidor. */
+export const usuarioActual = () => sesion?.usuario ?? null;

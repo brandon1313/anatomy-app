@@ -4,10 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
+import { programarRecordatorio } from "../lib/notificaciones";
 import { ejerciciosDeLeccion, ejerciciosMostrables, estadoLeccion, lecciones } from "../leccion/flujo";
 import { diaDeEstudio } from "../repaso/dia";
 import { diasHastaElProximo, ejerciciosDeRepaso } from "../repaso/espaciado";
 import { rachaVigente } from "../repaso/racha";
+import { proximoRecordatorio } from "../repaso/recordatorio";
 import { color, espacio, fuente } from "../tema";
 
 const CIRCULO = {
@@ -20,7 +22,7 @@ const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
 const TAM = 76;
 
 export default function Inicio() {
-  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso, racha } = useApp();
+  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso, racha, horaRecordatorio } = useApp();
 
   if (!paquete) {
     return (
@@ -125,10 +127,19 @@ export default function Inicio() {
           })}
         </View>
 
-        {/* Prueba técnica del visor 3D (docs/PLAN-REDISENO.md): solo en desarrollo y en el teléfono. */}
+        {/* Pruebas solo en desarrollo y en el teléfono: el visor 3D (docs/PLAN-REDISENO.md) y el recordatorio,
+            que suena en 10 s con el texto de hoy si la app queda en segundo plano; al volver se reprograma el real. */}
         {__DEV__ && Platform.OS !== "web" && (
-          <View style={{ marginTop: espacio.xl }}>
+          <View style={{ marginTop: espacio.xl, gap: espacio.m }}>
             <Boton titulo="Prueba del visor 3D" variante="secundario" onPress={() => router.push("/prueba-3d")} />
+            <Boton
+              titulo="Probar recordatorio en 10 s"
+              variante="secundario"
+              onPress={() => {
+                const r = proximoRecordatorio(horaRecordatorio ?? "20:00", racha, ahora);
+                if (r) void programarRecordatorio({ ...r, cuando: new Date(Date.now() + 10_000) });
+              }}
+            />
           </View>
         )}
 

@@ -5,8 +5,10 @@ import { AppState } from "react-native";
 import { diaDeEstudio } from "../repaso/dia";
 import { aplicarSesion, calificacionesDeSesion, type Progreso } from "../repaso/espaciado";
 import { registrarActividad, SIN_RACHA } from "../repaso/racha";
-import { cargarSesion, cerrarSesion, iniciarSesion, registrarse, SinConexion, type Usuario } from "./api";
+import { proximoRecordatorio } from "../repaso/recordatorio";
+import { cargarSesion, cerrarSesion, iniciarSesion, registrarse, SinConexion, type Usuario, usuarioActual } from "./api";
 import { guardarJson, leerJson } from "./almacen";
+import { programarRecordatorio } from "./notificaciones";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
 import { guardarIntento, guardarProgresoPropio, guardarRachaPropia, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
@@ -35,6 +37,8 @@ interface Estado {
   terminarSesion: (respuestas: readonly { ejercicioId: string; correcto: boolean }[]) => void;
   /** Días seguidos con una lección o un repaso terminado; lo que se muestra hoy sale de rachaVigente. */
   racha: Racha;
+  /** "HH:MM" del recordatorio diario, o null si el estudiante no eligió hora. */
+  horaRecordatorio: string | null;
 }
 
 const Contexto = createContext<Estado | null>(null);
@@ -48,6 +52,12 @@ export function useApp(): Estado {
 /** El progreso se guarda por usuario: dos cuentas en el mismo teléfono no se mezclan. */
 const claveProgreso = (usuarioId: string) => `completadas-${usuarioId}`;
 
+/** fusionarRacha que conserva el mismo objeto si nada cambió: así no se reprograma el recordatorio en cada subida. */
+function unirRacha(actual: Racha, otra: Racha): Racha {
+  const r = fusionarRacha(actual, otra);
+  return JSON.stringify(r) === JSON.stringify(actual) ? actual : r;
+}
+
 export function ProveedorApp({ children }: { children: ReactNode }) {
   const [cargando, setCargando] = useState(true);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -56,6 +66,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const [completadas, setCompletadas] = useState<string[]>([]);
   const [progreso, setProgreso] = useState<Progreso[]>([]);
   const [racha, setRacha] = useState<Racha>(SIN_RACHA);
+  const [horaRecordatorio, setHoraRecordatorio] = useState<string | null>(null);
   // Lo más reciente, para terminarSesion (que corre después de muchos renders de la lección).
   const progresoRef = useRef(progreso);
   progresoRef.current = progreso;
@@ -80,7 +91,9 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     sincronizar(usuarioId).then(
       ({ progreso: p, racha: r }) => {
         setProgreso((actual) => fusionarProgreso(actual, p));
-        if (r) setRacha((actual) => fusionarRacha(actual, r));
+        if (r) setRacha((actual) => unirRacha(actual, r));
+        // Si la sesión se renovó durante la subida, el usuario llegó al día (por ejemplo, con la hora del recordatorio).
+        setHoraRecordatorio(usuarioActual()?.horaRecordatorio ?? null);
       },
       () => {},
     );
@@ -97,12 +110,22 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     void actualizar();
     leerJson<string[]>(claveProgreso(usuario.id)).then((c) => setCompletadas(c ?? []));
     leerProgreso(usuario.id).then((p) => setProgreso((actual) => fusionarProgreso(p, actual)), () => {});
-    leerRacha(usuario.id).then((r) => r && setRacha((actual) => fusionarRacha(r, actual)), () => {});
+    leerRacha(usuario.id).then((r) => r && setRacha((actual) => unirRacha(actual, r)), () => {});
+    setHoraRecordatorio(usuario.horaRecordatorio ?? null);
     sincronizarAhora(usuario.id);
     // Al volver a la app (por ejemplo, con conexión otra vez) se reintenta la subida.
     const s = AppState.addEventListener("change", (estado) => estado === "active" && sincronizarAhora(usuario.id));
     return () => s.remove();
   }, [usuario, actualizar, sincronizarAhora]);
+
+  // Recordatorio diario (PRD): se reprograma al abrir la app, al volver a ella y cuando cambia la racha.
+  useEffect(() => {
+    if (!usuario) return;
+    const reprogramar = () => void programarRecordatorio(horaRecordatorio ? proximoRecordatorio(horaRecordatorio, racha, new Date()) : null);
+    reprogramar();
+    const s = AppState.addEventListener("change", (estado) => estado === "active" && reprogramar());
+    return () => s.remove();
+  }, [usuario, horaRecordatorio, racha]);
 
   const valor: Estado = {
     cargando,
@@ -115,6 +138,9 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       setCompletadas([]);
       setProgreso([]);
       setRacha(SIN_RACHA);
+      setHoraRecordatorio(null);
+      // Sin sesión no hay a quién recordarle.
+      void programarRecordatorio(null);
     },
     paquete,
     descarga,
@@ -144,7 +170,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       const guardados = [guardarProgresoPropio(usuarioId, nuevo)];
       const nuevaRacha = registrarActividad(rachaRef.current, diaDeEstudio(ahora));
       if (nuevaRacha !== rachaRef.current) {
-        setRacha((r) => fusionarRacha(r, nuevaRacha));
+        setRacha((r) => unirRacha(r, nuevaRacha));
         guardados.push(guardarRachaPropia(usuarioId, nuevaRacha));
       }
       Promise.all(guardados).then(
@@ -153,6 +179,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       );
     },
     racha,
+    horaRecordatorio,
   };
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;
