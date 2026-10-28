@@ -1,6 +1,6 @@
 # Prototipos del rediseño
 
-Páginas sueltas para probar el rediseño en el teléfono antes de pasarlo a la app. No forman parte del build ni del workspace. El plan está en [docs/PLAN-REDISENO.md](../docs/PLAN-REDISENO.md).
+Páginas sueltas para probar el rediseño en el teléfono antes de pasarlo a la app. No forman parte del build ni del workspace. El plan está en [docs/PLAN-REDISENO.md](../docs/PLAN-REDISENO.md). Usan la paleta y la fuente previas, parecidas a las de Duolingo; la app usa la identidad de [docs/IDENTIDAD.md](../docs/IDENTIDAD.md).
 
 | Archivo | Qué es |
 | --- | --- |

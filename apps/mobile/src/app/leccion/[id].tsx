@@ -141,13 +141,13 @@ export default function Leccion() {
         <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
         <Text style={estilos.tituloResultado} accessibilityRole="header">¡Lección completada!</Text>
         <View style={estilos.cifras}>
-          <View style={[estilos.cifra, { borderColor: color.oro }]}>
-            <Text style={[estilos.etiqueta, { backgroundColor: color.oro }]}>Aciertos</Text>
-            <Text style={[estilos.valor, { color: color.ambar }]}>{r.aciertos}/{r.total}</Text>
+          <View style={[estilos.cifra, { borderColor: color.logro }]}>
+            <Text style={[estilos.etiqueta, { backgroundColor: color.logro, color: color.logroTexto }]}>Aciertos</Text>
+            <Text style={[estilos.valor, { color: color.logroTexto }]}>{r.aciertos}/{r.total}</Text>
           </View>
-          <View style={[estilos.cifra, { borderColor: color.verdeBoton }]}>
-            <Text style={[estilos.etiqueta, { backgroundColor: color.verdeBoton }]}>Tiempo</Text>
-            <Text style={[estilos.valor, { color: color.verde }]}>{formatoTiempo(r.ms)}</Text>
+          <View style={[estilos.cifra, { borderColor: color.marca }]}>
+            <Text style={[estilos.etiqueta, { backgroundColor: color.marcaSombra }]}>Tiempo</Text>
+            <Text style={[estilos.valor, { color: color.marcaTexto }]}>{formatoTiempo(r.ms)}</Text>
           </View>
         </View>
         <Boton titulo="Continuar" onPress={() => router.back()} />
@@ -286,7 +286,7 @@ export default function Leccion() {
         )}
         <Boton
           titulo={comprobado ? "Continuar" : "Comprobar"}
-          variante={comprobado && eleccion && !eleccion.correcto ? "error" : "principal"}
+          variante={comprobado && eleccion ? (eleccion.correcto ? "exito" : "error") : "principal"}
           deshabilitado={!comprobado && !eleccion}
           onPress={comprobado ? continuar : comprobar}
         />
@@ -301,12 +301,12 @@ const estilos = StyleSheet.create({
   barra: { flexDirection: "row", alignItems: "center", gap: espacio.s, paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   cerrar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
   x: { fontSize: 24, color: color.bloqueado },
-  botonVer: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.acentoSuave, borderWidth: 2, borderColor: color.acentoBorde, alignItems: "center", justifyContent: "center" },
-  ver: { fontSize: 14, color: color.acento, marginLeft: 2 },
+  botonVer: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.marcaSuave, borderWidth: 2, borderColor: color.marca, alignItems: "center", justifyContent: "center" },
+  ver: { fontSize: 14, color: color.marcaTexto, marginLeft: 2 },
   progreso: { flex: 1, height: 16, borderRadius: 8, backgroundColor: color.borde, overflow: "hidden" },
-  relleno: { height: "100%", backgroundColor: color.verdeBoton, borderRadius: 8 },
+  relleno: { height: "100%", backgroundColor: color.marca, borderRadius: 8 },
   brillo: { position: "absolute", left: 8, right: 8, top: 4, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.35)" },
-  repaso: { fontSize: 14, fontFamily: fuente.negrita, color: color.ambar, paddingHorizontal: espacio.m, textTransform: "uppercase" },
+  repaso: { fontSize: 14, fontFamily: fuente.negrita, color: color.coralTexto, paddingHorizontal: espacio.m },
   ejercicio: { padding: espacio.m, paddingBottom: espacio.l },
   escondida: { position: "absolute", left: -10, top: 0, width: 1, height: 1, opacity: 0 },
   pie: { paddingHorizontal: espacio.m, paddingTop: espacio.m, borderTopWidth: 2, borderTopColor: color.borde, backgroundColor: color.fondo, gap: espacio.m },
@@ -320,9 +320,9 @@ const estilos = StyleSheet.create({
   detalle: { fontSize: 16, fontFamily: fuente.negrita, color: color.rojo },
   explicacion: { fontSize: 15, fontFamily: fuente.normal, color: color.texto, lineHeight: 21 },
   trofeo: { fontSize: 84, textAlign: "center" },
-  tituloResultado: { fontSize: 28, fontFamily: fuente.titulo, color: color.ambar, textAlign: "center" },
+  tituloResultado: { fontSize: 28, fontFamily: fuente.titulo, color: color.marcaTexto, textAlign: "center" },
   cifras: { flexDirection: "row", gap: espacio.m },
   cifra: { flex: 1, borderWidth: 2, borderRadius: 16, overflow: "hidden", alignItems: "stretch" },
-  etiqueta: { color: "#fff", fontSize: 13, fontFamily: fuente.titulo, textAlign: "center", paddingVertical: 4, textTransform: "uppercase", letterSpacing: 0.6 },
+  etiqueta: { color: "#fff", fontSize: 14, fontFamily: fuente.negrita, textAlign: "center", paddingVertical: 4 },
   valor: { fontSize: 26, fontFamily: fuente.titulo, textAlign: "center", paddingVertical: espacio.m },
 });

@@ -29,7 +29,7 @@ Propuesta para llevar a la app lo que se probó en los [prototipos](../prototipo
 | 4 | Vasos agrupados | `arteria_femoral` incluye la circunfleja femoral lateral y su rama descendente, y `vena_femoral`, la femoral profunda. Así, tocar la circunfleja contaría como "arteria femoral". Hay que separarlas antes de usarlas en ejercicios. |
 | 5 | Nervio femoral | Es un trazado propio del autor del archivo, aproximado y que no viene de BodyParts3D. Queda fuera de los ejercicios hasta que la revisora lo apruebe. |
 | 6 | Sonido | Respetar el modo silencio del teléfono y agregar un interruptor en Perfil. |
-| 7 | Estilo | Inspirado en Duolingo, pero con paleta y nombre propios, sin copiar su marca ni su mascota. |
+| 7 | Estilo | Decidido el 27-10-2026: Palpa, con nombre, paleta y fuente propios ([IDENTIDAD.md](IDENTIDAD.md)). |
 
 ## Cómo llevarlo a la app
 

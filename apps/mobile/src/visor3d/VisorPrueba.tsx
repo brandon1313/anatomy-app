@@ -21,7 +21,7 @@ interface Medicion {
 }
 
 const VISTAS: [Vista, string][] = [["ant", "Anterior"], ["lat", "Lateral"], ["med", "Medial"], ["post", "Posterior"]];
-const AZUL = "#1aa3ec";
+const AZUL = "#5b5bd6";
 
 /**
  * Prueba técnica del visor 3D: la página (con three.js adentro) y el modelo se leen del teléfono y se

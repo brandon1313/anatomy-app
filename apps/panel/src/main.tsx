@@ -32,7 +32,7 @@ function App() {
   return (
     <>
       <header className="barra">
-        <strong>Anatomía · Panel</strong>
+        <strong>Palpa · Panel</strong>
         <nav>
           <NavLink to="/cola">Cola de revisión</NavLink>
           <NavLink to="/generar">Generar</NavLink>

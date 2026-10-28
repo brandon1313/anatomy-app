@@ -289,7 +289,7 @@ El agente usa el valor por defecto mientras el dueño del producto no decida otr
 
 | Decisión | Valor por defecto |
 | --- | --- |
-| Nombre de la app y dominio | Nombre provisional "Anatomía" |
+| Nombre de la app y dominio | Palpa ([docs/IDENTIDAD.md](IDENTIDAD.md)). Dominio y registro de la marca, pendientes |
 | Hosting de API, base de datos y archivos | AWS, que el dueño conoce; un servicio más simple como Render o Railway es aceptable |
 | ORM | Prisma; cambiar solo con un motivo concreto |
 | Proveedor de LLM del generador | Configurable por variable de entorno |

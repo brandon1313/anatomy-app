@@ -24,8 +24,8 @@ export function OpcionMultiple({ ejercicio: e, ...props }: PropsEjercicio & { ej
 
 /** Textos comunes de los ejercicios. */
 export const estilosTexto = StyleSheet.create({
-  caso: { backgroundColor: color.acentoSuave, borderRadius: 16, padding: espacio.m, gap: espacio.xs },
-  etiquetaCaso: { fontSize: 13, fontFamily: fuente.negrita, color: color.acento, textTransform: "uppercase", letterSpacing: 0.6 },
+  caso: { backgroundColor: color.hueso, borderRadius: 16, padding: espacio.m, gap: espacio.xs },
+  etiquetaCaso: { fontSize: 14, fontFamily: fuente.negrita, color: color.huesoTexto },
   textoCaso: { fontSize: 16, fontFamily: fuente.normal, color: color.texto, lineHeight: 23 },
   enunciado: { fontSize: 22, fontFamily: fuente.negrita, color: color.texto, lineHeight: 29 },
   ayuda: { fontSize: 15, fontFamily: fuente.media, color: color.tenue },

@@ -6,7 +6,7 @@ import { Boton } from "../componentes/Boton";
 import { Campo } from "../componentes/Campo";
 import { ErrorApi, SinConexion } from "../lib/api";
 import { useApp } from "../lib/estado";
-import { color, espacio } from "../tema";
+import { color, espacio, fuente } from "../tema";
 
 const HORA = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -65,6 +65,6 @@ export default function Registro() {
 
 const estilos = StyleSheet.create({
   contenido: { padding: espacio.l, gap: espacio.s },
-  titulo: { fontSize: 28, fontWeight: "800", color: color.texto, marginBottom: espacio.m },
-  error: { color: color.rojo, fontSize: 15 },
+  titulo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto, marginBottom: espacio.m },
+  error: { color: color.rojo, fontSize: 15, fontFamily: fuente.media },
 });

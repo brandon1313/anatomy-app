@@ -7,7 +7,7 @@ import type { ControlEscena } from "../visor3d/EscenaLeccion";
 import { estilosTexto } from "./OpcionMultiple";
 
 /** Un color por músculo, distinto del verde y el rojo de las respuestas. */
-const COLORES = ["#1aa3ec", "#8a4fbf", "#ff9600", "#00a3a3", "#e04ab0", "#3d5afe", "#b38600", "#6d8f00"];
+const COLORES = ["#5b5bd6", "#14b8a6", "#e8a317", "#d9468f", "#0ea5e9", "#8b5cf6", "#6d8f00", "#c2410c"];
 const MS_POR_MUSCULO = 1800;
 
 export interface MusculoPresentado {
@@ -108,7 +108,7 @@ export function Presentacion3D({
 
 const estilos = StyleSheet.create({
   raiz: { flex: 1, paddingHorizontal: espacio.m, paddingTop: espacio.s, paddingBottom: espacio.m, gap: espacio.s },
-  etiqueta: { fontSize: 13, fontFamily: fuente.titulo, color: color.acento, textTransform: "uppercase", letterSpacing: 0.8 },
+  etiqueta: { fontSize: 14, fontFamily: fuente.negrita, color: color.marcaTexto },
   hueco: { flex: 1, minHeight: 240 },
   nombreFila: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: espacio.s, minHeight: 40 },
   punto: { width: 16, height: 16, borderRadius: 8 },

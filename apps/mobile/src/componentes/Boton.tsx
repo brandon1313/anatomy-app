@@ -2,8 +2,8 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 import { color, espacio, fuente, TOQUE_MINIMO } from "../tema";
 
 const VARIANTES = {
-  principal: { fondo: color.verdeBoton, sombra: color.verdeSombra, texto: "#fff" },
-  secundario: { fondo: color.superficie, sombra: color.borde, texto: color.acento },
+  principal: { fondo: color.marca, sombra: color.marcaSombra, texto: "#fff" },
+  secundario: { fondo: color.superficie, sombra: color.borde, texto: color.marcaTexto },
   exito: { fondo: color.verdeBoton, sombra: color.verdeSombra, texto: "#fff" },
   error: { fondo: color.rojoBoton, sombra: color.rojoSombra, texto: "#fff" },
 };
@@ -52,5 +52,5 @@ const estilos = StyleSheet.create({
   contorno: { borderWidth: 2, borderBottomWidth: 4 },
   inactivo: { backgroundColor: color.borde, borderColor: color.borde },
   presionado: { borderBottomWidth: 0, marginTop: 4 },
-  texto: { fontSize: 18, fontFamily: fuente.negrita, letterSpacing: 0.8, textTransform: "uppercase" },
+  texto: { fontSize: 18, fontFamily: fuente.negrita },
 });

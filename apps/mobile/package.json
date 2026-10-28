@@ -5,7 +5,7 @@
   "dependencies": {
     "@anatomia/contenido": "workspace:*",
     "@anatomia/visor3d": "workspace:*",
-    "@expo-google-fonts/nunito": "^0.4.2",
+    "@expo-google-fonts/lexend": "^0.4.1",
     "expo": "~58.0.19",
     "expo-audio": "~58.0.10",
     "expo-constants": "~58.0.13",

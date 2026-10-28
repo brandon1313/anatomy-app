@@ -8,9 +8,9 @@ import { ejerciciosDeLeccion, estadoLeccion, lecciones } from "../leccion/flujo"
 import { color, espacio, fuente } from "../tema";
 
 const CIRCULO = {
-  completada: { fondo: color.oro, sombra: "#e0a800" },
-  siguiente: { fondo: color.verdeBoton, sombra: color.verdeSombra },
-  bloqueada: { fondo: color.borde, sombra: "#cfcfcf" },
+  completada: { fondo: color.logro, sombra: color.logroSombra, icono: color.logroTexto },
+  siguiente: { fondo: color.marca, sombra: color.marcaSombra, icono: "#fff" },
+  bloqueada: { fondo: color.borde, sombra: "#cfd5da", icono: color.bloqueado },
 };
 /** Desplazamiento horizontal de cada lección: el camino zigzaguea. */
 const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
@@ -24,7 +24,7 @@ export default function Inicio() {
       <SafeAreaView style={estilos.centro}>
         {descarga === "descargando" ? (
           <>
-            <ActivityIndicator size="large" color={color.verdeBoton} />
+            <ActivityIndicator size="large" color={color.marca} />
             <Text style={estilos.aviso}>Descargando las lecciones…</Text>
           </>
         ) : (
@@ -72,13 +72,13 @@ export default function Inicio() {
                 >
                   {({ pressed }) => (
                     <View style={[estilos.circulo, { backgroundColor: c.fondo, borderColor: c.sombra }, pressed && estilos.hundido]}>
-                      <Text style={[estilos.icono, estado === "bloqueada" && { color: color.bloqueado }]}>
+                      <Text style={[estilos.icono, { color: c.icono }]}>
                         {estado === "completada" ? "✓" : estado === "bloqueada" ? "🔒" : "★"}
                       </Text>
                     </View>
                   )}
                 </Pressable>
-                {estado === "siguiente" && <Text style={estilos.empezar}>EMPEZAR</Text>}
+                {estado === "siguiente" && <Text style={estilos.empezar}>Empezar</Text>}
                 <Text style={[estilos.tituloLeccion, estado === "bloqueada" && { color: color.bloqueado }]} numberOfLines={2}>
                   {l.titulo}
                 </Text>
@@ -108,14 +108,14 @@ const estilos = StyleSheet.create({
   contenido: { padding: espacio.l, paddingBottom: espacio.xl },
   saludo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
   offline: { marginTop: espacio.s, color: color.tenue, fontSize: 14, fontFamily: fuente.normal },
-  unidad: { marginTop: espacio.l, marginBottom: espacio.l, padding: espacio.m, borderRadius: 16, backgroundColor: color.verdeBoton, borderBottomWidth: 4, borderColor: color.verdeSombra },
-  unidadEtiqueta: { color: "#eaffd9", fontSize: 14, fontFamily: fuente.negrita, textTransform: "uppercase", letterSpacing: 0.6 },
+  unidad: { marginTop: espacio.l, marginBottom: espacio.l, padding: espacio.m, borderRadius: 16, backgroundColor: color.marca, borderBottomWidth: 4, borderColor: color.marcaSombra },
+  unidadEtiqueta: { color: "#d5f2ee", fontSize: 14, fontFamily: fuente.media },
   unidadTitulo: { color: "#fff", fontSize: 20, fontFamily: fuente.titulo },
   ruta: { alignItems: "center", gap: espacio.l },
   parada: { alignItems: "center", width: 180 },
   circulo: { width: TAM, height: TAM, borderRadius: TAM / 2, borderBottomWidth: 6, alignItems: "center", justifyContent: "center" },
   hundido: { borderBottomWidth: 0, marginTop: 6 },
   icono: { color: "#fff", fontSize: 30, fontFamily: fuente.titulo },
-  empezar: { marginTop: espacio.xs, fontSize: 13, fontFamily: fuente.titulo, color: color.verde, letterSpacing: 0.8 },
+  empezar: { marginTop: espacio.xs, fontSize: 14, fontFamily: fuente.titulo, color: color.marcaTexto },
   tituloLeccion: { marginTop: espacio.xs, fontSize: 15, fontFamily: fuente.negrita, color: color.texto, textAlign: "center" },
 });

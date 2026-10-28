@@ -6,7 +6,7 @@ import { Boton } from "../componentes/Boton";
 import { Campo } from "../componentes/Campo";
 import { SinConexion } from "../lib/api";
 import { useApp } from "../lib/estado";
-import { color, espacio } from "../tema";
+import { color, espacio, fuente } from "../tema";
 
 export default function Login() {
   const { entrar } = useApp();
@@ -46,6 +46,6 @@ export default function Login() {
 
 const estilos = StyleSheet.create({
   contenido: { padding: espacio.l, gap: espacio.s },
-  titulo: { fontSize: 28, fontWeight: "800", color: color.texto, marginBottom: espacio.m },
-  error: { color: color.rojo, fontSize: 15, marginBottom: espacio.s },
+  titulo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto, marginBottom: espacio.m },
+  error: { color: color.rojo, fontSize: 15, fontFamily: fuente.media, marginBottom: espacio.s },
 });

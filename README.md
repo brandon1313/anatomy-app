@@ -1,4 +1,4 @@
-# Anatomía (nombre provisional)
+# Palpa
 
 App de lecciones cortas de anatomía con contenido redactado por IA y aprobado por una revisora. Especificación completa en [docs/PRD.md](docs/PRD.md).
 
@@ -48,7 +48,7 @@ pnpm --filter @anatomia/mobile start   # QR para Expo Go; tecla w abre la versi�
   - **Tocar:** califica con `esToqueCorrecto`. Al responder, resalta en verde la parte visible de la zona correcta (el contorno completo va punteado) y marca dónde tocó el estudiante. Si falló, dice qué tocó.
   - **Posición del toque:** en el teléfono viene en `locationX/Y`. En web se calcula con el rectángulo del elemento (`ejercicios/posicion.web.ts`), porque el clic del navegador no trae `locationX`.
   - **Sin imagen:** un ejercicio cuya imagen no se descargó se salta.
-- **Lección (rediseño, docs/PLAN-REDISENO.md):** en los 5 tipos, tocar una opción o una estructura solo la selecciona y se puede cambiar. **Comprobar** califica y abre una banda verde o roja con el detalle y la explicación. Hay sonidos (`expo-audio`, archivos propios hechos con `scripts/sonidos.mjs`; respetan el modo silencio) y vibración (`expo-haptics`). La fuente es Nunito.
+- **Lección (rediseño, docs/PLAN-REDISENO.md):** en los 5 tipos, tocar una opción o una estructura solo la selecciona y se puede cambiar. **Comprobar** califica y abre una banda verde o roja con el detalle y la explicación. Hay sonidos (`expo-audio`, archivos propios hechos con `scripts/sonidos.mjs`; respetan el modo silencio) y vibración (`expo-haptics`). La identidad (nombre Palpa, colores y la fuente Lexend) está en [docs/IDENTIDAD.md](docs/IDENTIDAD.md).
 - **En 3D:** si la imagen de un ejercicio de tocar o identificar trae `modelo3d` y el modelo tiene su ficha, el ejercicio va sobre el modelo (`ejercicios/Ejercicio3D.tsx`). La escena es una sola WebView por lección (`visor3d/EscenaLeccion.tsx`) que lee la página y el modelo del teléfono. En web, o si el 3D falla, el ejercicio va con la imagen.
   - **Referencias:** al aislar un músculo (identificar, el resultado de un fallo, la presentación), los demás músculos quedan translúcidos y los huesos sólidos, con su nombre. El nombre va en un punto visible del hueso que no tape lo resaltado. El músculo resaltado se dibuja después de los translúcidos, así un músculo profundo se ve completo y no detrás del velo de los que lo cubren.
   - **Indicador de vista:** arriba a la izquierda, "Vista anterior · muslo derecho". Cambia al girar el modelo, y la región sale del título de la imagen.

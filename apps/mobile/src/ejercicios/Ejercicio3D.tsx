@@ -9,9 +9,10 @@ import { ListaOpciones } from "./ListaOpciones";
 import { estilosTexto } from "./OpcionMultiple";
 import type { PropsEjercicio } from "./tipos";
 
-const AZUL = "#1aa3ec";
-const VERDE = "#4fc21a";
-const ROJO = "#f04848";
+/** Colores sobre el modelo (más vivos que los de la interfaz, porque tiñen músculo rojo). */
+const ELEGIDO = "#5b5bd6";
+const VERDE = "#2fbf71";
+const ROJO = "#e5484d";
 
 type TImagen = Extract<Ejercicio, { tipo: "tocar_estructura" | "identificar_imagen" }>;
 
@@ -54,7 +55,7 @@ export function Ejercicio3D({
   function pintura(sel: string | null, comp: boolean): OrdenVisor {
     if (!comp) {
       // Identificar: en su color y con solo el contorno, el músculo no se distinguía en el teléfono.
-      return tocar ? { tipo: "pintar", marcas: sel ? { [sel]: AZUL } : {} } : { tipo: "pintar", marcas: { [estructura]: AZUL }, aislar: true };
+      return tocar ? { tipo: "pintar", marcas: sel ? { [sel]: ELEGIDO } : {} } : { tipo: "pintar", marcas: { [estructura]: ELEGIDO }, aislar: true };
     }
     const ok = !tocar || sel === estructura;
     return { tipo: "pintar", marcas: ok || !sel ? { [estructura]: VERDE } : { [sel]: ROJO, [estructura]: VERDE }, aislar: !tocar || !ok };

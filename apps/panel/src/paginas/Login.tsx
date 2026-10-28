@@ -22,7 +22,7 @@ export function Login() {
 
   return (
     <form className="login" onSubmit={entrar}>
-      <h1>Anatomía · Panel</h1>
+      <h1>Palpa · Panel</h1>
       <label>
         Correo
         <input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
