@@ -1,0 +1,23 @@
+import { OFERTA_PREMIUM, OfertaPremium, type PlanPremium } from "@anatomia/contenido";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+
+@Injectable()
+export class PremiumService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /** La oferta guardada en configuracion ("premium"); si falta o no es válida, la del PRD. */
+  async oferta(): Promise<OfertaPremium> {
+    const fila = await this.prisma.configuracion.findUnique({ where: { clave: "premium" } });
+    const r = OfertaPremium.safeParse(fila?.valor);
+    return r.success ? r.data : OFERTA_PREMIUM;
+  }
+
+  /** "Me interesa": una fila por toque (la métrica cuenta usuarios distintos) y su evento. No cobra nada. */
+  async registrarInteres(usuarioId: string, plan: PlanPremium): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.interesPremium.create({ data: { usuarioId, plan } }),
+      this.prisma.evento.create({ data: { usuarioId, nombre: "premium_interes", propiedades: { plan } } }),
+    ]);
+  }
+}

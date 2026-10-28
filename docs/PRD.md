@@ -201,6 +201,7 @@ REST con JSON; todo cuerpo de entrada se valida con los esquemas de `packages/co
 | `POST /sync` | Estudiante | Recibe intentos, progreso y racha; devuelve el progreso consolidado |
 | `POST /reportes` | Estudiante | Crea un reporte de error |
 | `POST /eventos` | Estudiante | Recibe eventos de uso en lote |
+| `GET /premium` | Estudiante | Oferta de Premium (precios y beneficios de `configuracion`, o los valores por defecto) |
 | `POST /interes-premium` | Estudiante | Registra el interés en Premium |
 | `POST /admin/generar` | Editor | Corre el generador para una lista de músculos |
 | `GET /admin/cola?estado=` | Editor | Lista elementos por estado y tipo |

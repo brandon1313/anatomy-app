@@ -20,6 +20,7 @@ import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
 import { useApp } from "../../lib/estado";
 import { uriImagen } from "../../lib/imagenes";
+import { mostrarPremiumUnaVez } from "../../lib/premium";
 import { color, espacio, fuente, TOQUE_MINIMO } from "../../tema";
 import { type ControlEscena, EscenaLeccion, type Toque } from "../../visor3d/EscenaLeccion";
 
@@ -56,7 +57,7 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 
 export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { paquete, completar, progreso: progresoFichas, racha, registrarIntento, terminarSesion } = useApp();
+  const { usuario, paquete, completar, completadas, progreso: progresoFichas, racha, registrarIntento, terminarSesion } = useApp();
   const rachaAlEmpezar = useRef(racha);
   const insets = useSafeAreaInsets();
   // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
@@ -191,7 +192,14 @@ export default function Leccion() {
         <Text style={[estilos.racha, subio && estilos.rachaSubio]} accessibilityLiveRegion="polite">
           🔥 {subio ? (dias === 1 ? "¡Empezaste una racha!" : `¡${dias} días seguidos!`) : `Racha de ${dias} ${dias === 1 ? "día" : "días"}`}
         </Text>
-        <Boton titulo="Continuar" onPress={() => router.back()} />
+        <Boton
+          titulo="Continuar"
+          onPress={async () => {
+            // Premium aparece sola una vez, al completar la tercera lección (PRD).
+            if (!esRepaso && usuario && (await mostrarPremiumUnaVez(usuario.id, completadas.length))) router.replace("/premium");
+            else router.back();
+          }}
+        />
       </SafeAreaView>
     );
   }

@@ -19,6 +19,7 @@ import {
 } from "./api";
 import { borrarJson, guardarJson, leerJson } from "./almacen";
 import { programarRecordatorio } from "./notificaciones";
+import { borrarDatosPremium } from "./premium";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
 import { borrarDatosLocales, guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
@@ -215,7 +216,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       const usuarioId = usuario.id;
       await borrarCuentaEnServidor();
       // En el servidor ya no existe: lo local se borra aunque algo falle aquí.
-      await Promise.all([borrarDatosLocales(usuarioId), borrarJson(claveProgreso(usuarioId))]).catch(() => {});
+      await Promise.all([borrarDatosLocales(usuarioId), borrarJson(claveProgreso(usuarioId)), borrarDatosPremium(usuarioId)]).catch(() => {});
       limpiar();
     },
   };

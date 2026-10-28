@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import ejemplo from "./ejemplo-generador.json";
 import {
+  ahorroAnual,
   distanciaABorde,
   erroresDeConsistencia,
   erroresDeSalidaGenerador,
@@ -8,6 +9,8 @@ import {
   fusionarProgreso,
   fusionarRacha,
   NuevoReporte,
+  OFERTA_PREMIUM,
+  OfertaPremium,
   PeticionSync,
   PaqueteContenido,
   ProgresoFicha,
@@ -282,5 +285,17 @@ describe("PeticionSync", () => {
     const racha = { actual: 2, maxima: 5, ultimoDia: "2026-10-27" };
     expect(PeticionSync.safeParse({ intentos: [], progreso: [], racha }).success).toBe(true);
     expect(PeticionSync.safeParse({ intentos: [], progreso: [], racha: { ...racha, ultimoDia: "2026-10-27T10:00:00Z" } }).success).toBe(false);
+  });
+});
+
+describe("Premium", () => {
+  it("la oferta por defecto es la del PRD y es válida", () => {
+    expect(OfertaPremium.safeParse(OFERTA_PREMIUM).success).toBe(true);
+    expect([OFERTA_PREMIUM.mensual, OFERTA_PREMIUM.anual]).toEqual([2.99, 19.99]);
+  });
+
+  it("calcula el ahorro del plan anual", () => {
+    expect(ahorroAnual(OFERTA_PREMIUM)).toBe(44);
+    expect(ahorroAnual({ mensual: 3, anual: 40 })).toBe(0);
   });
 });

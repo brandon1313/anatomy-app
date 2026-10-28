@@ -1,4 +1,4 @@
-import { puntoEnZona, type Racha, type SalidaGenerador, type Zona } from "./esquema-contenido";
+import { type OfertaPremium, puntoEnZona, type Racha, type SalidaGenerador, type Zona } from "./esquema-contenido";
 
 type Punto = [number, number];
 
@@ -117,3 +117,6 @@ export function fusionarRacha(a: Racha, b: Racha): Racha {
   }
   return { ...r, maxima: Math.max(a.maxima, b.maxima, r.actual) };
 }
+
+/** Cuánto se ahorra, en porcentaje entero, pagando el año en vez de 12 meses (0 si no conviene). */
+export const ahorroAnual = (o: Pick<OfertaPremium, "mensual" | "anual">) => Math.max(0, Math.round((1 - o.anual / (o.mensual * 12)) * 100));

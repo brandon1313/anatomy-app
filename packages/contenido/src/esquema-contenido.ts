@@ -285,6 +285,35 @@ export const ReporteError = z.object({
 /** POST /reportes: el id y la fecha los pone el teléfono (reenviarlo no lo duplica); el usuario sale del token. */
 export const NuevoReporte = ReporteError.omit({ usuarioId: true });
 
+/**
+ * La oferta de Premium que muestra la app (PRD, "Premium (interés)"): solo mide el interés, no cobra nada.
+ * Se guarda en `configuracion` con la clave "premium" para cambiarla sin publicar otra versión de la app.
+ */
+export const OfertaPremium = z.object({
+  simbolo: z.string().min(1).max(4),
+  mensual: z.number().positive(),
+  anual: z.number().positive(),
+  beneficios: z.array(z.string().min(1).max(120)).min(1).max(6),
+});
+
+export const PlanPremium = z.enum(["mensual", "anual"]);
+
+/** POST /interes-premium: el plan que el estudiante tenía elegido al tocar "Me interesa". */
+export const PeticionInteresPremium = z.object({ plan: PlanPremium });
+
+/** Los valores por defecto del PRD ("Decisiones abiertas"); los beneficios salen de lo que deja para la fase 2. */
+export const OFERTA_PREMIUM: z.infer<typeof OfertaPremium> = {
+  simbolo: "$",
+  mensual: 2.99,
+  anual: 19.99,
+  beneficios: [
+    "Todas las unidades: no solo el muslo, todo el cuerpo.",
+    "Ejercicios nuevos: completar la ficha y terminología.",
+    "Modelos 3D de cada región, con su presentación.",
+    "Lecciones nuevas cada mes, revisadas por especialistas.",
+  ],
+};
+
 /** Estado del repaso espaciado por usuario y ficha (los campos que usa FSRS). */
 export const ProgresoFicha = z.object({
   usuarioId: z.uuid(),
@@ -354,6 +383,8 @@ export type SalidaGenerador = z.infer<typeof SalidaGenerador>;
 export type ReporteError = z.infer<typeof ReporteError>;
 export type MotivoReporte = z.infer<typeof MotivoReporte>;
 export type NuevoReporte = z.infer<typeof NuevoReporte>;
+export type OfertaPremium = z.infer<typeof OfertaPremium>;
+export type PlanPremium = z.infer<typeof PlanPremium>;
 export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
 export type Intento = z.infer<typeof Intento>;
 export type ProgresoSync = z.infer<typeof ProgresoSync>;

@@ -31,6 +31,9 @@ function confirmar(titulo: string, mensaje: string, accion: string): Promise<boo
 }
 
 /** Perfil (PRD): racha actual y máxima, hora del recordatorio, privacidad, cerrar sesión y borrar cuenta. */
+/** Si la pantalla se abrió sin otra detrás (por ejemplo, al recargar en web), vuelve a Inicio. */
+const volver = () => (router.canGoBack() ? router.back() : router.replace("/inicio"));
+
 export default function Perfil() {
   const { usuario, racha, horaRecordatorio, cambiarHoraRecordatorio, salir, borrarCuenta } = useApp();
   const dias = rachaVigente(racha, diaDeEstudio(new Date()));
@@ -42,8 +45,11 @@ export default function Perfil() {
   const [error, setError] = useState<string | null>(null);
   const [permiso, setPermiso] = useState<EstadoPermiso | null>(null);
 
-  // Al guardar se programa el recordatorio y, la primera vez, se pide el permiso: se vuelve a mirar.
+  // La hora puede llegar después de abrir la pantalla (al cargar la sesión) o cambiar al guardar: el
+  // formulario la sigue. Al guardar, además, se programa el recordatorio y se pide el permiso: se vuelve a mirar.
   useEffect(() => {
+    setActivo(horaRecordatorio !== null);
+    if (horaRecordatorio) setHora(horaRecordatorio);
     void estadoPermiso().then(setPermiso);
   }, [horaRecordatorio]);
 
@@ -85,7 +91,7 @@ export default function Perfil() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <View style={estilos.barra}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Volver" onPress={() => router.back()} hitSlop={8} style={estilos.volver}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Volver" onPress={() => volver()} hitSlop={8} style={estilos.volver}>
           <Text style={estilos.flecha}>←</Text>
         </Pressable>
         <Text style={estilos.titulo} accessibilityRole="header">Perfil</Text>
@@ -144,6 +150,15 @@ export default function Perfil() {
             </Text>
           )}
         </View>
+
+        <Text style={estilos.seccion} accessibilityRole="header">Premium</Text>
+        <Pressable accessibilityRole="button" onPress={() => router.push("/premium")} style={[estilos.tarjeta, estilos.fila]}>
+          <View style={{ flex: 1 }}>
+            <Text style={estilos.texto}>Palpa Premium</Text>
+            <Text style={estilos.tenue}>Todo el cuerpo y ejercicios nuevos. Pronto.</Text>
+          </View>
+          <Text style={estilos.flecha}>›</Text>
+        </Pressable>
 
         <Text style={estilos.seccion} accessibilityRole="header">Privacidad</Text>
         <View style={estilos.tarjeta}>
