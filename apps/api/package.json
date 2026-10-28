@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "generar": "nest build && node dist/generador/generar.cli.js",
+    "importar-ejercicios": "nest build && node dist/generador/importar-ejercicios.cli.js",
     "importar-lamina": "nest build && node dist/laminas/importar.cli.js",
     "importar-modelo": "nest build && node dist/modelos/importar.cli.js",
     "rol": "tsx src/usuarios/rol.cli.ts",

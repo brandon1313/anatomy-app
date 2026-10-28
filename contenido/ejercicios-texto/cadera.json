@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "cuadrado-femoral-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "cuadrado-femoral"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción del cuadrado femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación medial de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Rotación lateral de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Flexión de la cadera"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Como el resto de los rotadores laterales cortos, va de la pelvis a la cara posterior del fémur y rota lateralmente la cadera."
+  },
+  {
+    "id": "cuadrado-femoral-caso-protesis",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "cuadrado-femoral"
+    ],
+    "dificultad": 3,
+    "caso": "Después de una prótesis de cadera por vía posterior, el cirujano reinsertó los rotadores laterales cortos. Al paciente se le pide no cruzar las piernas ni girar la rodilla hacia adentro.",
+    "pregunta": "¿Por qué se evita la rotación medial?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Estira los rotadores laterales reinsertados, como el cuadrado femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Debilita el glúteo mayor"
+      },
+      {
+        "id": "c",
+        "texto": "Comprime el nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Tensa el tibial anterior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Los rotadores laterales cortos, entre ellos el cuadrado femoral, se oponen a la rotación medial; evitarla protege su reinserción y la estabilidad de la prótesis."
+  },
+  {
+    "id": "cuadrado-femoral-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "cuadrado-femoral"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del cuadrado femoral con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Borde lateral de la tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tubérculo cuadrado, en la cresta intertrocantérica"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio del cuadrado femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Rotación lateral de la cadera"
+      }
+    ],
+    "explicacion": "Es el más bajo de los rotadores laterales y tiene forma rectangular."
+  },
+  {
+    "id": "cuadrado-femoral-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "cuadrado-femoral"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el cuadrado femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio del cuadrado femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Lo inerva un ramo propio del plexo sacro, el nervio del cuadrado femoral (L4–S1), que también inerva al gemelo inferior."
+  },
+  {
+    "id": "gemelo-inferior-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gemelo-inferior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción realiza el gemelo inferior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexiona plantarmente el tobillo"
+      },
+      {
+        "id": "b",
+        "texto": "Rota medialmente la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Rota lateralmente la cadera extendida"
+      },
+      {
+        "id": "d",
+        "texto": "Extiende la rodilla"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Es un rotador lateral corto de la cadera; no hay que confundirlo con los «gemelos» de la pantorrilla, que son el gastrocnemio."
+  },
+  {
+    "id": "gemelo-inferior-caso-confusion-gemelos",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gemelo-inferior"
+    ],
+    "dificultad": 2,
+    "caso": "Un paciente cuenta que se lesionó «los gemelos» jugando fútbol y señala la pantorrilla.",
+    "pregunta": "¿El gemelo inferior de la cadera explica ese dolor?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Sí: el gemelo inferior está en la pantorrilla"
+      },
+      {
+        "id": "b",
+        "texto": "No: en la pantorrilla se llama «gemelos» al gastrocnemio"
+      },
+      {
+        "id": "c",
+        "texto": "Sí: se inserta en el calcáneo"
+      },
+      {
+        "id": "d",
+        "texto": "No: el gemelo inferior está en el brazo"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El gemelo inferior es un rotador lateral pequeño de la cadera; lo que en la calle se llama «gemelos» son las dos cabezas del gastrocnemio."
+  },
+  {
+    "id": "gemelo-inferior-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gemelo-inferior"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del gemelo inferior con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Parte superior de la tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Trocánter mayor, con el tendón del obturador interno"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio del cuadrado femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Rotación lateral de la cadera"
+      }
+    ],
+    "explicacion": "Queda justo por debajo del tendón del obturador interno y se une a él."
+  },
+  {
+    "id": "gemelo-inferior-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gemelo-inferior"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el gemelo inferior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio del obturador interno"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio del cuadrado femoral"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El gemelo inferior lo inerva el nervio del cuadrado femoral; el gemelo superior, el nervio del obturador interno."
+  },
+  {
+    "id": "gemelo-superior-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gemelo-superior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción comparte el gemelo superior con el obturador interno?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación medial de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Extensión de la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Flexión de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación lateral de la cadera extendida"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Se une al tendón del obturador interno y rota con él lateralmente la cadera extendida."
+  },
+  {
+    "id": "gemelo-superior-caso-triceps-coxal",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gemelo-superior"
+    ],
+    "dificultad": 2,
+    "caso": "En una clase de palpación, el docente explica que tres músculos de la región glútea profunda funcionan como uno solo y comparten un tendón hacia el trocánter mayor.",
+    "pregunta": "Además del obturador interno y el gemelo inferior, ¿qué músculo forma ese grupo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Piriforme"
+      },
+      {
+        "id": "b",
+        "texto": "Cuadrado femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Gemelo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Glúteo menor"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El tríceps coxal lo forman el obturador interno y los dos gemelos, uno por arriba y otro por abajo de su tendón."
+  },
+  {
+    "id": "gemelo-superior-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gemelo-superior"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del gemelo superior con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Espina isquiática"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Trocánter mayor, con el tendón del obturador interno"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio del obturador interno"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Rotación lateral de la cadera"
+      }
+    ],
+    "explicacion": "Con el gemelo inferior y el obturador interno forma el tríceps coxal."
+  },
+  {
+    "id": "gemelo-superior-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gemelo-superior"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el gemelo superior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio del obturador interno"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio del cuadrado femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Lo inerva el nervio del obturador interno (L5–S1), el mismo que al obturador interno, cuyo tendón acompaña."
+  },
+  {
+    "id": "gluteo-mayor-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-mayor"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del glúteo mayor?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extensión de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Abducción con rotación medial"
+      },
+      {
+        "id": "d",
+        "texto": "Aducción de la cadera"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Extiende y rota lateralmente la cadera, sobre todo cuando hace falta fuerza."
+  },
+  {
+    "id": "gluteo-mayor-caso-levantarse",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gluteo-mayor"
+    ],
+    "dificultad": 2,
+    "caso": "Un adulto mayor necesita apoyarse con las manos para levantarse de la silla y para subir escaleras, pero camina en plano sin dificultad.",
+    "pregunta": "¿Qué músculo conviene fortalecer primero?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Iliopsoas"
+      },
+      {
+        "id": "b",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "c",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "d",
+        "texto": "Glúteo mayor"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El glúteo mayor trabaja sobre todo al levantarse, subir escaleras o correr, más que al caminar en plano."
+  },
+  {
+    "id": "gluteo-mayor-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gluteo-mayor"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del glúteo mayor con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Ilion posterior, sacro y cóccix"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tracto iliotibial y tuberosidad glútea"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio glúteo inferior"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión de la cadera"
+      }
+    ],
+    "explicacion": "Es el músculo más voluminoso del cuerpo."
+  },
+  {
+    "id": "gluteo-mayor-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-mayor"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el glúteo mayor?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El glúteo mayor es el único músculo inervado por el nervio glúteo inferior (L5–S2)."
+  },
+  {
+    "id": "gluteo-medio-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-medio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del glúteo medio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Aducción de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Extensión de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación lateral de la cadera"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Abduce y rota medialmente la cadera, y al apoyarse en una pierna estabiliza la pelvis."
+  },
+  {
+    "id": "gluteo-medio-caso-trendelenburg",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gluteo-medio"
+    ],
+    "dificultad": 3,
+    "caso": "Al pararse solo sobre la pierna derecha, la pelvis de una paciente cae hacia el lado izquierdo.",
+    "pregunta": "¿Qué músculo está débil?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Glúteo medio derecho"
+      },
+      {
+        "id": "b",
+        "texto": "Glúteo medio izquierdo"
+      },
+      {
+        "id": "c",
+        "texto": "Glúteo mayor derecho"
+      },
+      {
+        "id": "d",
+        "texto": "Aductor largo izquierdo"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Es el signo de Trendelenburg: el glúteo medio del lado de apoyo no logra sostener la pelvis, que cae hacia el lado contrario."
+  },
+  {
+    "id": "gluteo-medio-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gluteo-medio"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del glúteo medio con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara glútea del ilion, entre las líneas glúteas anterior y posterior"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cara lateral del trocánter mayor"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio glúteo superior"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Abducción de la cadera"
+      }
+    ],
+    "explicacion": "Es el principal estabilizador de la pelvis cuando se apoya una sola pierna."
+  },
+  {
+    "id": "gluteo-medio-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-medio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el glúteo medio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Lo inerva el nervio glúteo superior (L4–S1), que también inerva al glúteo menor y al tensor de la fascia lata."
+  },
+  {
+    "id": "gluteo-menor-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-menor"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones comparte el glúteo menor con el glúteo medio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extensión y rotación lateral"
+      },
+      {
+        "id": "b",
+        "texto": "Aducción y flexión"
+      },
+      {
+        "id": "c",
+        "texto": "Abducción y rotación medial de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Abducción y rotación lateral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Los dos abducen y rotan medialmente la cadera, y juntos estabilizan la pelvis."
+  },
+  {
+    "id": "gluteo-menor-caso-nervio-gluteo-superior",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gluteo-menor"
+    ],
+    "dificultad": 3,
+    "caso": "Tras una inyección intramuscular mal colocada en la región glútea, un paciente camina inclinando el tronco hacia el lado lesionado en cada apoyo.",
+    "pregunta": "¿Qué nervio es más probable que se haya lesionado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El nervio glúteo superior inerva los glúteos medio y menor; sin ellos la pelvis no se estabiliza y la persona inclina el tronco para compensar."
+  },
+  {
+    "id": "gluteo-menor-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gluteo-menor"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del glúteo menor con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara glútea del ilion, entre las líneas glúteas anterior e inferior"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cara anterior del trocánter mayor"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio glúteo superior"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Abducción de la cadera"
+      }
+    ],
+    "explicacion": "Es el más profundo y el más pequeño de los glúteos."
+  },
+  {
+    "id": "gluteo-menor-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gluteo-menor"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el glúteo menor?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio del piriforme"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Lo inerva el nervio glúteo superior, igual que al glúteo medio y al tensor de la fascia lata."
+  },
+  {
+    "id": "obturador-externo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "obturador-externo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción del obturador externo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación medial de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Extensión de la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación lateral de la cadera"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Desde la membrana obturatriz llega a la fosa trocantérica y rota lateralmente la cadera."
+  },
+  {
+    "id": "obturador-externo-caso-nervio-obturador",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "obturador-externo"
+    ],
+    "dificultad": 3,
+    "caso": "Una paciente con una lesión del nervio obturador tiene debilidad para aducir la cadera y, al evaluarla, la rotación lateral también está algo disminuida.",
+    "pregunta": "¿Qué rotador lateral comparte la inervación con los aductores?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Obturador interno"
+      },
+      {
+        "id": "b",
+        "texto": "Piriforme"
+      },
+      {
+        "id": "c",
+        "texto": "Obturador externo"
+      },
+      {
+        "id": "d",
+        "texto": "Cuadrado femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El obturador externo es el único rotador lateral inervado por el nervio obturador, el mismo de los aductores."
+  },
+  {
+    "id": "obturador-externo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "obturador-externo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del obturador externo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara externa de la membrana obturatriz"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Fosa trocantérica del fémur"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio obturador"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Rotación lateral de la cadera"
+      }
+    ],
+    "explicacion": "Desde atrás apenas se ve, por debajo del cuadrado femoral."
+  },
+  {
+    "id": "obturador-externo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "obturador-externo"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el obturador externo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio del obturador interno"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio del cuadrado femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo inferior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Es el único rotador lateral inervado por el nervio obturador; el obturador interno tiene su propio nervio, del plexo sacro."
+  },
+  {
+    "id": "obturador-interno-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "obturador-interno"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Cómo cambia la acción del obturador interno según la posición de la cadera?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Con la cadera extendida la rota lateralmente; con la cadera flexionada la abduce"
+      },
+      {
+        "id": "b",
+        "texto": "Con la cadera extendida la rota medialmente; flexionada la aduce"
+      },
+      {
+        "id": "c",
+        "texto": "Siempre flexiona la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Solo actúa con la rodilla flexionada"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "En extensión es rotador lateral; con la cadera flexionada su tendón cambia de dirección y pasa a abducirla."
+  },
+  {
+    "id": "obturador-interno-caso-agujero-ciatico",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "obturador-interno"
+    ],
+    "dificultad": 2,
+    "caso": "Un paciente con dolor glúteo profundo siente más dolor al rotar lateralmente la cadera contra resistencia; la imagen muestra inflamación del tendón que sale de la pelvis por el agujero ciático menor.",
+    "pregunta": "¿De qué músculo es ese tendón?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Piriforme"
+      },
+      {
+        "id": "b",
+        "texto": "Obturador externo"
+      },
+      {
+        "id": "c",
+        "texto": "Glúteo menor"
+      },
+      {
+        "id": "d",
+        "texto": "Obturador interno"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El obturador interno sale de la pelvis por el agujero ciático menor; el piriforme, en cambio, sale por el agujero ciático mayor."
+  },
+  {
+    "id": "obturador-interno-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "obturador-interno"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del obturador interno con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara interna de la membrana obturatriz"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cara medial del trocánter mayor"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio del obturador interno"
+      },
+      {
+        "izquierda": "Salida de la pelvis",
+        "derecha": "Agujero ciático menor"
+      }
+    ],
+    "explicacion": "Nace dentro de la pelvis y su tendón gira en ángulo recto sobre el isquion."
+  },
+  {
+    "id": "obturador-interno-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "obturador-interno"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el obturador interno?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio del obturador interno"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "A pesar del nombre, no lo inerva el nervio obturador sino un ramo propio del plexo sacro, el nervio del obturador interno (L5–S1)."
+  },
+  {
+    "id": "piriforme-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "piriforme"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción realiza el piriforme con la cadera extendida?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación medial"
+      },
+      {
+        "id": "b",
+        "texto": "Rotación lateral"
+      },
+      {
+        "id": "c",
+        "texto": "Aducción"
+      },
+      {
+        "id": "d",
+        "texto": "Flexión"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Con la cadera extendida la rota lateralmente; con la cadera flexionada la abduce."
+  },
+  {
+    "id": "piriforme-caso-sindrome",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "piriforme"
+    ],
+    "dificultad": 3,
+    "caso": "Una corredora tiene dolor en el glúteo que baja por la parte posterior del muslo, sin dolor lumbar; empeora al estar sentada mucho tiempo y al rotar medialmente la cadera.",
+    "pregunta": "¿Qué músculo puede estar comprimiendo el nervio ciático?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Piriforme"
+      },
+      {
+        "id": "b",
+        "texto": "Glúteo medio"
+      },
+      {
+        "id": "c",
+        "texto": "Cuadrado femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Iliopsoas"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "El nervio ciático sale de la pelvis junto al piriforme; si el músculo lo comprime aparece el síndrome del piriforme, y estirarlo con rotación medial aumenta el dolor."
+  },
+  {
+    "id": "piriforme-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "piriforme"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del piriforme con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara anterior del sacro"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Borde superior del trocánter mayor"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio del piriforme"
+      },
+      {
+        "izquierda": "Salida de la pelvis",
+        "derecha": "Agujero ciático mayor"
+      }
+    ],
+    "explicacion": "Sirve de referencia para ubicar los nervios y vasos glúteos."
+  },
+  {
+    "id": "piriforme-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "piriforme"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el piriforme?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio del piriforme, del plexo sacro"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Lo inerva un ramo propio del plexo sacro, el nervio del piriforme (S1–S2)."
+  }
+]

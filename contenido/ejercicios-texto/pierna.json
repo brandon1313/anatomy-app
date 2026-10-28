@@ -1,0 +1,1510 @@
+[
+  {
+    "id": "extensor-largo-dedo-gordo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "extensor-largo-dedo-gordo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del extensor largo del dedo gordo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexionar el dedo gordo"
+      },
+      {
+        "id": "b",
+        "texto": "Everter el pie"
+      },
+      {
+        "id": "c",
+        "texto": "Extender el dedo gordo"
+      },
+      {
+        "id": "d",
+        "texto": "Flexionar plantarmente el tobillo"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Extiende el dedo gordo y, al cruzar por delante del tobillo, también lo flexiona dorsalmente."
+  },
+  {
+    "id": "extensor-largo-dedo-gordo-caso-raiz-l5",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "extensor-largo-dedo-gordo"
+    ],
+    "dificultad": 3,
+    "caso": "En la evaluación de un paciente con una hernia discal lumbar, se le pide levantar el dedo gordo contra resistencia y se nota debilidad de un solo lado.",
+    "pregunta": "¿Qué raíz nerviosa se evalúa sobre todo con esa prueba?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "L1"
+      },
+      {
+        "id": "b",
+        "texto": "L5"
+      },
+      {
+        "id": "c",
+        "texto": "L3"
+      },
+      {
+        "id": "d",
+        "texto": "S2"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "La extensión del dedo gordo depende sobre todo de L5, por eso es la prueba muscular clásica para esa raíz."
+  },
+  {
+    "id": "extensor-largo-dedo-gordo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "extensor-largo-dedo-gordo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del extensor largo del dedo gordo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Parte media de la cara anterior del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Base de la falange distal del dedo gordo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular profundo"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión del dedo gordo"
+      }
+    ],
+    "explicacion": "Queda entre el tibial anterior y el extensor largo de los dedos."
+  },
+  {
+    "id": "extensor-largo-dedo-gordo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "extensor-largo-dedo-gordo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el extensor largo del dedo gordo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio safeno"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio fibular profundo"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Como todos los músculos del compartimento anterior de la pierna, lo inerva el nervio fibular profundo."
+  },
+  {
+    "id": "extensor-largo-dedos-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "extensor-largo-dedos"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué dedos extiende el extensor largo de los dedos?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Solo el dedo gordo"
+      },
+      {
+        "id": "b",
+        "texto": "Todos, incluido el dedo gordo"
+      },
+      {
+        "id": "c",
+        "texto": "Solo el quinto"
+      },
+      {
+        "id": "d",
+        "texto": "Del segundo al quinto"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Sus cuatro tendones van a los dedos segundo a quinto; el dedo gordo tiene su propio extensor largo."
+  },
+  {
+    "id": "extensor-largo-dedos-caso-fibular-profundo",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "extensor-largo-dedos"
+    ],
+    "dificultad": 2,
+    "caso": "Un paciente con una lesión del nervio fibular profundo no puede levantar los dedos del pie, y al palpar el dorso no se marcan los tendones que normalmente se ven.",
+    "pregunta": "¿Qué músculo, además del tibial anterior, está paralizado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Fibular largo"
+      },
+      {
+        "id": "b",
+        "texto": "Flexor largo de los dedos"
+      },
+      {
+        "id": "c",
+        "texto": "Extensor largo de los dedos"
+      },
+      {
+        "id": "d",
+        "texto": "Sóleo"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El extensor largo de los dedos, inervado por el fibular profundo, levanta los dedos 2.º a 5.º y marca sus tendones en el dorso del pie."
+  },
+  {
+    "id": "extensor-largo-dedos-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "extensor-largo-dedos"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del extensor largo de los dedos con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cóndilo lateral de la tibia y cara anterior del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Falanges media y distal de los dedos 2.º a 5.º"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular profundo"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión de los dedos 2.º a 5.º"
+      }
+    ],
+    "explicacion": "Sus tendones se ven en el dorso del pie al levantar los dedos."
+  },
+  {
+    "id": "extensor-largo-dedos-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "extensor-largo-dedos"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el extensor largo de los dedos?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Está en el compartimento anterior de la pierna y lo inerva el nervio fibular profundo (L5–S1)."
+  },
+  {
+    "id": "fibular-corto-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-corto"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del fibular corto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Eversión del pie"
+      },
+      {
+        "id": "b",
+        "texto": "Inversión del pie"
+      },
+      {
+        "id": "c",
+        "texto": "Flexión dorsal del tobillo"
+      },
+      {
+        "id": "d",
+        "texto": "Extensión de los dedos"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Se inserta por fuera, en el quinto metatarsiano, y eleva el borde lateral del pie; además ayuda a la flexión plantar."
+  },
+  {
+    "id": "fibular-corto-caso-esguince",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "fibular-corto"
+    ],
+    "dificultad": 2,
+    "caso": "Una basquetbolista se dobla el tobillo hacia adentro al caer de un salto. La radiografía muestra un pequeño fragmento óseo arrancado de la base del quinto metatarsiano.",
+    "pregunta": "¿Qué tendón probablemente arrancó ese fragmento?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "b",
+        "texto": "Tibial posterior"
+      },
+      {
+        "id": "c",
+        "texto": "Extensor largo de los dedos"
+      },
+      {
+        "id": "d",
+        "texto": "Fibular corto"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El fibular corto se inserta en la tuberosidad del quinto metatarsiano; en una inversión brusca se tensa y puede arrancar ese fragmento."
+  },
+  {
+    "id": "fibular-corto-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "fibular-corto"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del fibular corto con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Dos tercios inferiores de la cara lateral del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tuberosidad del quinto metatarsiano"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular superficial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Eversión del pie"
+      }
+    ],
+    "explicacion": "Con el fibular largo forma el compartimento lateral de la pierna."
+  },
+  {
+    "id": "fibular-corto-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-corto"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el fibular corto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Los músculos del compartimento lateral, fibular largo y fibular corto, los inerva el nervio fibular superficial."
+  },
+  {
+    "id": "fibular-largo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-largo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Además de everter el pie, ¿qué ayuda a sostener el fibular largo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "La rótula"
+      },
+      {
+        "id": "b",
+        "texto": "El arco transverso del pie"
+      },
+      {
+        "id": "c",
+        "texto": "El tendón calcáneo"
+      },
+      {
+        "id": "d",
+        "texto": "El dedo gordo en extensión"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Su tendón cruza la planta en diagonal hasta el primer metatarsiano y la cuña medial, y así ayuda a sostener el arco transverso."
+  },
+  {
+    "id": "fibular-largo-caso-tendinopatia",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "fibular-largo"
+    ],
+    "dificultad": 2,
+    "caso": "Un corredor tiene dolor detrás del maléolo lateral que aumenta al ponerse de puntillas y al girar la planta del pie hacia afuera contra resistencia.",
+    "pregunta": "¿Qué tendones pasan por detrás del maléolo lateral y pueden estar inflamados?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Fibular largo y fibular corto"
+      },
+      {
+        "id": "b",
+        "texto": "Tibial posterior y flexor largo de los dedos"
+      },
+      {
+        "id": "c",
+        "texto": "Tibial anterior y extensor largo del dedo gordo"
+      },
+      {
+        "id": "d",
+        "texto": "Gastrocnemio y sóleo"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Los tendones fibulares pasan por detrás del maléolo lateral; la eversión y la flexión plantar contra resistencia los cargan."
+  },
+  {
+    "id": "fibular-largo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "fibular-largo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del fibular largo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cabeza y cara lateral del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Base del primer metatarsiano y cuña medial"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular superficial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Eversión del pie"
+      }
+    ],
+    "explicacion": "Su tendón pasa por detrás del maléolo lateral y cruza la planta por un surco del cuboides."
+  },
+  {
+    "id": "fibular-largo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-largo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el fibular largo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio plantar medial"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Está en el compartimento lateral de la pierna, que inerva el nervio fibular superficial (L5–S2)."
+  },
+  {
+    "id": "fibular-tercero-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-tercero"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué acciones realiza el fibular tercero?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexión plantar e inversión"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión plantar y eversión"
+      },
+      {
+        "id": "c",
+        "texto": "Flexión dorsal del tobillo y eversión del pie"
+      },
+      {
+        "id": "d",
+        "texto": "Flexión dorsal e inversión"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Pasa por delante del tobillo, por eso lo flexiona dorsalmente, y se inserta en el quinto metatarsiano, por eso everte el pie."
+  },
+  {
+    "id": "fibular-tercero-caso-variante",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "fibular-tercero"
+    ],
+    "dificultad": 3,
+    "caso": "Al evaluar el pie de un estudiante, el fisioterapeuta no encuentra el tendón que suele palparse por fuera de los del extensor largo de los dedos, hacia el quinto metatarsiano. La fuerza y la marcha son normales.",
+    "pregunta": "¿Cuál es la explicación más probable?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotura del fibular corto"
+      },
+      {
+        "id": "b",
+        "texto": "Falta el fibular tercero, una variante normal"
+      },
+      {
+        "id": "c",
+        "texto": "Lesión del nervio fibular superficial"
+      },
+      {
+        "id": "d",
+        "texto": "Parálisis del tibial anterior"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El fibular tercero falta en algunas personas sin causar problemas; otros músculos cubren su función."
+  },
+  {
+    "id": "fibular-tercero-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "fibular-tercero"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del fibular tercero con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Tercio inferior de la cara anterior del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Dorso de la base del quinto metatarsiano"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular profundo"
+      },
+      {
+        "izquierda": "Compartimento",
+        "derecha": "Anterior"
+      }
+    ],
+    "explicacion": "Es como un quinto tendón del extensor largo de los dedos."
+  },
+  {
+    "id": "fibular-tercero-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "fibular-tercero"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el fibular tercero?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio fibular profundo"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Aunque se llama fibular, está en el compartimento anterior y lo inerva el nervio fibular profundo."
+  },
+  {
+    "id": "flexor-largo-dedo-gordo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "flexor-largo-dedo-gordo"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿En qué momento de la marcha es clave el flexor largo del dedo gordo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "En el contacto del talón"
+      },
+      {
+        "id": "b",
+        "texto": "En el balanceo, para levantar los dedos"
+      },
+      {
+        "id": "c",
+        "texto": "Al apoyar el pie plano"
+      },
+      {
+        "id": "d",
+        "texto": "En el despegue del pie"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Flexiona el dedo gordo y da el impulso final cuando el pie despega del suelo."
+  },
+  {
+    "id": "flexor-largo-dedo-gordo-caso-ballet",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "flexor-largo-dedo-gordo"
+    ],
+    "dificultad": 2,
+    "caso": "Una bailarina de ballet tiene dolor por detrás del tobillo, del lado medial, que aumenta al ponerse en puntas y al flexionar el dedo gordo contra resistencia.",
+    "pregunta": "¿Qué tendón está más probablemente afectado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "b",
+        "texto": "Fibular corto"
+      },
+      {
+        "id": "c",
+        "texto": "Flexor largo del dedo gordo"
+      },
+      {
+        "id": "d",
+        "texto": "Extensor largo del dedo gordo"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "La tendinitis del flexor largo del dedo gordo es típica del ballet: duele al flexionar el dedo gordo y en la flexión plantar extrema."
+  },
+  {
+    "id": "flexor-largo-dedo-gordo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "flexor-largo-dedo-gordo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del flexor largo del dedo gordo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Dos tercios inferiores de la cara posterior del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Base de la falange distal del dedo gordo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Flexión del dedo gordo"
+      }
+    ],
+    "explicacion": "Nace en el peroné, del lado lateral, pero va al dedo gordo, del lado medial."
+  },
+  {
+    "id": "flexor-largo-dedo-gordo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "flexor-largo-dedo-gordo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el flexor largo del dedo gordo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Los músculos del compartimento posterior de la pierna los inerva el nervio tibial."
+  },
+  {
+    "id": "flexor-largo-dedos-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "flexor-largo-dedos"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué dedos flexiona el flexor largo de los dedos?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Del segundo al quinto"
+      },
+      {
+        "id": "b",
+        "texto": "Solo el dedo gordo"
+      },
+      {
+        "id": "c",
+        "texto": "Todos los dedos"
+      },
+      {
+        "id": "d",
+        "texto": "Solo el segundo"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Sus tendones van a las falanges distales de los dedos 2.º a 5.º; el dedo gordo tiene su propio flexor largo."
+  },
+  {
+    "id": "flexor-largo-dedos-caso-fractura-tibia",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "flexor-largo-dedos"
+    ],
+    "dificultad": 2,
+    "caso": "Tras una fractura de tibia, un paciente no puede flexionar las puntas de los dedos segundo a quinto, aunque sí mueve el dedo gordo.",
+    "pregunta": "¿Qué músculo es más probable que esté afectado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexor largo del dedo gordo"
+      },
+      {
+        "id": "b",
+        "texto": "Extensor largo de los dedos"
+      },
+      {
+        "id": "c",
+        "texto": "Fibular largo"
+      },
+      {
+        "id": "d",
+        "texto": "Flexor largo de los dedos"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El flexor largo de los dedos nace en la cara posterior de la tibia y flexiona las falanges distales de los dedos 2.º a 5.º; el dedo gordo tiene su propio flexor."
+  },
+  {
+    "id": "flexor-largo-dedos-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "flexor-largo-dedos"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del flexor largo de los dedos con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara posterior de la tibia, debajo de la línea del sóleo"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Falanges distales de los dedos 2.º a 5.º"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Flexión de los dedos 2.º a 5.º"
+      }
+    ],
+    "explicacion": "Nace en la tibia, del lado medial, pero sus tendones van a los dedos laterales."
+  },
+  {
+    "id": "flexor-largo-dedos-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "flexor-largo-dedos"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el flexor largo de los dedos?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Está en el compartimento posterior profundo de la pierna y lo inerva el nervio tibial (S2–S3)."
+  },
+  {
+    "id": "gastrocnemio-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gastrocnemio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Sobre qué articulaciones actúa el gastrocnemio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Solo el tobillo"
+      },
+      {
+        "id": "b",
+        "texto": "Rodilla y tobillo"
+      },
+      {
+        "id": "c",
+        "texto": "Cadera y rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Tobillo y dedos"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Nace en el fémur y se inserta en el calcáneo: flexiona la rodilla y flexiona plantarmente el tobillo."
+  },
+  {
+    "id": "gastrocnemio-caso-estiramiento",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gastrocnemio"
+    ],
+    "dificultad": 3,
+    "caso": "Para estirar la pantorrilla, un fisioterapeuta indica dos posiciones: una con la rodilla extendida y otra con la rodilla flexionada.",
+    "pregunta": "¿Qué músculo se estira sobre todo con la rodilla extendida?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Gastrocnemio"
+      },
+      {
+        "id": "b",
+        "texto": "Sóleo"
+      },
+      {
+        "id": "c",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "d",
+        "texto": "Poplíteo"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "El gastrocnemio cruza la rodilla y solo se estira del todo con ella extendida; con la rodilla flexionada se estira sobre todo el sóleo."
+  },
+  {
+    "id": "gastrocnemio-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gastrocnemio"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del gastrocnemio con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cóndilos del fémur"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Calcáneo, por el tendón calcáneo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción en el tobillo",
+        "derecha": "Flexión plantar"
+      }
+    ],
+    "explicacion": "Con el sóleo forma el tríceps sural."
+  },
+  {
+    "id": "gastrocnemio-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gastrocnemio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el gastrocnemio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Lo inerva el nervio tibial (S1–S2), como al resto del compartimento posterior de la pierna."
+  },
+  {
+    "id": "plantar-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "plantar"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué papel tiene el plantar en el movimiento?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Es el principal flexor plantar del tobillo"
+      },
+      {
+        "id": "b",
+        "texto": "Extiende la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Ayuda débilmente a la flexión plantar y a la flexión de la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Invierte el pie"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Tiene un vientre muy pequeño: solo ayuda al gastrocnemio y al sóleo, y su falta no altera la marcha."
+  },
+  {
+    "id": "plantar-caso-injerto",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "plantar"
+    ],
+    "dificultad": 2,
+    "caso": "Para reparar un tendón de la mano, el cirujano toma un tendón muy largo y delgado de la pantorrilla, de un músculo cuya falta no altera la marcha.",
+    "pregunta": "¿De qué músculo se trata?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Sóleo"
+      },
+      {
+        "id": "b",
+        "texto": "Plantar"
+      },
+      {
+        "id": "c",
+        "texto": "Gastrocnemio"
+      },
+      {
+        "id": "d",
+        "texto": "Tibial posterior"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El tendón del plantar es largo y delgado, y como el músculo aporta poca fuerza, se puede usar como injerto."
+  },
+  {
+    "id": "plantar-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "plantar"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del plantar con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Línea supracondílea lateral del fémur"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Calcáneo, junto al tendón calcáneo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Particularidad",
+        "derecha": "Falta en algunas personas"
+      }
+    ],
+    "explicacion": "Tiene un vientre pequeño y un tendón muy largo y delgado."
+  },
+  {
+    "id": "plantar-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "plantar"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el plantar?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio tibial"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Está en el compartimento posterior superficial de la pierna y lo inerva el nervio tibial (S1–S2)."
+  },
+  {
+    "id": "popliteo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "popliteo"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Por qué se dice que el poplíteo es la «llave» de la rodilla?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Bloquea la rodilla al extenderla por completo"
+      },
+      {
+        "id": "b",
+        "texto": "Estabiliza la rótula hacia medial"
+      },
+      {
+        "id": "c",
+        "texto": "Extiende la rodilla al final del movimiento"
+      },
+      {
+        "id": "d",
+        "texto": "Destraba la rodilla bloqueada en extensión al empezar a flexionarla"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Rota medialmente la tibia, o lateralmente el fémur, y así desbloquea la rodilla extendida para que pueda flexionarse."
+  },
+  {
+    "id": "popliteo-caso-bajar-cuestas",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "popliteo"
+    ],
+    "dificultad": 3,
+    "caso": "Un corredor de montaña tiene dolor en la parte posterolateral de la rodilla al bajar cuestas, justo cuando empieza a flexionarla desde la extensión completa.",
+    "pregunta": "¿Qué músculo es el más probable?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Semimembranoso"
+      },
+      {
+        "id": "b",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "c",
+        "texto": "Poplíteo"
+      },
+      {
+        "id": "d",
+        "texto": "Vasto medial"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El poplíteo trabaja al iniciar la flexión desde la rodilla extendida y se ubica en la parte posterolateral; al bajar cuestas se sobrecarga."
+  },
+  {
+    "id": "popliteo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "popliteo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del poplíteo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cara lateral del cóndilo lateral del fémur"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cara posterior de la tibia, por encima de la línea del sóleo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Desbloquear la rodilla extendida"
+      }
+    ],
+    "explicacion": "También se une al menisco lateral."
+  },
+  {
+    "id": "popliteo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "popliteo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el poplíteo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Lo inerva el nervio tibial (L4–S1), que recorre la fosa poplítea."
+  },
+  {
+    "id": "soleo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "soleo"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Por qué el sóleo actúa solo sobre el tobillo, a diferencia del gastrocnemio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Porque nace en la tibia y el peroné y no cruza la rodilla"
+      },
+      {
+        "id": "b",
+        "texto": "Porque se inserta en los dedos"
+      },
+      {
+        "id": "c",
+        "texto": "Porque lo inerva otro nervio"
+      },
+      {
+        "id": "d",
+        "texto": "Porque nace en el fémur"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Nace por debajo de la rodilla, así que solo flexiona plantarmente el tobillo."
+  },
+  {
+    "id": "soleo-caso-trombosis",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "soleo"
+    ],
+    "dificultad": 3,
+    "caso": "Un paciente operado de cadera pasa varios días en cama. El fisioterapeuta le indica mover los pies hacia arriba y hacia abajo varias veces por hora.",
+    "pregunta": "¿Qué se busca sobre todo con ese ejercicio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Estirar el tibial anterior"
+      },
+      {
+        "id": "b",
+        "texto": "Fortalecer el cuádriceps"
+      },
+      {
+        "id": "c",
+        "texto": "Mejorar la eversión del pie"
+      },
+      {
+        "id": "d",
+        "texto": "Activar la bomba del sóleo para prevenir la trombosis"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Al contraerse, el sóleo empuja hacia arriba la sangre de sus venas; moverlo durante la inmovilidad ayuda a prevenir la trombosis."
+  },
+  {
+    "id": "soleo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "soleo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del sóleo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Línea del sóleo de la tibia y cabeza del peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Calcáneo, por el tendón calcáneo"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Flexión plantar del tobillo"
+      }
+    ],
+    "explicacion": "Con el gastrocnemio forma el tríceps sural."
+  },
+  {
+    "id": "soleo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "soleo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el sóleo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio safeno"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Lo inerva el nervio tibial (S1–S2), igual que al gastrocnemio."
+  },
+  {
+    "id": "tibial-anterior-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tibial-anterior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones realiza el tibial anterior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexión plantar e inversión"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión dorsal del tobillo e inversión del pie"
+      },
+      {
+        "id": "c",
+        "texto": "Flexión dorsal y eversión"
+      },
+      {
+        "id": "d",
+        "texto": "Flexión plantar y eversión"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Pasa por delante del tobillo y se inserta en el borde medial del pie: flexiona dorsalmente el tobillo e invierte el pie."
+  },
+  {
+    "id": "tibial-anterior-caso-pie-caido",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "tibial-anterior"
+    ],
+    "dificultad": 2,
+    "caso": "Tras pasar mucho tiempo con las piernas cruzadas, un paciente arrastra la punta del pie al caminar y levanta mucho la rodilla para compensar.",
+    "pregunta": "¿Qué músculo está paralizado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "b",
+        "texto": "Gastrocnemio"
+      },
+      {
+        "id": "c",
+        "texto": "Tibial posterior"
+      },
+      {
+        "id": "d",
+        "texto": "Fibular largo"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Es el pie caído: la compresión del nervio fibular junto a la cabeza del peroné paraliza al tibial anterior, el principal flexor dorsal del tobillo."
+  },
+  {
+    "id": "tibial-anterior-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "tibial-anterior"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del tibial anterior con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cóndilo lateral y cara lateral de la tibia"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cuña medial y base del primer metatarsiano"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio fibular profundo"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Flexión dorsal del tobillo"
+      }
+    ],
+    "explicacion": "Es el principal flexor dorsal del tobillo."
+  },
+  {
+    "id": "tibial-anterior-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tibial-anterior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el tibial anterior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio tibial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Lo inerva el nervio fibular profundo (L4–L5), como a todo el compartimento anterior de la pierna."
+  },
+  {
+    "id": "tibial-posterior-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tibial-posterior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones realiza el tibial posterior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Everte el pie y sostiene el arco transverso"
+      },
+      {
+        "id": "b",
+        "texto": "Flexiona dorsalmente el tobillo"
+      },
+      {
+        "id": "c",
+        "texto": "Invierte el pie y sostiene el arco longitudinal medial"
+      },
+      {
+        "id": "d",
+        "texto": "Extiende los dedos"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Se inserta en el navicular, por dentro: invierte el pie, ayuda a la flexión plantar y sostiene el arco longitudinal medial."
+  },
+  {
+    "id": "tibial-posterior-caso-pie-plano",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "tibial-posterior"
+    ],
+    "dificultad": 3,
+    "caso": "Una mujer de 55 años nota que su pie derecho se fue aplanando en los últimos meses; le duele detrás del maléolo medial y no puede ponerse de puntillas sobre ese pie.",
+    "pregunta": "¿Qué tendón es más probable que esté fallando?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Fibular largo"
+      },
+      {
+        "id": "b",
+        "texto": "Tibial posterior"
+      },
+      {
+        "id": "c",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "d",
+        "texto": "Extensor largo del dedo gordo"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El tibial posterior sostiene el arco longitudinal medial; si su tendón falla, el arco se hunde y aparece un pie plano adquirido."
+  },
+  {
+    "id": "tibial-posterior-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "tibial-posterior"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del tibial posterior con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Membrana interósea y caras posteriores de tibia y peroné"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tuberosidad del navicular"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio tibial"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Inversión del pie"
+      }
+    ],
+    "explicacion": "Es el músculo más profundo del compartimento posterior de la pierna."
+  },
+  {
+    "id": "tibial-posterior-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tibial-posterior"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el tibial posterior?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio fibular profundo"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio fibular superficial"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio tibial"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Es el músculo más profundo del compartimento posterior y lo inerva el nervio tibial (L4–L5)."
+  }
+]

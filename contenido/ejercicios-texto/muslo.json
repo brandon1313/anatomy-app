@@ -1,0 +1,1742 @@
+[
+  {
+    "id": "aductor-corto-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-corto"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del aductor corto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Extensión de la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Rotación medial de la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Aducción de la cadera"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Va del pubis a la parte alta de la línea áspera, por eso aduce la cadera; además ayuda a flexionarla."
+  },
+  {
+    "id": "aductor-corto-caso-nervio-obturador",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "aductor-corto"
+    ],
+    "dificultad": 3,
+    "caso": "Después de una cirugía pélvica, una paciente tiene dificultad para juntar las piernas al estar sentada y refiere adormecimiento en la cara medial del muslo.",
+    "pregunta": "¿Qué nervio es más probable que esté lesionado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio fibular común"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El nervio obturador inerva los aductores, como el aductor corto, y la piel de la cara medial del muslo; su lesión debilita la aducción."
+  },
+  {
+    "id": "aductor-corto-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "aductor-corto"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del aductor corto con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cuerpo y rama inferior del pubis"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Línea pectínea y parte superior de la línea áspera"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio obturador"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Aducción de la cadera"
+      }
+    ],
+    "explicacion": "El aductor corto queda detrás del pectíneo y del aductor largo, entre las dos divisiones del nervio obturador."
+  },
+  {
+    "id": "aductor-corto-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-corto"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el aductor corto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo inferior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Los aductores del compartimento medial, como el aductor corto, los inerva el nervio obturador (L2–L4)."
+  },
+  {
+    "id": "aductor-largo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-largo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción realiza el aductor largo sobre la cadera?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Aducción, y ayuda a flexionarla"
+      },
+      {
+        "id": "b",
+        "texto": "Abducción y rotación medial"
+      },
+      {
+        "id": "c",
+        "texto": "Extensión y rotación lateral"
+      },
+      {
+        "id": "d",
+        "texto": "Solo rotación lateral"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Desde el pubis llega al tercio medio de la línea áspera: aduce la cadera y ayuda a flexionarla."
+  },
+  {
+    "id": "aductor-largo-caso-pubalgia",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "aductor-largo"
+    ],
+    "dificultad": 2,
+    "caso": "Un futbolista siente dolor en la ingle, cerca del pubis, al patear con el borde interno del pie y al juntar las piernas contra resistencia.",
+    "pregunta": "¿Qué músculo es el más probablemente lesionado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Recto femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "c",
+        "texto": "Glúteo medio"
+      },
+      {
+        "id": "d",
+        "texto": "Aductor largo"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El aductor largo es el aductor que más se lesiona en la pubalgia; duele al aducir contra resistencia, cerca de su origen en el pubis."
+  },
+  {
+    "id": "aductor-largo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "aductor-largo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del aductor largo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cuerpo del pubis, debajo de la cresta púbica"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tercio medio de la línea áspera"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio obturador, división anterior"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Aducción de la cadera"
+      }
+    ],
+    "explicacion": "Su borde medial limita por dentro el triángulo femoral."
+  },
+  {
+    "id": "aductor-largo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-largo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el aductor largo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Lo inerva la división anterior del nervio obturador (L2–L4), como a la mayoría de los aductores."
+  },
+  {
+    "id": "aductor-mayor-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-mayor"
+    ],
+    "dificultad": 2,
+    "enunciado": "Además de aducir, ¿qué hacen las dos porciones del aductor mayor sobre la cadera?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Las dos la flexionan"
+      },
+      {
+        "id": "b",
+        "texto": "La aductora la flexiona y la isquiotibial la extiende"
+      },
+      {
+        "id": "c",
+        "texto": "Las dos la extienden"
+      },
+      {
+        "id": "d",
+        "texto": "La aductora la extiende y la isquiotibial la flexiona"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "La porción isquiotibial nace en la tuberosidad isquiática, por detrás, y por eso extiende la cadera como los isquiotibiales."
+  },
+  {
+    "id": "aductor-mayor-caso-hiato-aductor",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "aductor-mayor"
+    ],
+    "dificultad": 2,
+    "caso": "Un fisioterapeuta palpa el pulso poplíteo de un paciente y le explica que esos vasos llegan desde la cara anterior del muslo pasando por una abertura entre las dos inserciones de un mismo músculo.",
+    "pregunta": "¿En qué músculo está esa abertura?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Aductor mayor"
+      },
+      {
+        "id": "b",
+        "texto": "Aductor largo"
+      },
+      {
+        "id": "c",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "d",
+        "texto": "Semimembranoso"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Entre la inserción en la línea áspera y la del tubérculo aductor queda el hiato aductor, por donde los vasos femorales pasan a la fosa poplítea."
+  },
+  {
+    "id": "aductor-mayor-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "aductor-mayor"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del aductor mayor con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen de la porción isquiotibial",
+        "derecha": "Tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Inserción de la porción isquiotibial",
+        "derecha": "Tubérculo aductor del fémur"
+      },
+      {
+        "izquierda": "Inervación de la porción aductora",
+        "derecha": "Nervio obturador"
+      },
+      {
+        "izquierda": "Acción de todo el músculo",
+        "derecha": "Aducción de la cadera"
+      }
+    ],
+    "explicacion": "Entre las inserciones de sus dos porciones queda el hiato aductor."
+  },
+  {
+    "id": "aductor-mayor-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "aductor-mayor"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervios inervan las dos porciones del aductor mayor?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Solo el nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Femoral (porción aductora) y obturador (porción isquiotibial)"
+      },
+      {
+        "id": "c",
+        "texto": "Obturador (porción aductora) y división tibial del ciático (porción isquiotibial)"
+      },
+      {
+        "id": "d",
+        "texto": "Glúteo inferior (porción aductora) y nervio tibial (porción isquiotibial)"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Tiene doble inervación: la porción aductora pertenece al grupo medial y la isquiotibial al grupo posterior, como los isquiotibiales."
+  },
+  {
+    "id": "biceps-femoral-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "biceps-femoral"
+    ],
+    "dificultad": 1,
+    "enunciado": "Con la rodilla flexionada, ¿qué rotación produce el bíceps femoral sobre la tibia?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación medial"
+      },
+      {
+        "id": "b",
+        "texto": "Ninguna: solo flexiona la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Rotación lateral"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación medial con extensión"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Se inserta por fuera, en la cabeza del peroné, y por eso rota lateralmente la tibia; los isquiotibiales mediales la rotan medialmente."
+  },
+  {
+    "id": "biceps-femoral-caso-sprint",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "biceps-femoral"
+    ],
+    "dificultad": 2,
+    "caso": "Un velocista siente un pinchazo en la parte posterolateral del muslo durante un sprint. Al palpar, el dolor sigue hasta la cabeza del peroné.",
+    "pregunta": "¿Qué músculo es el más probablemente lesionado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Semitendinoso"
+      },
+      {
+        "id": "b",
+        "texto": "Bíceps femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Vasto lateral"
+      },
+      {
+        "id": "d",
+        "texto": "Gastrocnemio"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El bíceps femoral es el isquiotibial lateral y se inserta en la cabeza del peroné; es el que más se desgarra al correr a máxima velocidad."
+  },
+  {
+    "id": "biceps-femoral-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "biceps-femoral"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del bíceps femoral con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen de la cabeza larga",
+        "derecha": "Tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Origen de la cabeza corta",
+        "derecha": "Labio lateral de la línea áspera"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cabeza del peroné"
+      },
+      {
+        "izquierda": "Acción de la cabeza larga en la cadera",
+        "derecha": "Extensión"
+      }
+    ],
+    "explicacion": "La cabeza corta es la única porción de los isquiotibiales que no cruza la cadera."
+  },
+  {
+    "id": "biceps-femoral-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "biceps-femoral"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva la cabeza corta del bíceps femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Porción tibial del nervio ciático"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "d",
+        "texto": "Porción fibular común del nervio ciático"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "La cabeza corta la inerva la porción fibular común del ciático; la cabeza larga, como el resto de los isquiotibiales, la porción tibial."
+  },
+  {
+    "id": "gracil-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gracil"
+    ],
+    "dificultad": 2,
+    "enunciado": "Además de aducir la cadera, ¿qué hace el grácil sobre la rodilla?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "La extiende"
+      },
+      {
+        "id": "b",
+        "texto": "La flexiona y rota lateralmente la pierna"
+      },
+      {
+        "id": "c",
+        "texto": "No actúa sobre la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "La flexiona y rota medialmente la pierna"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Es el único aductor que cruza la rodilla: por su inserción en la pata de ganso la flexiona y rota medialmente la pierna."
+  },
+  {
+    "id": "gracil-caso-injerto-lca",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "gracil"
+    ],
+    "dificultad": 2,
+    "caso": "A un futbolista le reconstruyen el ligamento cruzado anterior con el tendón de un músculo aductor que llega a la pata de ganso.",
+    "pregunta": "¿De qué músculo se tomó el injerto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "b",
+        "texto": "Aductor largo"
+      },
+      {
+        "id": "c",
+        "texto": "Grácil"
+      },
+      {
+        "id": "d",
+        "texto": "Semimembranoso"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El grácil es el único aductor que llega a la pata de ganso; su tendón, junto con el del semitendinoso, se usa como injerto para el ligamento cruzado anterior."
+  },
+  {
+    "id": "gracil-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "gracil"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del grácil con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Cuerpo y rama inferior del pubis"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Pata de ganso, en la cara medial de la tibia"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio obturador"
+      },
+      {
+        "izquierda": "Acción en la cadera",
+        "derecha": "Aducción"
+      }
+    ],
+    "explicacion": "Es el aductor más superficial y el único que llega a la tibia."
+  },
+  {
+    "id": "gracil-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "gracil"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el grácil?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "El grácil es un aductor y, como ellos, lo inerva el nervio obturador (L2–L3)."
+  },
+  {
+    "id": "iliopsoas-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "iliopsoas"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Cuál es la acción principal del iliopsoas?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexión de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Extensión de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Extensión de la rodilla"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Es el flexor más potente de la cadera y, con el muslo fijo, también flexiona el tronco."
+  },
+  {
+    "id": "iliopsoas-caso-prueba-thomas",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "iliopsoas"
+    ],
+    "dificultad": 3,
+    "caso": "En la prueba de Thomas, el paciente acostado boca arriba abraza una rodilla contra el pecho y el muslo del otro lado se despega de la camilla.",
+    "pregunta": "¿Qué músculo está acortado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Glúteo mayor"
+      },
+      {
+        "id": "b",
+        "texto": "Semitendinoso"
+      },
+      {
+        "id": "c",
+        "texto": "Tibial anterior"
+      },
+      {
+        "id": "d",
+        "texto": "Iliopsoas"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Si el muslo que queda abajo se eleva, el flexor de la cadera de ese lado está acortado, y el principal es el iliopsoas."
+  },
+  {
+    "id": "iliopsoas-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "iliopsoas"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del iliopsoas con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen del psoas mayor",
+        "derecha": "Cuerpos y apófisis transversas de T12 a L5"
+      },
+      {
+        "izquierda": "Origen del ilíaco",
+        "derecha": "Fosa ilíaca"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Trocánter menor del fémur"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Flexión de la cadera"
+      }
+    ],
+    "explicacion": "Sus dos porciones se unen y pasan bajo el ligamento inguinal hasta el trocánter menor."
+  },
+  {
+    "id": "iliopsoas-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "iliopsoas"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva la porción ilíaca del iliopsoas?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio ciático"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El ilíaco lo inerva el nervio femoral (L2–L3); el psoas recibe ramos directos de L1–L3."
+  },
+  {
+    "id": "pectineo-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "pectineo"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones realiza el pectíneo sobre la cadera?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Abducción y extensión"
+      },
+      {
+        "id": "b",
+        "texto": "Aducción y flexión"
+      },
+      {
+        "id": "c",
+        "texto": "Rotación medial y extensión"
+      },
+      {
+        "id": "d",
+        "texto": "Abducción y rotación lateral"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Va de la línea pectínea del pubis al fémur, por delante y por dentro: aduce y flexiona la cadera."
+  },
+  {
+    "id": "pectineo-caso-triangulo-femoral",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "pectineo"
+    ],
+    "dificultad": 2,
+    "caso": "Al palpar el triángulo femoral de un paciente para tomar el pulso femoral, el fisioterapeuta recuerda qué músculos forman su piso.",
+    "pregunta": "¿Cuál de estos músculos forma parte del piso del triángulo femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Pectíneo"
+      },
+      {
+        "id": "b",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "c",
+        "texto": "Recto femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Grácil"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "El piso del triángulo femoral lo forman el iliopsoas por fuera y el pectíneo por dentro; el sartorio y el aductor largo son sus límites."
+  },
+  {
+    "id": "pectineo-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "pectineo"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del pectíneo con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Línea pectínea del pubis"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Fémur, debajo del trocánter menor"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Aducción y flexión de la cadera"
+      }
+    ],
+    "explicacion": "Es un músculo de transición entre el compartimento anterior y el medial."
+  },
+  {
+    "id": "pectineo-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "pectineo"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva habitualmente al pectíneo?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Aunque está en el compartimento medial, suele inervarlo el nervio femoral; a veces recibe también un ramo del obturador."
+  },
+  {
+    "id": "recto-femoral-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "recto-femoral"
+    ],
+    "dificultad": 1,
+    "enunciado": "Además de extender la rodilla, ¿qué acción realiza el recto femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extensión de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Aducción de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación lateral de la cadera"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Es la única porción del cuádriceps que cruza la cadera por delante, por eso también la flexiona."
+  },
+  {
+    "id": "recto-femoral-caso-nervio-femoral",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "recto-femoral"
+    ],
+    "dificultad": 2,
+    "caso": "Un paciente con una lesión del nervio femoral refiere que la rodilla se le dobla al apoyar el peso sobre esa pierna.",
+    "pregunta": "¿Qué acción está más comprometida?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extensión de la rodilla"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión plantar del tobillo"
+      },
+      {
+        "id": "c",
+        "texto": "Aducción de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Abducción de la cadera"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "El nervio femoral inerva el cuádriceps, el principal extensor de la rodilla; sin él, la rodilla no se estabiliza al cargar peso."
+  },
+  {
+    "id": "recto-femoral-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "recto-femoral"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del recto femoral con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Espina ilíaca anteroinferior"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tuberosidad de la tibia (vía ligamento rotuliano)"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Acción en la cadera",
+        "derecha": "Flexión"
+      }
+    ],
+    "explicacion": "Al cruzar dos articulaciones, el recto femoral extiende la rodilla y además flexiona la cadera."
+  },
+  {
+    "id": "recto-femoral-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "recto-femoral"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el recto femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo superior"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Todo el cuádriceps, incluido el recto femoral, está inervado por el nervio femoral (L2–L4)."
+  },
+  {
+    "id": "sartorio-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "sartorio"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué posición resume las acciones del sartorio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Ponerse en cuclillas con las rodillas juntas"
+      },
+      {
+        "id": "b",
+        "texto": "Pararse en puntas de pie"
+      },
+      {
+        "id": "c",
+        "texto": "Sentarse con un tobillo apoyado sobre la rodilla contraria"
+      },
+      {
+        "id": "d",
+        "texto": "Patear un balón con el empeine y la rodilla extendida"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Esa posición combina flexión, abducción y rotación lateral de la cadera con flexión de la rodilla: justo lo que hace el sartorio."
+  },
+  {
+    "id": "sartorio-caso-triangulo-femoral",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "sartorio"
+    ],
+    "dificultad": 2,
+    "caso": "Para localizar el triángulo femoral, el fisioterapeuta pide al paciente que flexione y rote lateralmente la cadera contra resistencia, y palpa el músculo que se marca en diagonal por fuera.",
+    "pregunta": "¿Qué músculo forma el límite lateral del triángulo femoral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Aductor largo"
+      },
+      {
+        "id": "b",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "c",
+        "texto": "Recto femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Tensor de la fascia lata"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El sartorio limita por fuera el triángulo femoral y el aductor largo, por dentro."
+  },
+  {
+    "id": "sartorio-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "sartorio"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del sartorio con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Espina ilíaca anterosuperior"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Pata de ganso, en la cara medial de la tibia"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Particularidad",
+        "derecha": "Es el músculo más largo del cuerpo"
+      }
+    ],
+    "explicacion": "Cruza el muslo en diagonal desde la espina ilíaca anterosuperior hasta la cara medial de la tibia."
+  },
+  {
+    "id": "sartorio-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "sartorio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el sartorio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El sartorio pertenece al compartimento anterior del muslo y lo inerva el nervio femoral (L2–L3)."
+  },
+  {
+    "id": "semimembranoso-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "semimembranoso"
+    ],
+    "dificultad": 1,
+    "enunciado": "Con la rodilla flexionada, ¿qué rotación produce el semimembranoso sobre la tibia?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Rotación lateral"
+      },
+      {
+        "id": "b",
+        "texto": "Ninguna: solo flexiona la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Rotación lateral con extensión"
+      },
+      {
+        "id": "d",
+        "texto": "Rotación medial"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Se inserta en el cóndilo medial de la tibia, por dentro, y por eso la rota medialmente, igual que el semitendinoso."
+  },
+  {
+    "id": "semimembranoso-caso-palpacion",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "semimembranoso"
+    ],
+    "dificultad": 2,
+    "caso": "Al palpar la parte posteromedial de la rodilla flexionada, un estudiante encuentra un tendón delgado y superficial y, por debajo, una masa muscular más ancha que se inserta en el cóndilo medial de la tibia.",
+    "pregunta": "¿Qué músculo es la masa más profunda?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Semitendinoso"
+      },
+      {
+        "id": "b",
+        "texto": "Grácil"
+      },
+      {
+        "id": "c",
+        "texto": "Semimembranoso"
+      },
+      {
+        "id": "d",
+        "texto": "Bíceps femoral"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El semimembranoso queda por debajo del semitendinoso, cuyo tendón delgado se palpa encima, y se inserta en el cóndilo medial de la tibia."
+  },
+  {
+    "id": "semimembranoso-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "semimembranoso"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del semimembranoso con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Cara posterior del cóndilo medial de la tibia"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Porción tibial del nervio ciático"
+      },
+      {
+        "izquierda": "Acción en la cadera",
+        "derecha": "Extensión"
+      }
+    ],
+    "explicacion": "Debe su nombre a su tendón de origen, aplanado como una membrana."
+  },
+  {
+    "id": "semimembranoso-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "semimembranoso"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el semimembranoso?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Porción tibial del nervio ciático"
+      },
+      {
+        "id": "b",
+        "texto": "Porción fibular común del nervio ciático"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Como los demás isquiotibiales, salvo la cabeza corta del bíceps, lo inerva la porción tibial del ciático (L5–S2)."
+  },
+  {
+    "id": "semitendinoso-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "semitendinoso"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones realiza el semitendinoso?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extiende la cadera y flexiona la rodilla"
+      },
+      {
+        "id": "b",
+        "texto": "Flexiona la cadera y extiende la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Abduce la cadera y extiende la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Solo flexiona la rodilla"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Cruza por detrás la cadera y la rodilla: extiende la primera y flexiona la segunda."
+  },
+  {
+    "id": "semitendinoso-caso-injerto-lca",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "semitendinoso"
+    ],
+    "dificultad": 2,
+    "caso": "Tras reconstruir el ligamento cruzado anterior con el tendón de un isquiotibial, un paciente tiene debilidad para flexionar la rodilla en las primeras semanas.",
+    "pregunta": "¿Qué tendón se usa a menudo como injerto?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Bíceps femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Semimembranoso"
+      },
+      {
+        "id": "c",
+        "texto": "Gastrocnemio"
+      },
+      {
+        "id": "d",
+        "texto": "Semitendinoso"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "El tendón largo y delgado del semitendinoso se usa a menudo como injerto; mientras se recupera, la flexión de la rodilla queda más débil."
+  },
+  {
+    "id": "semitendinoso-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "semitendinoso"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del semitendinoso con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Tuberosidad isquiática"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Pata de ganso, en la cara medial de la tibia"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Porción tibial del nervio ciático"
+      },
+      {
+        "izquierda": "Acción en la rodilla",
+        "derecha": "Flexión con rotación medial"
+      }
+    ],
+    "explicacion": "Comparte el origen con la cabeza larga del bíceps femoral y la inserción con el sartorio y el grácil."
+  },
+  {
+    "id": "semitendinoso-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "semitendinoso"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el semitendinoso?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Porción fibular común del nervio ciático"
+      },
+      {
+        "id": "b",
+        "texto": "Porción tibial del nervio ciático"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio glúteo inferior"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Lo inerva la porción tibial del nervio ciático (L5–S2), como al semimembranoso y a la cabeza larga del bíceps."
+  },
+  {
+    "id": "tensor-fascia-lata-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tensor-fascia-lata"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acciones realiza el tensor de la fascia lata sobre la cadera?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Extensión, aducción y rotación lateral"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión, abducción y rotación medial"
+      },
+      {
+        "id": "c",
+        "texto": "Flexión, aducción y rotación lateral"
+      },
+      {
+        "id": "d",
+        "texto": "Extensión y abducción"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Flexiona, abduce y rota medialmente la cadera, y además tensa el tracto iliotibial."
+  },
+  {
+    "id": "tensor-fascia-lata-caso-cintilla",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "tensor-fascia-lata"
+    ],
+    "dificultad": 2,
+    "caso": "Un ciclista tiene dolor en la cara lateral de la rodilla después de pedalear mucho tiempo; al palpar, el dolor sigue una banda desde la cadera hasta el tubérculo de Gerdy.",
+    "pregunta": "¿Qué músculo tensa esa banda y conviene evaluar?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Tensor de la fascia lata"
+      },
+      {
+        "id": "b",
+        "texto": "Bíceps femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Vasto medial"
+      },
+      {
+        "id": "d",
+        "texto": "Sartorio"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "La banda es el tracto iliotibial, que llega al tubérculo de Gerdy; el tensor de la fascia lata la tensa desde arriba."
+  },
+  {
+    "id": "tensor-fascia-lata-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "tensor-fascia-lata"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del tensor de la fascia lata con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Espina ilíaca anterosuperior"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tracto iliotibial, hasta el tubérculo de Gerdy"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio glúteo superior"
+      },
+      {
+        "izquierda": "Grupo funcional",
+        "derecha": "Glúteo"
+      }
+    ],
+    "explicacion": "Por su inervación y su función pertenece al grupo glúteo, aunque esté en la cara anterior."
+  },
+  {
+    "id": "tensor-fascia-lata-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "tensor-fascia-lata"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué nervio inerva el tensor de la fascia lata?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo inferior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Aunque se ve en la cara anterior, pertenece al grupo glúteo y lo inerva el nervio glúteo superior (L4–S1)."
+  },
+  {
+    "id": "vasto-intermedio-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-intermedio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción realiza el vasto intermedio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexión de la cadera"
+      },
+      {
+        "id": "b",
+        "texto": "Flexión de la rodilla"
+      },
+      {
+        "id": "c",
+        "texto": "Extensión de la rodilla"
+      },
+      {
+        "id": "d",
+        "texto": "Aducción de la cadera"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "Como los otros vastos, solo extiende la rodilla; de las cabezas del cuádriceps, únicamente el recto femoral flexiona además la cadera."
+  },
+  {
+    "id": "vasto-intermedio-caso-contusion",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "vasto-intermedio"
+    ],
+    "dificultad": 2,
+    "caso": "Un futbolista recibe un rodillazo en la parte anterior del muslo. Aparece un hematoma profundo, pegado al fémur y por debajo del recto femoral, que limita la flexión de la rodilla.",
+    "pregunta": "¿Qué músculo es más probable que esté contusionado?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Sartorio"
+      },
+      {
+        "id": "b",
+        "texto": "Vasto intermedio"
+      },
+      {
+        "id": "c",
+        "texto": "Bíceps femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Aductor largo"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "El vasto intermedio está debajo del recto femoral, sobre la diáfisis del fémur, y un golpe directo lo aplasta contra el hueso."
+  },
+  {
+    "id": "vasto-intermedio-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "vasto-intermedio"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del vasto intermedio con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Caras anterior y lateral de la diáfisis del fémur"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Tendón del cuádriceps, rótula y tuberosidad tibial"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión de la rodilla"
+      }
+    ],
+    "explicacion": "Queda oculto bajo el recto femoral, pegado al fémur."
+  },
+  {
+    "id": "vasto-intermedio-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-intermedio"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el vasto intermedio?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio femoral"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Todo el cuádriceps, incluido el vasto intermedio, lo inerva el nervio femoral (L2–L4)."
+  },
+  {
+    "id": "vasto-lateral-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-lateral"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué acción realiza el vasto lateral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Flexión de la rodilla"
+      },
+      {
+        "id": "b",
+        "texto": "Abducción de la cadera"
+      },
+      {
+        "id": "c",
+        "texto": "Rotación lateral de la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Extensión de la rodilla"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Llega a la rótula por el tendón del cuádriceps y a la tibia por el ligamento rotuliano: extiende la rodilla."
+  },
+  {
+    "id": "vasto-lateral-caso-inyeccion",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "vasto-lateral"
+    ],
+    "dificultad": 2,
+    "caso": "En un consultorio pediátrico hay que aplicar una vacuna intramuscular a un lactante y se busca el músculo más grande del muslo, en su cara lateral.",
+    "pregunta": "¿Qué músculo se elige?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Recto femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Glúteo mayor"
+      },
+      {
+        "id": "c",
+        "texto": "Vasto lateral"
+      },
+      {
+        "id": "d",
+        "texto": "Sartorio"
+      }
+    ],
+    "correcta": "c",
+    "explicacion": "El vasto lateral es la cabeza más grande del cuádriceps y el sitio preferido de inyección intramuscular en lactantes."
+  },
+  {
+    "id": "vasto-lateral-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "vasto-lateral"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del vasto lateral con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Trocánter mayor y labio lateral de la línea áspera"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Rótula y tuberosidad tibial"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión de la rodilla"
+      }
+    ],
+    "explicacion": "Es la cabeza más grande del cuádriceps."
+  },
+  {
+    "id": "vasto-lateral-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-lateral"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el vasto lateral?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio glúteo superior"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio ciático"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio obturador"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Es una cabeza del cuádriceps y, como todas, la inerva el nervio femoral (L2–L4)."
+  },
+  {
+    "id": "vasto-medial-accion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-medial"
+    ],
+    "dificultad": 2,
+    "enunciado": "¿Qué función especial tienen las fibras inferiores del vasto medial?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Estabilizan la rótula hacia medial"
+      },
+      {
+        "id": "b",
+        "texto": "Rotan lateralmente la tibia"
+      },
+      {
+        "id": "c",
+        "texto": "Flexionan la cadera"
+      },
+      {
+        "id": "d",
+        "texto": "Desbloquean la rodilla extendida"
+      }
+    ],
+    "correcta": "a",
+    "explicacion": "Sus fibras inferiores, casi horizontales, tiran de la rótula hacia medial y la mantienen centrada."
+  },
+  {
+    "id": "vasto-medial-caso-patelofemoral",
+    "tipo": "caso_clinico",
+    "fichaIds": [
+      "vasto-medial"
+    ],
+    "dificultad": 3,
+    "caso": "Una corredora tiene dolor alrededor de la rótula al subir escaleras y al estar sentada mucho tiempo; al extender la rodilla, la rótula se desplaza hacia afuera.",
+    "pregunta": "¿Qué músculo conviene fortalecer?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Vasto lateral"
+      },
+      {
+        "id": "b",
+        "texto": "Tensor de la fascia lata"
+      },
+      {
+        "id": "c",
+        "texto": "Bíceps femoral"
+      },
+      {
+        "id": "d",
+        "texto": "Vasto medial"
+      }
+    ],
+    "correcta": "d",
+    "explicacion": "Las fibras inferiores del vasto medial estabilizan la rótula hacia medial; su debilidad se asocia al dolor patelofemoral."
+  },
+  {
+    "id": "vasto-medial-ficha",
+    "tipo": "emparejar",
+    "fichaIds": [
+      "vasto-medial"
+    ],
+    "dificultad": 2,
+    "enunciado": "Une cada parte de la ficha del vasto medial con su dato.",
+    "pares": [
+      {
+        "izquierda": "Origen",
+        "derecha": "Labio medial de la línea áspera y línea supracondílea medial"
+      },
+      {
+        "izquierda": "Inserción",
+        "derecha": "Borde medial de la rótula y tuberosidad tibial"
+      },
+      {
+        "izquierda": "Inervación",
+        "derecha": "Nervio femoral"
+      },
+      {
+        "izquierda": "Acción",
+        "derecha": "Extensión de la rodilla"
+      }
+    ],
+    "explicacion": "Forma el abultamiento en lágrima por encima y por dentro de la rodilla."
+  },
+  {
+    "id": "vasto-medial-inervacion",
+    "tipo": "opcion_multiple",
+    "fichaIds": [
+      "vasto-medial"
+    ],
+    "dificultad": 1,
+    "enunciado": "¿Qué nervio inerva el vasto medial?",
+    "opciones": [
+      {
+        "id": "a",
+        "texto": "Nervio obturador"
+      },
+      {
+        "id": "b",
+        "texto": "Nervio femoral"
+      },
+      {
+        "id": "c",
+        "texto": "Nervio safeno"
+      },
+      {
+        "id": "d",
+        "texto": "Nervio ciático"
+      }
+    ],
+    "correcta": "b",
+    "explicacion": "Lo inerva el nervio femoral (L2–L4); el safeno es un ramo sensitivo del femoral que no inerva músculos."
+  }
+]

@@ -1,7 +1,8 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import ejemplo from "./ejemplo-generador.json";
 import { slug } from "./prompt";
-import { validarSalida } from "./validar";
+import { validarEjerciciosTexto, validarSalida } from "./validar";
 
 const vacio = { fichas: [], ejercicios: [] };
 
@@ -41,5 +42,27 @@ describe("slug", () => {
   it("quita tildes y espacios", () => {
     expect(slug(" Músculo   Tensor de la fascia lata ")).toBe("musculo-tensor-de-la-fascia-lata");
     expect(slug("Pectíneo")).toBe("pectineo");
+  });
+});
+
+describe("validarEjerciciosTexto", () => {
+  const archivos = ["muslo", "cadera", "pierna"].map(
+    (r) => JSON.parse(readFileSync(new URL(`../../../../contenido/ejercicios-texto/${r}.json`, import.meta.url), "utf8")) as { fichaIds: string[] }[],
+  );
+  const escritos = archivos.flat();
+  const fichas = new Set(escritos.flatMap((e) => e.fichaIds));
+
+  it("acepta los ejercicios de contenido/ejercicios-texto: 4 por cada una de las 37 fichas", () => {
+    expect(fichas.size).toBe(37);
+    expect(validarEjerciciosTexto(escritos, fichas)).toMatchObject({ ok: true });
+  });
+
+  it("rechaza una ficha que no existe y una ficha a la que le falta un ejercicio", () => {
+    const r = validarEjerciciosTexto(escritos.slice(1), [...fichas].filter((f) => f !== "sartorio"));
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.errores.some((e) => e.includes("la ficha sartorio no existe"))).toBe(true);
+      expect(r.errores.some((e) => e.startsWith("Ficha aductor-corto:"))).toBe(true);
+    }
   });
 });
