@@ -122,3 +122,16 @@ export const haySesion = () => sesion !== null;
 
 /** El usuario de la sesión vigente: al renovarla llega con los datos al día del servidor. */
 export const usuarioActual = () => sesion?.usuario ?? null;
+
+/** Cambia datos del perfil en el servidor y deja la sesión guardada al día. */
+export async function actualizarPerfil(cambios: { horaRecordatorio: string | null }): Promise<Usuario> {
+  const usuario = await api<Usuario>("/me", { metodo: "PATCH", cuerpo: cambios });
+  if (sesion) await guardarSesion({ ...sesion, usuario });
+  return usuario;
+}
+
+/** Borra la cuenta en el servidor, con todos sus datos, y la sesión de este teléfono. */
+export async function borrarCuenta(): Promise<void> {
+  await api("/me", { metodo: "DELETE" });
+  await guardarSesion(null);
+}

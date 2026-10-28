@@ -8,15 +8,24 @@ import type { Recordatorio } from "../repaso/recordatorio";
  */
 const CANAL = "recordatorio";
 let cola: Promise<void> = Promise.resolve();
-let permiso: Promise<boolean> | null = null;
 
-function conPermiso(): Promise<boolean> {
-  permiso ??= (async () => {
-    const actual = await Notifications.getPermissionsAsync();
-    if (actual.granted || !actual.canAskAgain) return actual.granted;
-    return (await Notifications.requestPermissionsAsync()).granted;
-  })().catch(() => false);
-  return permiso;
+/** Se consulta cada vez: si el estudiante lo activa en Ajustes, al volver a la app ya se programa. */
+async function conPermiso(): Promise<boolean> {
+  const actual = await Notifications.getPermissionsAsync();
+  if (actual.granted || !actual.canAskAgain) return actual.granted;
+  return (await Notifications.requestPermissionsAsync()).granted;
+}
+
+export type EstadoPermiso = "concedido" | "denegado" | "pendiente" | "no_disponible";
+
+/** "denegado" es que el teléfono ya no deja preguntar: hay que activarlo en Ajustes. */
+export async function estadoPermiso(): Promise<EstadoPermiso> {
+  try {
+    const p = await Notifications.getPermissionsAsync();
+    return p.granted ? "concedido" : p.canAskAgain ? "pendiente" : "denegado";
+  } catch {
+    return "pendiente";
+  }
 }
 
 async function programar(r: Recordatorio | null): Promise<void> {
@@ -35,6 +44,7 @@ async function programar(r: Recordatorio | null): Promise<void> {
 
 /** Deja programado solo `r` (o nada, con null). Las llamadas van en fila: dos seguidas no dejan dos avisos. */
 export function programarRecordatorio(r: Recordatorio | null): Promise<void> {
+  // En fila, además, nunca se piden dos permisos a la vez.
   cola = cola.then(() => programar(r)).catch(() => {});
   return cola;
 }

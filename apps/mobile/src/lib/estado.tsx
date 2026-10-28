@@ -6,11 +6,21 @@ import { diaDeEstudio } from "../repaso/dia";
 import { aplicarSesion, calificacionesDeSesion, type Progreso } from "../repaso/espaciado";
 import { registrarActividad, SIN_RACHA } from "../repaso/racha";
 import { proximoRecordatorio } from "../repaso/recordatorio";
-import { cargarSesion, cerrarSesion, iniciarSesion, registrarse, SinConexion, type Usuario, usuarioActual } from "./api";
-import { guardarJson, leerJson } from "./almacen";
+import {
+  actualizarPerfil,
+  borrarCuenta as borrarCuentaEnServidor,
+  cargarSesion,
+  cerrarSesion,
+  iniciarSesion,
+  registrarse,
+  SinConexion,
+  type Usuario,
+  usuarioActual,
+} from "./api";
+import { borrarJson, guardarJson, leerJson } from "./almacen";
 import { programarRecordatorio } from "./notificaciones";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
-import { guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
+import { borrarDatosLocales, guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
 
 interface Estado {
@@ -41,6 +51,10 @@ interface Estado {
   horaRecordatorio: string | null;
   /** Guarda un reporte de error en el teléfono y lo envía; sin conexión sale con la próxima sincronización. */
   reportarError: (r: { ejercicioId: string; motivo: MotivoReporte; comentario?: string }) => Promise<void>;
+  /** Guarda en el servidor la hora del recordatorio ("HH:MM", o null para apagarlo). Necesita conexión. */
+  cambiarHoraRecordatorio: (hora: string | null) => Promise<void>;
+  /** Borra la cuenta en el servidor y todo lo del usuario en este teléfono. Necesita conexión. */
+  borrarCuenta: () => Promise<void>;
 }
 
 const Contexto = createContext<Estado | null>(null);
@@ -129,6 +143,16 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     return () => s.remove();
   }, [usuario, horaRecordatorio, racha]);
 
+  /** Lo que queda al cerrar sesión o borrar la cuenta: nada en pantalla y ningún recordatorio. */
+  const limpiar = () => {
+    setUsuario(null);
+    setCompletadas([]);
+    setProgreso([]);
+    setRacha(SIN_RACHA);
+    setHoraRecordatorio(null);
+    void programarRecordatorio(null);
+  };
+
   const valor: Estado = {
     cargando,
     usuario,
@@ -136,13 +160,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     registrar: async (datos) => setUsuario(await registrarse(datos)),
     salir: async () => {
       await cerrarSesion();
-      setUsuario(null);
-      setCompletadas([]);
-      setProgreso([]);
-      setRacha(SIN_RACHA);
-      setHoraRecordatorio(null);
-      // Sin sesión no hay a quién recordarle.
-      void programarRecordatorio(null);
+      limpiar();
     },
     paquete,
     descarga,
@@ -187,6 +205,18 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       const usuarioId = usuario.id;
       await guardarReporte(usuarioId, { id: randomUUID(), ejercicioId, motivo, comentario: comentario?.trim() || undefined, creado: new Date().toISOString() });
       sincronizarAhora(usuarioId);
+    },
+    cambiarHoraRecordatorio: async (hora) => {
+      const u = await actualizarPerfil({ horaRecordatorio: hora });
+      setHoraRecordatorio(u.horaRecordatorio ?? null);
+    },
+    borrarCuenta: async () => {
+      if (!usuario) return;
+      const usuarioId = usuario.id;
+      await borrarCuentaEnServidor();
+      // En el servidor ya no existe: lo local se borra aunque algo falle aquí.
+      await Promise.all([borrarDatosLocales(usuarioId), borrarJson(claveProgreso(usuarioId))]).catch(() => {});
+      limpiar();
     },
   };
 

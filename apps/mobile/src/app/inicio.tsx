@@ -10,7 +10,7 @@ import { diaDeEstudio } from "../repaso/dia";
 import { diasHastaElProximo, ejerciciosDeRepaso } from "../repaso/espaciado";
 import { rachaVigente } from "../repaso/racha";
 import { proximoRecordatorio } from "../repaso/recordatorio";
-import { color, espacio, fuente } from "../tema";
+import { color, espacio, fuente, TOQUE_MINIMO } from "../tema";
 
 const CIRCULO = {
   completada: { fondo: color.logro, sombra: color.logroSombra, icono: color.logroTexto },
@@ -22,7 +22,7 @@ const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
 const TAM = 76;
 
 export default function Inicio() {
-  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso, racha, horaRecordatorio } = useApp();
+  const { usuario, paquete, descarga, actualizar, completadas, progreso, racha, horaRecordatorio } = useApp();
 
   if (!paquete) {
     return (
@@ -62,10 +62,8 @@ export default function Inicio() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={estilos.contenido}>
+        {/* Arriba la racha y el perfil; el saludo debajo, a todo el ancho, para que ningún nombre se corte. */}
         <View style={estilos.cabecera}>
-          <Text style={estilos.saludo} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
-            Hola, {usuario?.nombre.split(" ")[0]}
-          </Text>
           <View
             style={[estilos.racha, encendida && estilos.rachaEncendida]}
             accessible
@@ -74,7 +72,11 @@ export default function Inicio() {
             <Text style={[estilos.rachaIcono, !encendida && { opacity: 0.45 }]}>🔥</Text>
             <Text style={[estilos.rachaTexto, encendida && { color: color.logroTexto }]}>{dias}</Text>
           </View>
+          <Pressable accessibilityRole="button" accessibilityLabel="Perfil" onPress={() => router.push("/perfil")} style={estilos.avatar}>
+            <Text style={estilos.inicial}>{usuario?.nombre.trim().charAt(0).toUpperCase()}</Text>
+          </Pressable>
         </View>
+        <Text style={estilos.saludo}>Hola, {usuario?.nombre.split(" ")[0]}</Text>
         {descarga === "sin_conexion" && <Text style={estilos.offline}>Sin conexión: usando las lecciones guardadas.</Text>}
         <View style={[estilos.repaso, porRepasar > 0 && { borderColor: color.coral }]}>
           <View style={{ flex: 1 }}>
@@ -142,10 +144,6 @@ export default function Inicio() {
             />
           </View>
         )}
-
-        <View style={{ marginTop: espacio.xl }}>
-          <Boton titulo="Cerrar sesión" variante="secundario" onPress={async () => { await salir(); router.replace("/bienvenida"); }} />
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -155,12 +153,14 @@ const estilos = StyleSheet.create({
   centro: { flex: 1, justifyContent: "center", alignItems: "stretch", padding: espacio.l, gap: espacio.m, backgroundColor: color.fondo },
   aviso: { fontSize: 17, fontFamily: fuente.media, color: color.tenue, textAlign: "center" },
   contenido: { padding: espacio.l, paddingBottom: espacio.xl },
-  cabecera: { flexDirection: "row", alignItems: "center", gap: espacio.m },
-  saludo: { flex: 1, fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
+  cabecera: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: espacio.m },
+  saludo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
   racha: { flexDirection: "row", alignItems: "center", gap: espacio.xs, paddingHorizontal: espacio.m, paddingVertical: espacio.xs, borderRadius: 999, borderWidth: 2, borderColor: color.borde, backgroundColor: color.superficie },
   rachaEncendida: { borderColor: color.logro, backgroundColor: color.hueso },
   rachaIcono: { fontSize: 18 },
   rachaTexto: { fontSize: 18, fontFamily: fuente.titulo, color: color.tenue },
+  avatar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, borderRadius: TOQUE_MINIMO / 2, backgroundColor: color.marcaSuave, borderWidth: 2, borderColor: color.marca, alignItems: "center", justifyContent: "center" },
+  inicial: { fontSize: 18, fontFamily: fuente.titulo, color: color.marcaTexto },
   offline: { marginTop: espacio.s, color: color.tenue, fontSize: 14, fontFamily: fuente.normal },
   repaso: { marginTop: espacio.l, flexDirection: "row", alignItems: "center", gap: espacio.m, padding: espacio.m, borderRadius: 16, borderWidth: 2, borderBottomWidth: 4, borderColor: color.borde, backgroundColor: color.superficie },
   repasoTitulo: { fontSize: 18, fontFamily: fuente.titulo, color: color.texto },

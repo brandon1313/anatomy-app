@@ -120,3 +120,13 @@ export async function borrarReporte(id: string): Promise<void> {
     escribir(k, leer<NuevoReporte[]>(k, []).filter((r) => r.id !== id));
   }
 }
+
+export async function borrarDatosLocales(usuarioId: string): Promise<void> {
+  for (const clave of [claveIntentos, claveProgreso, claveRacha, claveReportes]) {
+    try {
+      localStorage.removeItem(clave(usuarioId));
+    } catch {
+      // Sin almacenamiento no hay nada que borrar.
+    }
+  }
+}

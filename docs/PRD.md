@@ -196,6 +196,7 @@ REST con JSON; todo cuerpo de entrada se valida con los esquemas de `packages/co
 | `POST /auth/login` | Público | Devuelve token de acceso y de renovación |
 | `POST /auth/renovar` | Público | Renueva los tokens |
 | `DELETE /me` | Estudiante | Borra la cuenta y todos sus datos |
+| `PATCH /me` | Estudiante | Cambia la hora del recordatorio o lo apaga (null) |
 | `GET /paquete/actual?desde=N` | Estudiante | Versión vigente; trae el contenido solo si es más nueva que N |
 | `POST /sync` | Estudiante | Recibe intentos, progreso y racha; devuelve el progreso consolidado |
 | `POST /reportes` | Estudiante | Crea un reporte de error |

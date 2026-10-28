@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, HttpCode, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, HttpCode, NotFoundException, Patch, Post, UseGuards } from "@nestjs/common";
 import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
 import { Publico, UsuarioActual, type UsuarioToken } from "../comun/auth";
 import { ZodPipe } from "../comun/zod.pipe";
 import { PrismaService } from "../prisma/prisma.service";
-import { Login, Registro, TokenRenovacion } from "./auth.dto";
-import { AuthService } from "./auth.service";
+import { CambiosPerfil, Login, Registro, TokenRenovacion } from "./auth.dto";
+import { AuthService, usuarioDeSesion } from "./auth.service";
 
 @Controller("auth")
 @UseGuards(ThrottlerGuard)
@@ -46,10 +46,18 @@ export class AuthController {
 export class MeController {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Borra la cuenta; las tablas del usuario se borran en cascada. */
+  /** Cambia la hora del recordatorio (o lo apaga con null); devuelve el usuario como va en la sesión. */
+  @Patch()
+  async cambiar(@UsuarioActual() usuario: UsuarioToken, @Body(new ZodPipe(CambiosPerfil)) cambios: CambiosPerfil) {
+    const { count } = await this.prisma.usuario.updateMany({ where: { id: usuario.id }, data: cambios });
+    if (count === 0) throw new NotFoundException("La cuenta ya no existe");
+    return usuarioDeSesion(await this.prisma.usuario.findUniqueOrThrow({ where: { id: usuario.id } }));
+  }
+
+  /** Borra la cuenta; las tablas del usuario se borran en cascada. Si ya no existe, no falla. */
   @HttpCode(204)
   @Delete()
   async borrar(@UsuarioActual() usuario: UsuarioToken) {
-    await this.prisma.usuario.delete({ where: { id: usuario.id } });
+    await this.prisma.usuario.deleteMany({ where: { id: usuario.id } });
   }
 }

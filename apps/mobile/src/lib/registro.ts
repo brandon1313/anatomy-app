@@ -147,3 +147,13 @@ export async function borrarReporte(id: string): Promise<void> {
   const db = await abrir();
   await db.runAsync("DELETE FROM reportes WHERE id = ?", id);
 }
+
+/** Al borrar la cuenta: todo lo de ese usuario en este teléfono. */
+export async function borrarDatosLocales(usuarioId: string): Promise<void> {
+  const db = await abrir();
+  await db.withTransactionAsync(async () => {
+    for (const tabla of ["intentos", "progreso", "racha", "reportes"]) {
+      await db.runAsync(`DELETE FROM ${tabla} WHERE usuario_id = ?`, usuarioId);
+    }
+  });
+}

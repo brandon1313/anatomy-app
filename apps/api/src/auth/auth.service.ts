@@ -9,6 +9,12 @@ import type { Login, Registro } from "./auth.dto";
 
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 
+/**
+ * El usuario como va en la sesión (y como lo devuelve PATCH /me). La hora del recordatorio va con él: el
+ * teléfono programa la notificación (PRD, "Recordatorio diario").
+ */
+export const usuarioDeSesion = (u: Usuario) => ({ id: u.id, email: u.email, nombre: u.nombre, rol: u.rol, horaRecordatorio: u.horaRecordatorio });
+
 @Injectable()
 export class AuthService {
   /** Para que un correo inexistente tarde lo mismo que una contraseña incorrecta. */
@@ -77,8 +83,7 @@ export class AuthService {
       },
     });
     return {
-      // La hora del recordatorio va con la sesión: el teléfono programa la notificación (PRD, "Recordatorio diario").
-      usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol, horaRecordatorio: usuario.horaRecordatorio },
+      usuario: usuarioDeSesion(usuario),
       tokenAcceso,
       tokenRenovacion,
     };
