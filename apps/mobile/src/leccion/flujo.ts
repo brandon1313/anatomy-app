@@ -38,6 +38,22 @@ export function lecciones(p: PaqueteContenido): TLeccion[] {
     .flatMap((u) => [...u.lecciones].sort((a, b) => a.orden - b.orden));
 }
 
+/**
+ * Las unidades en orden, cada una con sus lecciones y `desde`: la posición de su primera lección en
+ * `lecciones(p)`. Desbloquear sigue el camino completo: la unidad 2 se abre al terminar la 1.
+ */
+export function unidadesConLecciones(p: PaqueteContenido) {
+  let desde = 0;
+  return [...p.curso.unidades]
+    .sort((a, b) => a.orden - b.orden)
+    .map((u) => {
+      const ls = [...u.lecciones].sort((a, b) => a.orden - b.orden);
+      const unidad = { id: u.id, titulo: u.titulo, lecciones: ls, desde };
+      desde += ls.length;
+      return unidad;
+    });
+}
+
 /** Una lección se desbloquea al completar la anterior. */
 export function estadoLeccion(todas: TLeccion[], i: number, completadas: string[]): "completada" | "siguiente" | "bloqueada" {
   if (completadas.includes(todas[i].id)) return "completada";

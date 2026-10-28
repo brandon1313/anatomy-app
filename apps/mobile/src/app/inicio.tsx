@@ -5,7 +5,7 @@ import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
 import { programarRecordatorio } from "../lib/notificaciones";
-import { ejerciciosDeLeccion, ejerciciosMostrables, estadoLeccion, lecciones } from "../leccion/flujo";
+import { ejerciciosDeLeccion, ejerciciosMostrables, estadoLeccion, lecciones, unidadesConLecciones } from "../leccion/flujo";
 import { diaDeEstudio } from "../repaso/dia";
 import { diasHastaElProximo, ejerciciosDeRepaso } from "../repaso/espaciado";
 import { rachaVigente } from "../repaso/racha";
@@ -49,7 +49,6 @@ export default function Inicio() {
   }
 
   const todas = lecciones(paquete);
-  const unidad = paquete.curso.unidades[0];
   const ahora = new Date();
   // Fichas vencidas que tienen un ejercicio para mostrar (la sesión toma hasta 10).
   const porRepasar = ejerciciosDeRepaso(progreso, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), ahora, Infinity).length;
@@ -93,41 +92,56 @@ export default function Inicio() {
           </View>
           {porRepasar > 0 && <Boton titulo="Repasar" onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: "repaso" } })} />}
         </View>
-        <View style={estilos.unidad}>
-          <Text style={estilos.unidadEtiqueta}>Unidad 1</Text>
-          <Text style={estilos.unidadTitulo} accessibilityRole="header">{unidad?.titulo}</Text>
-        </View>
-
-        <View style={estilos.ruta}>
-          {todas.map((l, i) => {
-            const estado = estadoLeccion(todas, i, completadas);
-            const n = ejerciciosDeLeccion(paquete, l, (archivo) => uriImagen(archivo) !== null).length;
-            const c = CIRCULO[estado];
-            return (
-              <View key={l.id} style={[estilos.parada, { transform: [{ translateX: ZIGZAG[i % ZIGZAG.length] }] }]}>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityState={{ disabled: estado === "bloqueada" }}
-                  accessibilityLabel={`Lección ${i + 1}: ${l.titulo}. ${estado === "completada" ? "Completada" : estado === "bloqueada" ? "Bloqueada" : "Siguiente"}. ${n} ejercicios`}
-                  disabled={estado === "bloqueada" || n === 0}
-                  onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: l.id } })}
-                >
-                  {({ pressed }) => (
-                    <View style={[estilos.circulo, { backgroundColor: c.fondo, borderColor: c.sombra }, pressed && estilos.hundido]}>
-                      <Text style={[estilos.icono, { color: c.icono }]}>
-                        {estado === "completada" ? "✓" : estado === "bloqueada" ? "🔒" : "★"}
+        {unidadesConLecciones(paquete).map((u, n) => {
+          const hechas = u.lecciones.filter((l) => completadas.includes(l.id)).length;
+          // Una unidad está abierta cuando su primera lección ya se puede tomar.
+          const abierta = estadoLeccion(todas, u.desde, completadas) !== "bloqueada";
+          return (
+            <View key={u.id}>
+              <View
+                style={[estilos.unidad, !abierta && estilos.unidadBloqueada]}
+                accessible
+                accessibilityRole="header"
+                accessibilityLabel={`Unidad ${n + 1}: ${u.titulo}. ${hechas} de ${u.lecciones.length} lecciones completadas${abierta ? "" : ". Bloqueada"}`}
+              >
+                <Text style={[estilos.unidadEtiqueta, !abierta && { color: color.tenue }]}>
+                  Unidad {n + 1} · {hechas} de {u.lecciones.length}
+                </Text>
+                <Text style={[estilos.unidadTitulo, !abierta && { color: color.tenue }]}>{u.titulo}</Text>
+              </View>
+              <View style={estilos.ruta}>
+                {u.lecciones.map((l, j) => {
+                  const estado = estadoLeccion(todas, u.desde + j, completadas);
+                  const cuantos = ejerciciosDeLeccion(paquete, l, (archivo) => uriImagen(archivo) !== null).length;
+                  const c = CIRCULO[estado];
+                  return (
+                    <View key={l.id} style={[estilos.parada, { transform: [{ translateX: ZIGZAG[j % ZIGZAG.length] }] }]}>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityState={{ disabled: estado === "bloqueada" }}
+                        accessibilityLabel={`Lección ${j + 1}: ${l.titulo}. ${estado === "completada" ? "Completada" : estado === "bloqueada" ? "Bloqueada" : "Siguiente"}. ${cuantos} ejercicios`}
+                        disabled={estado === "bloqueada" || cuantos === 0}
+                        onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: l.id } })}
+                      >
+                        {({ pressed }) => (
+                          <View style={[estilos.circulo, { backgroundColor: c.fondo, borderColor: c.sombra }, pressed && estilos.hundido]}>
+                            <Text style={[estilos.icono, { color: c.icono }]}>
+                              {estado === "completada" ? "✓" : estado === "bloqueada" ? "🔒" : "★"}
+                            </Text>
+                          </View>
+                        )}
+                      </Pressable>
+                      {estado === "siguiente" && <Text style={estilos.empezar}>Empezar</Text>}
+                      <Text style={[estilos.tituloLeccion, estado === "bloqueada" && { color: color.bloqueado }]} numberOfLines={2}>
+                        {l.titulo}
                       </Text>
                     </View>
-                  )}
-                </Pressable>
-                {estado === "siguiente" && <Text style={estilos.empezar}>Empezar</Text>}
-                <Text style={[estilos.tituloLeccion, estado === "bloqueada" && { color: color.bloqueado }]} numberOfLines={2}>
-                  {l.titulo}
-                </Text>
+                  );
+                })}
               </View>
-            );
-          })}
-        </View>
+            </View>
+          );
+        })}
 
         {/* Pruebas solo en desarrollo y en el teléfono: el visor 3D (docs/PLAN-REDISENO.md) y el recordatorio,
             que suena en 10 s con el texto de hoy si la app queda en segundo plano; al volver se reprograma el real. */}
@@ -166,6 +180,7 @@ const estilos = StyleSheet.create({
   repasoTitulo: { fontSize: 18, fontFamily: fuente.titulo, color: color.texto },
   repasoDetalle: { marginTop: 2, fontSize: 14, fontFamily: fuente.normal, color: color.tenue },
   unidad: { marginTop: espacio.l, marginBottom: espacio.l, padding: espacio.m, borderRadius: 16, backgroundColor: color.marca, borderBottomWidth: 4, borderColor: color.marcaSombra },
+  unidadBloqueada: { backgroundColor: color.borde, borderColor: "#cfd5da" },
   unidadEtiqueta: { color: "#d5f2ee", fontSize: 14, fontFamily: fuente.media },
   unidadTitulo: { color: "#fff", fontSize: 20, fontFamily: fuente.titulo },
   ruta: { alignItems: "center", gap: espacio.l },

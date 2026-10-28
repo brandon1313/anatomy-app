@@ -7,12 +7,14 @@ import {
   ejerciciosDeLeccion,
   estadoLeccion,
   iniciar,
+  lecciones,
   progreso,
   responder,
   resultado,
   siguiente,
   terminada,
   type Sesion,
+  unidadesConLecciones,
 } from "./flujo";
 
 describe("ejerciciosDeLeccion", () => {
@@ -101,6 +103,28 @@ describe("estadoLeccion", () => {
   it("desbloquea en orden", () => {
     expect([0, 1, 2].map((i) => estadoLeccion(ls, i, []))).toEqual(["siguiente", "bloqueada", "bloqueada"]);
     expect([0, 1, 2].map((i) => estadoLeccion(ls, i, ["l1"]))).toEqual(["completada", "siguiente", "bloqueada"]);
+  });
+});
+
+describe("unidadesConLecciones", () => {
+  const leccion = (id: string, orden: number) => ({ id, titulo: id, orden, ejercicioIds: ["x"] });
+  const p = {
+    curso: {
+      unidades: [
+        { id: "pierna", titulo: "Pierna", orden: 2, lecciones: [leccion("p1", 0)] },
+        { id: "muslo", titulo: "Muslo", orden: 1, lecciones: [leccion("m2", 1), leccion("m1", 0)] },
+      ],
+    },
+  } as unknown as PaqueteContenido;
+
+  it("ordena unidades y lecciones, y da la posición de cada unidad en el camino completo", () => {
+    const us = unidadesConLecciones(p);
+    expect(us.map((u) => [u.id, u.lecciones.map((l) => l.id), u.desde])).toEqual([
+      ["muslo", ["m1", "m2"], 0],
+      ["pierna", ["p1"], 2],
+    ]);
+    // La primera lección de la pierna se abre al terminar la última del muslo.
+    expect(estadoLeccion(lecciones(p), us[1].desde, ["m1", "m2"])).toBe("siguiente");
   });
 });
 
