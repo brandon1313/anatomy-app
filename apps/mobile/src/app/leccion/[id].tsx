@@ -51,8 +51,7 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 }
 
 export default function Leccion() {
-  /** `presentacion=1`: abrir con la presentación aunque ya se haya visto (botón "Ver presentación" de Inicio). */
-  const { id, presentacion } = useLocalSearchParams<{ id: string; presentacion?: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { paquete, completar } = useApp();
   const insets = useSafeAreaInsets();
   const leccion = useMemo(() => (paquete ? lecciones(paquete).find((l) => l.id === id) : undefined), [paquete, id]);
@@ -97,19 +96,15 @@ export default function Leccion() {
     }
     return { musculos: [...musculos.values()], ocultas };
   }, [ejercicios, imagenes, nombres, modelo]);
-  /**
-   * null mientras se lee si ya se vio. Sale sola la primera vez; después, con el ▶ de la barra o con
-   * "Ver presentación" en Inicio.
-   */
+  /** null mientras se lee si ya se vio. Sale sola la primera vez; después, con el ▶ de la barra. */
   const [presentando, setPresentando] = useState<boolean | null>(null);
   useEffect(() => {
     if (!leccion || recorrido.musculos.length === 0) return setPresentando(false);
-    if (presentacion === "1") return setPresentando(true);
     leerJson<string[]>(CLAVE_PRESENTACIONES).then(
       (vistas) => setPresentando(!(vistas ?? []).includes(leccion.id)),
       () => setPresentando(false),
     );
-  }, [leccion, recorrido, presentacion]);
+  }, [leccion, recorrido]);
   // Si el 3D falla, no hay presentación: la lección sigue con las imágenes.
   useEffect(() => {
     if (fallo3D) setPresentando(false);
