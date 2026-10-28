@@ -1,12 +1,14 @@
-import { fusionarProgreso, type PaqueteContenido } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type PaqueteContenido, type Racha } from "@anatomia/contenido";
 import { randomUUID } from "expo-crypto";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
+import { diaDeEstudio } from "../repaso/dia";
 import { aplicarSesion, calificacionesDeSesion, type Progreso } from "../repaso/espaciado";
+import { registrarActividad, SIN_RACHA } from "../repaso/racha";
 import { cargarSesion, cerrarSesion, iniciarSesion, registrarse, SinConexion, type Usuario } from "./api";
 import { guardarJson, leerJson } from "./almacen";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
-import { guardarIntento, guardarProgresoPropio, leerProgreso } from "./registro";
+import { guardarIntento, guardarProgresoPropio, guardarRachaPropia, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
 
 interface Estado {
@@ -29,8 +31,10 @@ interface Estado {
   progreso: Progreso[];
   /** Guarda una respuesta en cuanto se comprueba (si la app se cierra, no se pierde). */
   registrarIntento: (r: { ejercicioId: string; correcto: boolean; ms: number }) => void;
-  /** Al terminar una lección o un repaso: una calificación por ficha con ts-fsrs, y a subir. */
+  /** Al terminar una lección o un repaso: una calificación por ficha con ts-fsrs, el día cuenta para la racha, y a subir. */
   terminarSesion: (respuestas: readonly { ejercicioId: string; correcto: boolean }[]) => void;
+  /** Días seguidos con una lección o un repaso terminado; lo que se muestra hoy sale de rachaVigente. */
+  racha: Racha;
 }
 
 const Contexto = createContext<Estado | null>(null);
@@ -51,9 +55,12 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const [descarga, setDescarga] = useState<Estado["descarga"]>("descargando");
   const [completadas, setCompletadas] = useState<string[]>([]);
   const [progreso, setProgreso] = useState<Progreso[]>([]);
-  // El progreso más reciente, para terminarSesion (que corre después de muchos renders de la lección).
+  const [racha, setRacha] = useState<Racha>(SIN_RACHA);
+  // Lo más reciente, para terminarSesion (que corre después de muchos renders de la lección).
   const progresoRef = useRef(progreso);
   progresoRef.current = progreso;
+  const rachaRef = useRef(racha);
+  rachaRef.current = racha;
 
   const actualizar = useCallback(async () => {
     setDescarga("descargando");
@@ -71,7 +78,10 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const sincronizarAhora = useCallback((usuarioId: string) => {
     // Se une con lo que ya está en pantalla: una sesión que terminó durante la subida no se pierde.
     sincronizar(usuarioId).then(
-      (p) => setProgreso((actual) => fusionarProgreso(actual, p)),
+      ({ progreso: p, racha: r }) => {
+        setProgreso((actual) => fusionarProgreso(actual, p));
+        if (r) setRacha((actual) => fusionarRacha(actual, r));
+      },
       () => {},
     );
   }, []);
@@ -87,6 +97,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     void actualizar();
     leerJson<string[]>(claveProgreso(usuario.id)).then((c) => setCompletadas(c ?? []));
     leerProgreso(usuario.id).then((p) => setProgreso((actual) => fusionarProgreso(p, actual)), () => {});
+    leerRacha(usuario.id).then((r) => r && setRacha((actual) => fusionarRacha(r, actual)), () => {});
     sincronizarAhora(usuario.id);
     // Al volver a la app (por ejemplo, con conexión otra vez) se reintenta la subida.
     const s = AppState.addEventListener("change", (estado) => estado === "active" && sincronizarAhora(usuario.id));
@@ -103,6 +114,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
       setUsuario(null);
       setCompletadas([]);
       setProgreso([]);
+      setRacha(SIN_RACHA);
     },
     paquete,
     descarga,
@@ -122,17 +134,25 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     },
     terminarSesion: (respuestas) => {
       if (!usuario || !paquete) return;
+      const ahora = new Date();
       const ejercicios = new Map(paquete.ejercicios.map((e) => [e.id, e]));
       const calificaciones = calificacionesDeSesion(respuestas, ejercicios);
       const actual = new Map(progresoRef.current.map((p) => [p.fichaId, p]));
-      const nuevo = aplicarSesion(actual, calificaciones, new Date());
+      const nuevo = aplicarSesion(actual, calificaciones, ahora);
       setProgreso((p) => fusionarProgreso(p, nuevo));
       const usuarioId = usuario.id;
-      guardarProgresoPropio(usuarioId, nuevo).then(
+      const guardados = [guardarProgresoPropio(usuarioId, nuevo)];
+      const nuevaRacha = registrarActividad(rachaRef.current, diaDeEstudio(ahora));
+      if (nuevaRacha !== rachaRef.current) {
+        setRacha((r) => fusionarRacha(r, nuevaRacha));
+        guardados.push(guardarRachaPropia(usuarioId, nuevaRacha));
+      }
+      Promise.all(guardados).then(
         () => sincronizarAhora(usuarioId),
         () => {},
       );
     },
+    racha,
   };
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

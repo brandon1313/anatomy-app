@@ -1,12 +1,13 @@
-import { fusionarProgreso, type Intento } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type Intento, type Racha } from "@anatomia/contenido";
 import { openDatabaseAsync, type SQLiteDatabase } from "expo-sqlite";
 import type { Progreso } from "../repaso/espaciado";
 
 /**
- * Intentos y progreso del repaso en SQLite (PRD: "se guardan en expo-sqlite y se envían en lote a
+ * Intentos, progreso del repaso y racha en SQLite (PRD: "se guardan en expo-sqlite y se envían en lote a
  * /sync"). Todo va por usuario: dos cuentas en el mismo teléfono no se mezclan.
  *  - Intentos: solo los que faltan subir; al subirlos se borran.
  *  - Progreso: el de cada ficha, con `pendiente` si cambió en este teléfono y falta subirlo.
+ *  - Racha: una fila, también con `pendiente`.
  */
 let base: Promise<SQLiteDatabase> | null = null;
 
@@ -19,6 +20,7 @@ function abrir(): Promise<SQLiteDatabase> {
         usuario_id TEXT NOT NULL, ficha_id TEXT NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL,
         PRIMARY KEY (usuario_id, ficha_id)
       );
+      CREATE TABLE IF NOT EXISTS racha (usuario_id TEXT PRIMARY KEY NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL);
     `);
     return db;
   });
@@ -85,4 +87,45 @@ export async function guardarDelServidor(usuarioId: string, progreso: Progreso[]
       await db.runAsync("INSERT OR REPLACE INTO progreso (usuario_id, ficha_id, datos, pendiente) VALUES (?, ?, ?, 0)", usuarioId, p.fichaId, JSON.stringify(p));
     }
   });
+}
+
+export async function leerRacha(usuarioId: string): Promise<Racha | null> {
+  const db = await abrir();
+  const fila = await db.getFirstAsync<{ datos: string }>("SELECT datos FROM racha WHERE usuario_id = ?", usuarioId);
+  return fila ? (JSON.parse(fila.datos) as Racha) : null;
+}
+
+/** La racha cambió en este teléfono (terminó una lección o un repaso): queda pendiente de subir. */
+export async function guardarRachaPropia(usuarioId: string, racha: Racha): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("INSERT OR REPLACE INTO racha (usuario_id, datos, pendiente) VALUES (?, ?, 1)", usuarioId, JSON.stringify(racha));
+}
+
+export async function rachaPorSubir(usuarioId: string): Promise<Racha | null> {
+  const db = await abrir();
+  const fila = await db.getFirstAsync<{ datos: string }>("SELECT datos FROM racha WHERE usuario_id = ? AND pendiente = 1", usuarioId);
+  return fila ? (JSON.parse(fila.datos) as Racha) : null;
+}
+
+/** La racha subida deja de estar pendiente, salvo que haya cambiado mientras se subía. */
+export async function confirmarRacha(usuarioId: string, subida: Racha): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("UPDATE racha SET pendiente = 0 WHERE usuario_id = ? AND datos = ?", usuarioId, JSON.stringify(subida));
+}
+
+/**
+ * La racha del servidor se une con la local (fusionarRacha). Queda pendiente si la local lo estaba o si la
+ * unión trae días que el servidor no tiene: así le llegan en la próxima sincronización.
+ */
+export async function guardarRachaDelServidor(usuarioId: string, servidor: Racha): Promise<void> {
+  const db = await abrir();
+  const local = await leerRacha(usuarioId);
+  const racha = local ? fusionarRacha(local, servidor) : servidor;
+  if (local && JSON.stringify(racha) === JSON.stringify(local)) return;
+  await db.runAsync(
+    "INSERT INTO racha (usuario_id, datos, pendiente) VALUES (?, ?, ?) ON CONFLICT (usuario_id) DO UPDATE SET datos = excluded.datos, pendiente = MAX(racha.pendiente, excluded.pendiente)",
+    usuarioId,
+    JSON.stringify(racha),
+    JSON.stringify(racha) === JSON.stringify(servidor) ? 0 : 1,
+  );
 }

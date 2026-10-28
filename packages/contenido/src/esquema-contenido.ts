@@ -310,14 +310,26 @@ export const Intento = z.object({
 /** El progreso de una ficha tal como viaja en /sync: el usuario sale del token, no del cuerpo. */
 export const ProgresoSync = ProgresoFicha.omit({ usuarioId: true });
 
-/** POST /sync: los intentos que faltan subir y el progreso que cambió en el dispositivo. */
+/**
+ * Racha de días seguidos con una lección o un repaso terminado (PRD, "Racha"). `ultimoDia` es el día de
+ * estudio del teléfono ("AAAA-MM-DD", en su zona horaria) de la última actividad, y `actual` cuenta los
+ * días seguidos que terminan en él.
+ */
+export const Racha = z.object({
+  actual: z.number().int().nonnegative(),
+  maxima: z.number().int().nonnegative(),
+  ultimoDia: z.iso.date().optional(),
+});
+
+/** POST /sync: los intentos que faltan subir, el progreso que cambió en el dispositivo y la racha, si cambió. */
 export const PeticionSync = z.object({
   intentos: z.array(Intento).max(200),
   progreso: z.array(ProgresoSync).max(500),
+  racha: Racha.optional(),
 });
 
-/** Respuesta de /sync: el progreso consolidado del usuario, de todas sus fichas. */
-export const RespuestaSync = z.object({ progreso: z.array(ProgresoSync) });
+/** Respuesta de /sync: el progreso consolidado del usuario, de todas sus fichas, y su racha si ya tiene. */
+export const RespuestaSync = z.object({ progreso: z.array(ProgresoSync), racha: Racha.optional() });
 
 // ───────────────────────── Tipos ─────────────────────────
 
@@ -337,6 +349,7 @@ export type ReporteError = z.infer<typeof ReporteError>;
 export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
 export type Intento = z.infer<typeof Intento>;
 export type ProgresoSync = z.infer<typeof ProgresoSync>;
+export type Racha = z.infer<typeof Racha>;
 export type PeticionSync = z.infer<typeof PeticionSync>;
 export type RespuestaSync = z.infer<typeof RespuestaSync>;
 

@@ -1,6 +1,6 @@
-import { fusionarProgreso, type PeticionSync, type ProgresoSync, type RespuestaSync } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type PeticionSync, type ProgresoSync, type Racha, type RespuestaSync } from "@anatomia/contenido";
 import { Injectable } from "@nestjs/common";
-import type { ProgresoFicha as FilaProgreso } from "@prisma/client";
+import type { ProgresoFicha as FilaProgreso, Racha as FilaRacha } from "@prisma/client";
 import { mismoJson } from "../comun/json";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -31,16 +31,20 @@ export function aFila({ ultimaRevision, proximaRevision, ultimoEjercicioId, ...r
   };
 }
 
+/** La fila de rachas como viaja en /sync. */
+export const aRacha = (f: FilaRacha): Racha => ({ actual: f.actual, maxima: f.maxima, ultimoDia: f.ultimoDia ?? undefined });
+
 @Injectable()
 export class SyncService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Guarda los intentos (un id que ya existe se ignora: reenviar no duplica) y, de cada ficha, el progreso
-   * con la revisión más reciente, sea el guardado o el que llega. Devuelve el progreso consolidado del
-   * usuario, de todas sus fichas: así un dispositivo nuevo recupera lo hecho en otro.
+   * con la revisión más reciente, sea el guardado o el que llega; la racha que llega se une con la guardada.
+   * Devuelve el progreso consolidado del usuario, de todas sus fichas, y su racha: así un dispositivo nuevo
+   * recupera lo hecho en otro.
    */
-  async sincronizar(usuarioId: string, { intentos, progreso }: PeticionSync): Promise<RespuestaSync> {
+  async sincronizar(usuarioId: string, { intentos, progreso, racha }: PeticionSync): Promise<RespuestaSync> {
     if (intentos.length > 0) {
       await this.prisma.intento.createMany({
         data: intentos.map((i) => ({ ...i, usuarioId, respondidoEn: new Date(i.respondidoEn) })),
@@ -62,6 +66,19 @@ export class SyncService {
         ),
       );
     }
-    return { progreso: consolidado };
+    return { progreso: consolidado, racha: await this.consolidarRacha(usuarioId, racha) };
+  }
+
+  /** La racha guardada unida con la que llega (fusionarRacha); undefined si el usuario todavía no tiene. */
+  private async consolidarRacha(usuarioId: string, llega?: Racha): Promise<Racha | undefined> {
+    const fila = await this.prisma.racha.findUnique({ where: { usuarioId } });
+    const guardada = fila ? aRacha(fila) : undefined;
+    if (!llega) return guardada;
+    const racha = guardada ? fusionarRacha(guardada, llega) : llega;
+    if (!mismoJson(guardada, racha)) {
+      const datos = { actual: racha.actual, maxima: racha.maxima, ultimoDia: racha.ultimoDia ?? null };
+      await this.prisma.racha.upsert({ where: { usuarioId }, create: { usuarioId, ...datos }, update: datos });
+    }
+    return racha;
   }
 }

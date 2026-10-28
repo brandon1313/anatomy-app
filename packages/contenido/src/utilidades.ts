@@ -1,4 +1,4 @@
-import { puntoEnZona, type SalidaGenerador, type Zona } from "./esquema-contenido";
+import { puntoEnZona, type Racha, type SalidaGenerador, type Zona } from "./esquema-contenido";
 
 type Punto = [number, number];
 
@@ -95,4 +95,25 @@ export function fusionarProgreso<T extends { fichaId: string; ultimaRevision?: s
     if (!actual || cuando(p) > cuando(actual)) porFicha.set(p.fichaId, p);
   }
   return [...porFicha.values()];
+}
+
+/** El número de un día "AAAA-MM-DD" (días desde 1970): la resta de dos da los días entre ellos. */
+export const numeroDeDia = (dia: string) => Math.round(Date.parse(`${dia}T00:00:00Z`) / 86_400_000);
+
+/**
+ * Une dos rachas del mismo estudiante, como la del servidor y la de un teléfono que estuvo sin conexión.
+ * Cada una es un tramo de días seguidos que termina en `ultimoDia`: si los tramos se tocan o se pisan, la
+ * racha es su unión; si entre ellos quedó un día sin actividad, cuenta solo el más reciente. La máxima es
+ * la mayor de las dos (o la unión, si es más larga).
+ */
+export function fusionarRacha(a: Racha, b: Racha): Racha {
+  const tramo = (r: Racha) => (r.ultimoDia && r.actual > 0 ? { fin: numeroDeDia(r.ultimoDia), inicio: numeroDeDia(r.ultimoDia) - r.actual + 1 } : null);
+  const [ta, tb] = [tramo(a), tramo(b)];
+  let r = ta ? a : b;
+  if (ta && tb) {
+    const [antes, despues, ultima] = ta.fin <= tb.fin ? [ta, tb, b] : [tb, ta, a];
+    const actual = antes.fin + 1 >= despues.inicio ? despues.fin - Math.min(antes.inicio, despues.inicio) + 1 : ultima.actual;
+    r = { ...ultima, actual };
+  }
+  return { ...r, maxima: Math.max(a.maxima, b.maxima, r.actual) };
 }

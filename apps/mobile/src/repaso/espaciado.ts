@@ -1,5 +1,6 @@
 import type { Ejercicio, ProgresoSync } from "@anatomia/contenido";
 import { type Card, createEmptyCard, fsrs, generatorParameters, Rating, type State } from "ts-fsrs";
+import { aReloj, inicioDelDia } from "./dia";
 
 /**
  * Repaso espaciado por ficha, en el dispositivo (PRD, "Repaso, racha y recordatorios"). Todo es puro:
@@ -11,22 +12,8 @@ export type Progreso = ProgresoSync;
 // en días desde la primera vez (con pasos de minutos, una ficha recién vista quedaría vencida enseguida).
 const planificador = fsrs(generatorParameters({ enable_short_term: false }));
 
-// El día de repaso es el del reloj del teléfono y empieza a las 4 a. m. (como en Anki): estudiar pasada la
-// medianoche cuenta para el día anterior. Una ficha vence al empezar su día, no a la hora exacta: lo que se
-// estudió de noche se puede repasar a la mañana siguiente.
-const HORA_DE_CORTE = 4;
-
-/**
- * La hora del reloj local menos la hora de corte, escrita como si fuera UTC. ts-fsrs cuenta los días
- * transcurridos por fecha UTC (en Guatemala la fecha cambiaría a las 6 p. m.); así cuenta días de repaso.
- */
-const aReloj = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60_000 - HORA_DE_CORTE * 3_600_000);
-
-/** El inicio del día de repaso que cae `dias` días después del de `d`. */
-function inicioDelDia(d: Date, dias = 0): Date {
-  const r = aReloj(d);
-  return new Date(r.getUTCFullYear(), r.getUTCMonth(), r.getUTCDate() + dias, HORA_DE_CORTE);
-}
+// Los días son días de estudio (dia.ts): al planificador le llegan horas de reloj, y una ficha vence al
+// empezar su día, no a la hora exacta: lo que se estudió de noche se puede repasar a la mañana siguiente.
 
 /** En el mismo orden que el enum State de ts-fsrs. */
 const ESTADOS = ["nuevo", "aprendiendo", "repaso", "reaprendiendo"] as const;

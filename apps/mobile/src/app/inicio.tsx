@@ -5,7 +5,9 @@ import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
 import { ejerciciosDeLeccion, ejerciciosMostrables, estadoLeccion, lecciones } from "../leccion/flujo";
+import { diaDeEstudio } from "../repaso/dia";
 import { diasHastaElProximo, ejerciciosDeRepaso } from "../repaso/espaciado";
+import { rachaVigente } from "../repaso/racha";
 import { color, espacio, fuente } from "../tema";
 
 const CIRCULO = {
@@ -18,7 +20,7 @@ const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
 const TAM = 76;
 
 export default function Inicio() {
-  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso } = useApp();
+  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso, racha } = useApp();
 
   if (!paquete) {
     return (
@@ -50,11 +52,27 @@ export default function Inicio() {
   // Fichas vencidas que tienen un ejercicio para mostrar (la sesión toma hasta 10).
   const porRepasar = ejerciciosDeRepaso(progreso, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), ahora, Infinity).length;
   const proximo = diasHastaElProximo(progreso, ahora);
+  const hoy = diaDeEstudio(ahora);
+  const dias = rachaVigente(racha, hoy);
+  // Encendida si hoy ya cuenta; apagada si todavía falta la lección o el repaso de hoy.
+  const encendida = racha.ultimoDia === hoy;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={estilos.contenido}>
-        <Text style={estilos.saludo}>Hola, {usuario?.nombre.split(" ")[0]}</Text>
+        <View style={estilos.cabecera}>
+          <Text style={estilos.saludo} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
+            Hola, {usuario?.nombre.split(" ")[0]}
+          </Text>
+          <View
+            style={[estilos.racha, encendida && estilos.rachaEncendida]}
+            accessible
+            accessibilityLabel={`Racha de ${dias} ${dias === 1 ? "día" : "días"}${dias > 0 && !encendida ? ". Completa una lección o un repaso hoy para no perderla" : ""}`}
+          >
+            <Text style={[estilos.rachaIcono, !encendida && { opacity: 0.45 }]}>🔥</Text>
+            <Text style={[estilos.rachaTexto, encendida && { color: color.logroTexto }]}>{dias}</Text>
+          </View>
+        </View>
         {descarga === "sin_conexion" && <Text style={estilos.offline}>Sin conexión: usando las lecciones guardadas.</Text>}
         <View style={[estilos.repaso, porRepasar > 0 && { borderColor: color.coral }]}>
           <View style={{ flex: 1 }}>
@@ -126,7 +144,12 @@ const estilos = StyleSheet.create({
   centro: { flex: 1, justifyContent: "center", alignItems: "stretch", padding: espacio.l, gap: espacio.m, backgroundColor: color.fondo },
   aviso: { fontSize: 17, fontFamily: fuente.media, color: color.tenue, textAlign: "center" },
   contenido: { padding: espacio.l, paddingBottom: espacio.xl },
-  saludo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
+  cabecera: { flexDirection: "row", alignItems: "center", gap: espacio.m },
+  saludo: { flex: 1, fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
+  racha: { flexDirection: "row", alignItems: "center", gap: espacio.xs, paddingHorizontal: espacio.m, paddingVertical: espacio.xs, borderRadius: 999, borderWidth: 2, borderColor: color.borde, backgroundColor: color.superficie },
+  rachaEncendida: { borderColor: color.logro, backgroundColor: color.hueso },
+  rachaIcono: { fontSize: 18 },
+  rachaTexto: { fontSize: 18, fontFamily: fuente.titulo, color: color.tenue },
   offline: { marginTop: espacio.s, color: color.tenue, fontSize: 14, fontFamily: fuente.normal },
   repaso: { marginTop: espacio.l, flexDirection: "row", alignItems: "center", gap: espacio.m, padding: espacio.m, borderRadius: 16, borderWidth: 2, borderBottomWidth: 4, borderColor: color.borde, backgroundColor: color.superficie },
   repasoTitulo: { fontSize: 18, fontFamily: fuente.titulo, color: color.texto },

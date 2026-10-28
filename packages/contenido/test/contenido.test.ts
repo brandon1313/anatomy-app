@@ -6,6 +6,7 @@ import {
   erroresDeSalidaGenerador,
   esToqueCorrecto,
   fusionarProgreso,
+  fusionarRacha,
   PeticionSync,
   PaqueteContenido,
   ProgresoFicha,
@@ -239,11 +240,38 @@ describe("fusionarProgreso", () => {
   });
 });
 
+describe("fusionarRacha", () => {
+  const r = (actual: number, ultimoDia?: string, maxima = actual) => ({ actual, maxima, ultimoDia });
+
+  it("une los tramos de días que se tocan o se pisan, en cualquier orden", () => {
+    // El servidor sabe de 5 días hasta el 27; un teléfono sin conexión estudió el 28.
+    expect(fusionarRacha(r(5, "2026-10-27"), r(1, "2026-10-28"))).toEqual(r(6, "2026-10-28"));
+    expect(fusionarRacha(r(1, "2026-10-28"), r(5, "2026-10-27"))).toEqual(r(6, "2026-10-28"));
+    expect(fusionarRacha(r(5, "2026-10-27"), r(2, "2026-10-27"))).toEqual(r(5, "2026-10-27"));
+    expect(fusionarRacha(r(3, "2026-10-31"), r(2, "2026-11-01"))).toEqual(r(4, "2026-11-01"));
+  });
+
+  it("si quedó un día sin actividad cuenta el tramo más reciente, y la máxima se conserva", () => {
+    expect(fusionarRacha(r(5, "2026-10-20", 9), r(1, "2026-10-28"))).toEqual(r(1, "2026-10-28", 9));
+  });
+
+  it("una racha vacía no cambia la otra", () => {
+    expect(fusionarRacha(r(0), r(3, "2026-10-27"))).toEqual(r(3, "2026-10-27"));
+    expect(fusionarRacha(r(3, "2026-10-27"), r(0, undefined, 4))).toEqual(r(3, "2026-10-27", 4));
+  });
+});
+
 describe("PeticionSync", () => {
   it("acepta intentos y progreso sin usuario, y limita el lote", () => {
     const intento = { id: "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d", ejercicioId: "tocar-sartorio", correcto: true, msRespuesta: 4200, respondidoEn: "2026-10-27T15:00:00Z", paqueteVersion: 3 };
     const progreso = { fichaId: "sartorio", estado: "repaso", estabilidad: 3.2, dificultad: 5.1, repeticiones: 1, lapsos: 0, proximaRevision: "2026-10-30T15:00:00Z" };
     expect(PeticionSync.safeParse({ intentos: [intento], progreso: [progreso] }).success).toBe(true);
     expect(PeticionSync.safeParse({ intentos: Array(201).fill(intento), progreso: [] }).success).toBe(false);
+  });
+
+  it("la racha es opcional y su día va como AAAA-MM-DD", () => {
+    const racha = { actual: 2, maxima: 5, ultimoDia: "2026-10-27" };
+    expect(PeticionSync.safeParse({ intentos: [], progreso: [], racha }).success).toBe(true);
+    expect(PeticionSync.safeParse({ intentos: [], progreso: [], racha: { ...racha, ultimoDia: "2026-10-27T10:00:00Z" } }).success).toBe(false);
   });
 });

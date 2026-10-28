@@ -11,7 +11,9 @@ import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
 import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import type { Eleccion } from "../../ejercicios/tipos";
 import { actual, ejerciciosDeLeccion, ejerciciosMostrables, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { diaDeEstudio } from "../../repaso/dia";
 import { ejerciciosDeRepaso } from "../../repaso/espaciado";
+import { rachaVigente, registrarActividad } from "../../repaso/racha";
 import { type MusculoPresentado, Presentacion3D } from "../../ejercicios/Presentacion3D";
 import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
@@ -53,7 +55,8 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 
 export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { paquete, completar, progreso: progresoFichas, registrarIntento, terminarSesion } = useApp();
+  const { paquete, completar, progreso: progresoFichas, racha, registrarIntento, terminarSesion } = useApp();
+  const rachaAlEmpezar = useRef(racha);
   const insets = useSafeAreaInsets();
   // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
   const esRepaso = id === "repaso";
@@ -163,6 +166,10 @@ export default function Leccion() {
 
   if (fin) {
     const r = resultado(sesion);
+    const hoy = diaDeEstudio(new Date());
+    // Con esta sesión ya contada: terminarSesion corre después de este render (y contar dos veces no suma).
+    const dias = rachaVigente(registrarActividad(racha, hoy), hoy);
+    const subio = dias > rachaVigente(rachaAlEmpezar.current, hoy);
     return (
       <SafeAreaView style={estilos.centro}>
         <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
@@ -177,6 +184,9 @@ export default function Leccion() {
             <Text style={[estilos.valor, { color: color.marcaTexto }]}>{formatoTiempo(r.ms)}</Text>
           </View>
         </View>
+        <Text style={[estilos.racha, subio && estilos.rachaSubio]} accessibilityLiveRegion="polite">
+          🔥 {subio ? (dias === 1 ? "¡Empezaste una racha!" : `¡${dias} días seguidos!`) : `Racha de ${dias} ${dias === 1 ? "día" : "días"}`}
+        </Text>
         <Boton titulo="Continuar" onPress={() => router.back()} />
       </SafeAreaView>
     );
@@ -354,4 +364,6 @@ const estilos = StyleSheet.create({
   cifra: { flex: 1, borderWidth: 2, borderRadius: 16, overflow: "hidden", alignItems: "stretch" },
   etiqueta: { color: "#fff", fontSize: 14, fontFamily: fuente.negrita, textAlign: "center", paddingVertical: 4 },
   valor: { fontSize: 26, fontFamily: fuente.titulo, textAlign: "center", paddingVertical: espacio.m },
+  racha: { fontSize: 17, fontFamily: fuente.negrita, color: color.tenue, textAlign: "center" },
+  rachaSubio: { fontSize: 20, fontFamily: fuente.titulo, color: color.logroTexto },
 });

@@ -1,9 +1,9 @@
-import { fusionarProgreso, type Intento } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type Intento, type Racha } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 
 /**
  * En web (solo para desarrollo) el registro va en localStorage, con las mismas reglas que la versión de
- * SQLite (registro.ts): intentos por subir, y progreso por ficha con `pendiente`.
+ * SQLite (registro.ts): intentos por subir, y progreso por ficha y racha con `pendiente`.
  */
 type Fila = { datos: Progreso; pendiente: boolean };
 
@@ -73,4 +73,33 @@ export async function guardarDelServidor(usuarioId: string, progreso: Progreso[]
     filas[p.fichaId] = { datos: p, pendiente: false };
   }
   escribir(claveProgreso(usuarioId), filas);
+}
+
+type FilaRacha = { datos: Racha; pendiente: boolean };
+const claveRacha = (u: string) => `anatomia.racha.${u}`;
+const filaRacha = (u: string) => leer<FilaRacha | null>(claveRacha(u), null);
+
+export async function leerRacha(usuarioId: string): Promise<Racha | null> {
+  return filaRacha(usuarioId)?.datos ?? null;
+}
+
+export async function guardarRachaPropia(usuarioId: string, racha: Racha): Promise<void> {
+  escribir(claveRacha(usuarioId), { datos: racha, pendiente: true });
+}
+
+export async function rachaPorSubir(usuarioId: string): Promise<Racha | null> {
+  const f = filaRacha(usuarioId);
+  return f?.pendiente ? f.datos : null;
+}
+
+export async function confirmarRacha(usuarioId: string, subida: Racha): Promise<void> {
+  const f = filaRacha(usuarioId);
+  if (f && JSON.stringify(f.datos) === JSON.stringify(subida)) escribir(claveRacha(usuarioId), { ...f, pendiente: false });
+}
+
+export async function guardarRachaDelServidor(usuarioId: string, servidor: Racha): Promise<void> {
+  const f = filaRacha(usuarioId);
+  const datos = f ? fusionarRacha(f.datos, servidor) : servidor;
+  if (f && JSON.stringify(datos) === JSON.stringify(f.datos)) return;
+  escribir(claveRacha(usuarioId), { datos, pendiente: (f?.pendiente ?? false) || JSON.stringify(datos) !== JSON.stringify(servidor) });
 }

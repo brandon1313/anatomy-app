@@ -1,6 +1,6 @@
 import type { ProgresoSync } from "@anatomia/contenido";
 import { describe, expect, it } from "vitest";
-import { aFila, aProgresoSync } from "./sync.service";
+import { aFila, aProgresoSync, aRacha } from "./sync.service";
 
 describe("progreso entre /sync y la base", () => {
   it("va y vuelve sin perder nada, también sin revisión ni último ejercicio", () => {
@@ -22,5 +22,13 @@ describe("progreso entre /sync y la base", () => {
       const fila = { usuarioId: "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d", ...aFila(p) };
       expect(aProgresoSync(fila)).toEqual(p);
     }
+  });
+});
+
+describe("racha entre la base y /sync", () => {
+  it("sin último día no manda el campo", () => {
+    const usuarioId = "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d";
+    expect(aRacha({ usuarioId, actual: 3, maxima: 5, ultimoDia: "2026-10-27" })).toEqual({ actual: 3, maxima: 5, ultimoDia: "2026-10-27" });
+    expect(aRacha({ usuarioId, actual: 0, maxima: 0, ultimoDia: null })).toStrictEqual({ actual: 0, maxima: 0, ultimoDia: undefined });
   });
 });

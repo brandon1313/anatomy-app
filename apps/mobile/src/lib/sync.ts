@@ -1,19 +1,36 @@
-import { RespuestaSync } from "@anatomia/contenido";
+import { type Racha, RespuestaSync } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 import { api } from "./api";
-import { borrarIntentos, confirmarSubida, guardarDelServidor, intentosPorSubir, leerProgreso, progresoPorSubir } from "./registro";
+import {
+  borrarIntentos,
+  confirmarRacha,
+  confirmarSubida,
+  guardarDelServidor,
+  guardarRachaDelServidor,
+  intentosPorSubir,
+  leerProgreso,
+  leerRacha,
+  progresoPorSubir,
+  rachaPorSubir,
+} from "./registro";
 
 const LOTE_INTENTOS = 200;
 const LOTE_PROGRESO = 500;
-let enCurso: Promise<Progreso[]> | null = null;
-let otraVez: Promise<Progreso[]> | null = null;
+
+export interface Sincronizado {
+  progreso: Progreso[];
+  racha: Racha | null;
+}
+
+let enCurso: Promise<Sincronizado> | null = null;
+let otraVez: Promise<Sincronizado> | null = null;
 
 /**
- * Sube a /sync los intentos y el progreso pendientes, en lotes, y guarda el progreso consolidado que
- * devuelve el servidor (gana la revisión más reciente). Devuelve el progreso local resultante.
- * Sin conexión falla y todo queda pendiente para la próxima vez.
+ * Sube a /sync los intentos, el progreso y la racha pendientes, en lotes, y guarda lo consolidado que
+ * devuelve el servidor (en el progreso gana la revisión más reciente; las rachas se unen). Devuelve el
+ * progreso y la racha locales resultantes. Sin conexión falla y todo queda pendiente para la próxima vez.
  */
-export function sincronizar(usuarioId: string): Promise<Progreso[]> {
+export function sincronizar(usuarioId: string): Promise<Sincronizado> {
   if (!enCurso) {
     enCurso = subir(usuarioId).finally(() => (enCurso = null));
     return enCurso;
@@ -28,16 +45,19 @@ export function sincronizar(usuarioId: string): Promise<Progreso[]> {
   return otraVez;
 }
 
-async function subir(usuarioId: string): Promise<Progreso[]> {
+async function subir(usuarioId: string): Promise<Sincronizado> {
   for (;;) {
     const intentos = await intentosPorSubir(usuarioId, LOTE_INTENTOS);
     const progreso = (await progresoPorSubir(usuarioId)).slice(0, LOTE_PROGRESO);
-    const r = RespuestaSync.parse(await api("/sync", { metodo: "POST", cuerpo: { intentos, progreso } }));
+    const racha = await rachaPorSubir(usuarioId);
+    const r = RespuestaSync.parse(await api("/sync", { metodo: "POST", cuerpo: { intentos, progreso, racha: racha ?? undefined } }));
     await borrarIntentos(intentos.map((i) => i.id));
     await confirmarSubida(usuarioId, progreso);
+    if (racha) await confirmarRacha(usuarioId, racha);
     if (intentos.length < LOTE_INTENTOS && progreso.length < LOTE_PROGRESO) {
       await guardarDelServidor(usuarioId, r.progreso);
-      return leerProgreso(usuarioId);
+      if (r.racha) await guardarRachaDelServidor(usuarioId, r.racha);
+      return { progreso: await leerProgreso(usuarioId), racha: await leerRacha(usuarioId) };
     }
   }
 }

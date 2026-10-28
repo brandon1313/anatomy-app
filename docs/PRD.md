@@ -154,15 +154,19 @@ Cada tipo del esquema tiene una forma fija de mostrarse y de calificarse; las op
 
 El repaso se calcula por ficha con ts-fsrs en el dispositivo, para que funcione sin internet.
 
+Repaso y racha cuentan días de estudio: el día del reloj del teléfono, que empieza a las 4 a. m. Estudiar pasada la medianoche cuenta para el día anterior.
+
 **Repaso espaciado**
 
 - Cada ficha empieza en estado `nuevo` y entra al repaso cuando aparece por primera vez en una lección.
 - En una sesión, cada ficha recibe una sola calificación: `Again` si falló algún ejercicio de esa ficha, `Good` si acertó todos.
+- Una ficha vence al empezar su día de estudio, no a la hora exacta: lo que se estudió de noche se repasa a la mañana siguiente.
 - Sesión de repaso: fichas con `proximaRevision` vencida, de la más atrasada a la menos; un ejercicio por ficha, distinto al de la última vez; máximo 10.
 
 **Racha**
 
 - Un día cuenta si se completa al menos una lección o una sesión de repaso, según la zona horaria del dispositivo.
+- Si la fecha local retrocede (un cambio de zona horaria o de reloj), la actividad no suma ni reinicia la racha.
 - Si pasa un día completo sin actividad, la racha vuelve a 0. Se guardan la actual y la máxima.
 
 **Recordatorio diario**
@@ -179,7 +183,8 @@ Después de la primera descarga, lecciones y repasos funcionan sin conexión; el
 2. Intentos, progreso y racha se guardan en expo-sqlite y se envían en lote a `POST /sync` al recuperar conexión.
 3. Cada intento lleva un id generado en el dispositivo, así un reenvío no crea duplicados.
 4. En el progreso de una ficha gana el registro con `ultimaRevision` más reciente.
-5. Si un paquete nuevo ya no trae un ejercicio, sus datos locales se ignoran sin romper la app.
+5. En la racha, dos tramos de días seguidos que se tocan o se pisan se unen; si entre ellos quedó un día sin actividad, cuenta el más reciente. La máxima es la mayor.
+6. Si un paquete nuevo ya no trae un ejercicio, sus datos locales se ignoran sin romper la app.
 
 ## API
 
