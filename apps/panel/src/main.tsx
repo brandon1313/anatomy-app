@@ -11,6 +11,7 @@ import { EditorFicha } from "./paginas/EditorFicha";
 import { EditorImagen } from "./paginas/EditorImagen";
 import { Generar } from "./paginas/Generar";
 import { Login } from "./paginas/Login";
+import { Metricas } from "./paginas/Metricas";
 import { Publicar } from "./paginas/Publicar";
 import { Reportes } from "./paginas/Reportes";
 
@@ -40,6 +41,7 @@ function App() {
           <NavLink to="/curso">Curso</NavLink>
           <NavLink to="/reportes">Reportes</NavLink>
           {usuario.rol === "admin" && <NavLink to="/publicar">Publicar</NavLink>}
+          {usuario.rol === "admin" && <NavLink to="/metricas">Métricas</NavLink>}
         </nav>
         <span className="usuario">
           {usuario.nombre} ({usuario.rol})
@@ -58,6 +60,7 @@ function App() {
           <Route path="/curso" element={<Curso />} />
           <Route path="/reportes" element={<Reportes />} />
           {usuario.rol === "admin" && <Route path="/publicar" element={<Publicar />} />}
+          {usuario.rol === "admin" && <Route path="/metricas" element={<Metricas />} />}
           <Route path="*" element={<Navigate to="/cola" replace />} />
         </Routes>
       </main>

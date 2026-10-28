@@ -188,3 +188,33 @@ export type ResultadoGeneracion =
   | { musculo: string; estado: "creado"; fichaId: string; ejercicioIds: string[]; intentos: number }
   | { musculo: string; estado: "omitido"; fichaId: string; motivo: string }
   | { musculo: string; estado: "fallido"; fichaId: string; errores: string[]; intentos: number };
+
+export interface Retencion {
+  elegibles: number;
+  retenidos: number;
+}
+
+export interface Metricas {
+  estudiantes: {
+    total: number;
+    nuevos7d: number;
+    activos7d: number;
+    diasActivosPorSemana: number | null;
+    retencionD1: Retencion;
+    retencionD7: Retencion;
+  };
+  lecciones: { total: number; usuarios: number };
+  repasos: { total: number; usuarios: number };
+  respuestas: { total: number; correctas: number };
+  reportes: number;
+  premium: { vieron: number; interesados: number; porPlan: Record<string, number> };
+  ejercicios: {
+    ejercicioId: string;
+    tipo: string | null;
+    titulo: string | null;
+    intentos: number;
+    correctos: number;
+    acierto: number;
+    revisar: boolean;
+  }[];
+}

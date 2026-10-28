@@ -134,3 +134,8 @@ ol.zonas li select { flex: 1; min-width: 160px; width: auto; }
 ol.zonas li.elegida { background: #eef8f2; border-radius: 6px; }
 ol.zonas .controles { display: inline-flex; gap: 4px; }
 ol.zonas button { min-height: 32px; padding: 2px 10px; }
+
+.datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0 24px; }
+.dato { background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; padding: 12px 16px; }
+.dato-titulo { color: var(--tenue); font-size: 0.85em; font-weight: 600; }
+.dato-valor { font-size: 1.8em; font-weight: 700; margin: 4px 0; }

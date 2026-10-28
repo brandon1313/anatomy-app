@@ -8,6 +8,7 @@ import { config } from "./config";
 import { ContenidoModule } from "./contenido/contenido.module";
 import { EventosController } from "./eventos/eventos.controller";
 import { GeneradorModule } from "./generador/generador.module";
+import { MetricasModule } from "./metricas/metricas.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PremiumModule } from "./premium/premium.module";
 import { PublicacionModule } from "./publicacion/publicacion.module";
@@ -23,6 +24,7 @@ import { UsuariosController } from "./usuarios/usuarios.controller";
     AuthModule,
     ContenidoModule,
     GeneradorModule,
+    MetricasModule,
     PremiumModule,
     PublicacionModule,
     ReportesModule,
