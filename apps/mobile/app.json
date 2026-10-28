@@ -25,7 +25,8 @@
       "expo-router",
       "expo-secure-store",
       "expo-audio",
-      "expo-font"
+      "expo-font",
+      "expo-sqlite"
     ],
     "scheme": "anatomia",
     "experiments": {

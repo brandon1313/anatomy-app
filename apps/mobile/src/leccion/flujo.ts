@@ -28,6 +28,10 @@ export function ejerciciosDeLeccion(
   });
 }
 
+/** Todos los ejercicios del paquete que se pueden mostrar: de ahí sale la sesión de repaso. */
+export const ejerciciosMostrables = (p: PaqueteContenido, imagenDisponible?: (archivo: string) => boolean): Ejercicio[] =>
+  ejerciciosDeLeccion(p, { id: "todos", titulo: "Todos", orden: 0, ejercicioIds: p.ejercicios.map((e) => e.id) }, imagenDisponible);
+
 export function lecciones(p: PaqueteContenido): TLeccion[] {
   return [...p.curso.unidades]
     .sort((a, b) => a.orden - b.orden)
@@ -67,7 +71,15 @@ export function iniciar(ejercicioIds: string[]): Sesion {
 
 export const actual = (s: Sesion): string | undefined => s.cola[s.indice];
 export const terminada = (s: Sesion) => s.indice >= s.cola.length;
-export const progreso = (s: Sesion) => (s.cola.length === 0 ? 1 : Math.min(1, s.indice / s.cola.length));
+/**
+ * Respuestas dadas sobre las que hacen falta: los ejercicios más la repetición de cada fallado, que se
+ * sabe desde que se falla. Así la barra avanza al comprobar, llega a 1 con la última respuesta y nunca
+ * retrocede cuando las repeticiones se agregan al final.
+ */
+export const progreso = (s: Sesion) => {
+  const total = s.original + s.fallados.length;
+  return total === 0 ? 1 : Math.min(1, s.respuestas.length / total);
+};
 
 export function responder(s: Sesion, correcto: boolean, ms: number): Sesion {
   const id = actual(s);

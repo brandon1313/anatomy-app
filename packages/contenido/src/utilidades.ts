@@ -80,3 +80,19 @@ export function erroresDeSalidaGenerador(salida: SalidaGenerador, fichasExistent
   }
   return errores;
 }
+
+/**
+ * Une dos listas de progreso por ficha: de cada ficha gana el registro con la `ultimaRevision` más
+ * reciente (PRD, "Sin internet y sincronización"); uno sin revisión pierde contra cualquiera que la
+ * tenga. Con la misma fecha queda el de `a`. Sirve en la API (lo guardado contra lo que llega) y en el
+ * dispositivo (lo local contra lo que devuelve /sync).
+ */
+export function fusionarProgreso<T extends { fichaId: string; ultimaRevision?: string }>(a: readonly T[], b: readonly T[]): T[] {
+  const cuando = (p: T) => (p.ultimaRevision ? Date.parse(p.ultimaRevision) : -Infinity);
+  const porFicha = new Map(a.map((p) => [p.fichaId, p]));
+  for (const p of b) {
+    const actual = porFicha.get(p.fichaId);
+    if (!actual || cuando(p) > cuando(actual)) porFicha.set(p.fichaId, p);
+  }
+  return [...porFicha.values()];
+}

@@ -9,6 +9,7 @@ import { ContenidoModule } from "./contenido/contenido.module";
 import { GeneradorModule } from "./generador/generador.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PublicacionModule } from "./publicacion/publicacion.module";
+import { SyncModule } from "./sync/sync.module";
 import { UsuariosController } from "./usuarios/usuarios.controller";
 
 @Module({
@@ -20,6 +21,7 @@ import { UsuariosController } from "./usuarios/usuarios.controller";
     ContenidoModule,
     GeneradorModule,
     PublicacionModule,
+    SyncModule,
   ],
   controllers: [UsuariosController],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

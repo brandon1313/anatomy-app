@@ -5,6 +5,8 @@ import {
   erroresDeConsistencia,
   erroresDeSalidaGenerador,
   esToqueCorrecto,
+  fusionarProgreso,
+  PeticionSync,
   PaqueteContenido,
   ProgresoFicha,
   puntoEnZona,
@@ -217,5 +219,31 @@ describe("ProgresoFicha", () => {
       proximaRevision: "2026-10-25T12:00:00Z",
     });
     expect(r.success).toBe(true);
+  });
+});
+
+describe("fusionarProgreso", () => {
+  const p = (fichaId: string, ultimaRevision?: string, repeticiones = 1) => ({ fichaId, ultimaRevision, repeticiones });
+
+  it("de cada ficha gana la revisión más reciente", () => {
+    const servidor = [p("sartorio", "2026-10-20T10:00:00Z", 3), p("gracil", "2026-10-25T10:00:00Z", 2)];
+    const telefono = [p("sartorio", "2026-10-26T09:00:00Z", 4), p("gracil", "2026-10-21T10:00:00Z", 1), p("pectineo", "2026-10-26T09:00:00Z")];
+    const r = new Map(fusionarProgreso(servidor, telefono).map((x) => [x.fichaId, x.repeticiones]));
+    expect(r).toEqual(new Map([["sartorio", 4], ["gracil", 2], ["pectineo", 1]]));
+  });
+
+  it("sin revisión pierde, y con la misma fecha queda la primera lista", () => {
+    const a = [p("sartorio", undefined, 0), p("gracil", "2026-10-25T10:00:00Z", 7)];
+    const b = [p("sartorio", "2026-10-25T10:00:00Z", 1), p("gracil", "2026-10-25T10:00:00Z", 9)];
+    expect(fusionarProgreso(a, b).map((x) => x.repeticiones)).toEqual([1, 7]);
+  });
+});
+
+describe("PeticionSync", () => {
+  it("acepta intentos y progreso sin usuario, y limita el lote", () => {
+    const intento = { id: "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d", ejercicioId: "tocar-sartorio", correcto: true, msRespuesta: 4200, respondidoEn: "2026-10-27T15:00:00Z", paqueteVersion: 3 };
+    const progreso = { fichaId: "sartorio", estado: "repaso", estabilidad: 3.2, dificultad: 5.1, repeticiones: 1, lapsos: 0, proximaRevision: "2026-10-30T15:00:00Z" };
+    expect(PeticionSync.safeParse({ intentos: [intento], progreso: [progreso] }).success).toBe(true);
+    expect(PeticionSync.safeParse({ intentos: Array(201).fill(intento), progreso: [] }).success).toBe(false);
   });
 });

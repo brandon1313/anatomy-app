@@ -63,16 +63,32 @@ describe("flujo de la lección", () => {
     expect(resultado(s)).toEqual({ aciertos: 1, total: 3, ms: 5000 });
   });
 
-  it("el progreso llega a 1 al terminar, también con repeticiones", () => {
+  it("el progreso avanza al comprobar y llega a 1 con la última respuesta, también con repeticiones", () => {
     let s = iniciar(["a", "b"]);
     expect(progreso(s)).toBe(0);
-    s = siguiente(responder(s, false, 1));
-    expect(progreso(s)).toBe(0.5);
-    s = siguiente(responder(s, true, 1));
+    s = responder(s, false, 1);
+    // Fallar alarga el camino: falta también la repetición de "a".
+    expect(progreso(s)).toBeCloseTo(1 / 3);
+    s = responder(siguiente(s), true, 1);
+    expect(progreso(s)).toBeCloseTo(2 / 3);
+    s = siguiente(s);
     expect(s.cola).toEqual(["a", "b", "a"]);
-    s = siguiente(responder(s, true, 1));
+    s = responder(s, true, 1);
     expect(progreso(s)).toBe(1);
-    expect(terminada(s)).toBe(true);
+    expect(terminada(siguiente(s))).toBe(true);
+  });
+
+  it("la barra nunca retrocede cuando las repeticiones se agregan al final", () => {
+    // 10 ejercicios con 3 fallados: contando por posición en la cola, bajaba de 90 % a 77 %.
+    let s = iniciar(Array.from({ length: 10 }, (_, i) => `e${i}`));
+    const valores = [progreso(s)];
+    while (!terminada(s)) {
+      s = responder(s, ![0, 3, 6].includes(s.indice), 1);
+      valores.push(progreso(s));
+      s = siguiente(s);
+      valores.push(progreso(s));
+    }
+    expect(valores.every((v, i) => i === 0 || v >= valores[i - 1])).toBe(true);
   });
 
   it("una lección vacía ya está terminada", () => {

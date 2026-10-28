@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
-import { ejerciciosDeLeccion, estadoLeccion, lecciones } from "../leccion/flujo";
+import { ejerciciosDeLeccion, ejerciciosMostrables, estadoLeccion, lecciones } from "../leccion/flujo";
+import { diasHastaElProximo, ejerciciosDeRepaso } from "../repaso/espaciado";
 import { color, espacio, fuente } from "../tema";
 
 const CIRCULO = {
@@ -17,7 +18,7 @@ const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
 const TAM = 76;
 
 export default function Inicio() {
-  const { usuario, paquete, descarga, actualizar, completadas, salir } = useApp();
+  const { usuario, paquete, descarga, actualizar, completadas, salir, progreso } = useApp();
 
   if (!paquete) {
     return (
@@ -45,12 +46,31 @@ export default function Inicio() {
 
   const todas = lecciones(paquete);
   const unidad = paquete.curso.unidades[0];
+  const ahora = new Date();
+  // Fichas vencidas que tienen un ejercicio para mostrar (la sesión toma hasta 10).
+  const porRepasar = ejerciciosDeRepaso(progreso, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), ahora, Infinity).length;
+  const proximo = diasHastaElProximo(progreso, ahora);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={estilos.contenido}>
         <Text style={estilos.saludo}>Hola, {usuario?.nombre.split(" ")[0]}</Text>
         {descarga === "sin_conexion" && <Text style={estilos.offline}>Sin conexión: usando las lecciones guardadas.</Text>}
+        <View style={[estilos.repaso, porRepasar > 0 && { borderColor: color.coral }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={[estilos.repasoTitulo, porRepasar > 0 && { color: color.coralTexto }]}>Repaso</Text>
+            <Text style={estilos.repasoDetalle}>
+              {progreso.length === 0
+                ? "Completa una lección para empezar a repasar."
+                : porRepasar > 0
+                  ? `${porRepasar} ${porRepasar === 1 ? "ficha" : "fichas"} por repasar`
+                  : proximo === null
+                    ? "Al día."
+                    : `Al día. Vuelve ${proximo === 1 ? "mañana" : `en ${proximo} días`}.`}
+            </Text>
+          </View>
+          {porRepasar > 0 && <Boton titulo="Repasar" onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: "repaso" } })} />}
+        </View>
         <View style={estilos.unidad}>
           <Text style={estilos.unidadEtiqueta}>Unidad 1</Text>
           <Text style={estilos.unidadTitulo} accessibilityRole="header">{unidad?.titulo}</Text>
@@ -108,6 +128,9 @@ const estilos = StyleSheet.create({
   contenido: { padding: espacio.l, paddingBottom: espacio.xl },
   saludo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
   offline: { marginTop: espacio.s, color: color.tenue, fontSize: 14, fontFamily: fuente.normal },
+  repaso: { marginTop: espacio.l, flexDirection: "row", alignItems: "center", gap: espacio.m, padding: espacio.m, borderRadius: 16, borderWidth: 2, borderBottomWidth: 4, borderColor: color.borde, backgroundColor: color.superficie },
+  repasoTitulo: { fontSize: 18, fontFamily: fuente.titulo, color: color.texto },
+  repasoDetalle: { marginTop: 2, fontSize: 14, fontFamily: fuente.normal, color: color.tenue },
   unidad: { marginTop: espacio.l, marginBottom: espacio.l, padding: espacio.m, borderRadius: 16, backgroundColor: color.marca, borderBottomWidth: 4, borderColor: color.marcaSombra },
   unidadEtiqueta: { color: "#d5f2ee", fontSize: 14, fontFamily: fuente.media },
   unidadTitulo: { color: "#fff", fontSize: 20, fontFamily: fuente.titulo },

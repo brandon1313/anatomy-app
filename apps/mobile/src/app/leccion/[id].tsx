@@ -1,7 +1,7 @@
 import type { Ejercicio, Imagen } from "@anatomia/contenido";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, type LayoutRectangle, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, type LayoutRectangle, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Boton } from "../../componentes/Boton";
 import { Ejercicio3D } from "../../ejercicios/Ejercicio3D";
@@ -10,7 +10,8 @@ import { IdentificarImagen } from "../../ejercicios/IdentificarImagen";
 import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
 import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import type { Eleccion } from "../../ejercicios/tipos";
-import { actual, ejerciciosDeLeccion, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { actual, ejerciciosDeLeccion, ejerciciosMostrables, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { ejerciciosDeRepaso } from "../../repaso/espaciado";
 import { type MusculoPresentado, Presentacion3D } from "../../ejercicios/Presentacion3D";
 import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
@@ -52,9 +53,17 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 
 export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { paquete, completar } = useApp();
+  const { paquete, completar, progreso: progresoFichas, registrarIntento, terminarSesion } = useApp();
   const insets = useSafeAreaInsets();
-  const leccion = useMemo(() => (paquete ? lecciones(paquete).find((l) => l.id === id) : undefined), [paquete, id]);
+  // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
+  const esRepaso = id === "repaso";
+  const [idsRepaso] = useState(() =>
+    esRepaso && paquete ? ejerciciosDeRepaso(progresoFichas, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), new Date()) : [],
+  );
+  const leccion = useMemo(() => {
+    if (esRepaso) return idsRepaso.length > 0 ? { id: "repaso", titulo: "Repaso", orden: 0, ejercicioIds: idsRepaso } : undefined;
+    return paquete ? lecciones(paquete).find((l) => l.id === id) : undefined;
+  }, [paquete, id, esRepaso, idsRepaso]);
   const ejercicios = useMemo(
     () => (paquete && leccion ? ejerciciosDeLeccion(paquete, leccion, (archivo) => uriImagen(archivo) !== null) : []),
     [paquete, leccion],
@@ -101,34 +110,52 @@ export default function Leccion() {
   /** null mientras se lee si ya se vio. Sale sola la primera vez; después, con el ▶ de la barra. */
   const [presentando, setPresentando] = useState<boolean | null>(null);
   useEffect(() => {
-    if (!leccion || recorrido.musculos.length === 0) return setPresentando(false);
+    if (!leccion || esRepaso || recorrido.musculos.length === 0) return setPresentando(false);
     leerJson<string[]>(CLAVE_PRESENTACIONES).then(
       (vistas) => setPresentando(!(vistas ?? []).includes(leccion.id)),
       () => setPresentando(false),
     );
-  }, [leccion, recorrido]);
+  }, [leccion, recorrido, esRepaso]);
   // Si el 3D falla, no hay presentación: la lección sigue con las imágenes.
   useEffect(() => {
     if (fallo3D) setPresentando(false);
   }, [fallo3D]);
 
   const [sesion, setSesion] = useState(() => iniciar(ejercicios.map((e) => e.id)));
+  // Al abrir la lección antes de que cargue el paquete (por ejemplo, al recargar en web), la sesión
+  // empieza vacía: se arma cuando llegan los ejercicios.
+  useEffect(() => {
+    if (sesion.cola.length === 0 && ejercicios.length > 0) setSesion(iniciar(ejercicios.map((e) => e.id)));
+  }, [ejercicios, sesion.cola.length]);
   const [eleccion, setEleccion] = useState<Eleccion | null>(null);
   const [comprobado, setComprobado] = useState(false);
   const [elogio, setElogio] = useState(ELOGIOS[0]);
   const inicio = useRef(Date.now());
 
-  const fin = terminada(sesion);
+  // Una sesión vacía no está terminada: todavía no empezó.
+  const fin = sesion.cola.length > 0 && terminada(sesion);
+  const sesionCerrada = useRef(false);
   useEffect(() => {
-    if (!fin || !leccion || ejercicios.length === 0) return;
-    void completar(leccion.id);
+    if (!fin || !leccion || ejercicios.length === 0 || sesionCerrada.current) return;
+    sesionCerrada.current = true;
+    // Una calificación por ficha con ts-fsrs (también en el repaso), y la lección queda completada.
+    terminarSesion(sesion.respuestas);
+    if (!esRepaso) void completar(leccion.id);
     efecto("fin");
-  }, [fin, leccion, ejercicios.length, completar]);
+  }, [fin, leccion, ejercicios.length, completar, terminarSesion, esRepaso, sesion.respuestas]);
+
+  if (!paquete || (ejercicios.length > 0 && sesion.cola.length === 0)) {
+    return (
+      <SafeAreaView style={estilos.centro}>
+        <ActivityIndicator size="large" color={color.marca} />
+      </SafeAreaView>
+    );
+  }
 
   if (!leccion || ejercicios.length === 0) {
     return (
       <SafeAreaView style={estilos.centro}>
-        <Text style={estilos.aviso}>Esta lección ya no está disponible.</Text>
+        <Text style={estilos.aviso}>{esRepaso ? "No tienes fichas por repasar ahora." : "Esta lección ya no está disponible."}</Text>
         <Boton titulo="Volver" onPress={() => router.back()} />
       </SafeAreaView>
     );
@@ -139,7 +166,7 @@ export default function Leccion() {
     return (
       <SafeAreaView style={estilos.centro}>
         <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
-        <Text style={estilos.tituloResultado} accessibilityRole="header">¡Lección completada!</Text>
+        <Text style={estilos.tituloResultado} accessibilityRole="header">{esRepaso ? "¡Repaso completado!" : "¡Lección completada!"}</Text>
         <View style={estilos.cifras}>
           <View style={[estilos.cifra, { borderColor: color.logro }]}>
             <Text style={[estilos.etiqueta, { backgroundColor: color.logro, color: color.logroTexto }]}>Aciertos</Text>
@@ -162,7 +189,9 @@ export default function Leccion() {
 
   function comprobar() {
     if (!eleccion) return;
-    setSesion((s) => responder(s, eleccion.correcto, Date.now() - inicio.current));
+    const ms = Date.now() - inicio.current;
+    setSesion((s) => responder(s, eleccion.correcto, ms));
+    registrarIntento({ ejercicioId: ejercicio.id, correcto: eleccion.correcto, ms });
     setComprobado(true);
     setElogio(ELOGIOS[Math.floor(Math.random() * ELOGIOS.length)]);
     efecto(eleccion.correcto ? "acierto" : "error");
@@ -191,7 +220,7 @@ export default function Leccion() {
         <Pressable accessibilityRole="button" accessibilityLabel="Salir de la lección" onPress={salirConConfirmacion} style={estilos.cerrar} hitSlop={8}>
           <Text style={estilos.x}>✕</Text>
         </Pressable>
-        <View style={estilos.progreso} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: sesion.cola.length, now: sesion.indice }}>
+        <View style={estilos.progreso} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: Math.round(progreso(sesion) * 100) }}>
           <View style={[estilos.relleno, { width: `${Math.max(progreso(sesion) * 100, 4)}%` }]}>
             <View style={estilos.brillo} />
           </View>

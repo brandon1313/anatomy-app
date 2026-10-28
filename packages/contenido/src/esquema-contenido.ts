@@ -295,6 +295,30 @@ export const ProgresoFicha = z.object({
   ultimoEjercicioId: Id.optional(),
 });
 
+// ───────────────────────── Sincronización ─────────────────────────
+
+/** Una respuesta del estudiante. El id lo genera el dispositivo: reenviarla no la duplica. */
+export const Intento = z.object({
+  id: z.uuid(),
+  ejercicioId: Id,
+  correcto: z.boolean(),
+  msRespuesta: z.number().int().nonnegative(),
+  respondidoEn: z.iso.datetime(),
+  paqueteVersion: z.number().int().positive(),
+});
+
+/** El progreso de una ficha tal como viaja en /sync: el usuario sale del token, no del cuerpo. */
+export const ProgresoSync = ProgresoFicha.omit({ usuarioId: true });
+
+/** POST /sync: los intentos que faltan subir y el progreso que cambió en el dispositivo. */
+export const PeticionSync = z.object({
+  intentos: z.array(Intento).max(200),
+  progreso: z.array(ProgresoSync).max(500),
+});
+
+/** Respuesta de /sync: el progreso consolidado del usuario, de todas sus fichas. */
+export const RespuestaSync = z.object({ progreso: z.array(ProgresoSync) });
+
 // ───────────────────────── Tipos ─────────────────────────
 
 export type FichaMusculo = z.infer<typeof FichaMusculo>;
@@ -311,6 +335,10 @@ export type PaqueteContenido = z.infer<typeof PaqueteContenido>;
 export type SalidaGenerador = z.infer<typeof SalidaGenerador>;
 export type ReporteError = z.infer<typeof ReporteError>;
 export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
+export type Intento = z.infer<typeof Intento>;
+export type ProgresoSync = z.infer<typeof ProgresoSync>;
+export type PeticionSync = z.infer<typeof PeticionSync>;
+export type RespuestaSync = z.infer<typeof RespuestaSync>;
 
 // ───────────────────────── Validación entre colecciones ─────────────────────────
 
