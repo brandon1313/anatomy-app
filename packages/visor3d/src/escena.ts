@@ -13,6 +13,7 @@ import {
   type MeshPhysicalMaterialParameters,
   type Object3D,
   PerspectiveCamera,
+  Plane,
   PMREMGenerator,
   Raycaster,
   Scene,
@@ -25,7 +26,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, suavizar, vistaDeAngulo } from "./geometria";
+import { corrimientoAlAcercar, dentroDeLaCaja, distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, suavizar, vistaDeAngulo } from "./geometria";
 import type { Vista } from "./protocolo";
 
 /** Tipos de estructura. El modelo conserva las claves del archivo "Muslo derecho en 3D". */
@@ -158,7 +159,7 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
   const entornoListo = performance.now();
   const camara = new PerspectiveCamera(28, 1, 0.01, 10);
   const controles = new OrbitControls(camara, lienzo);
-  Object.assign(controles, { enableDamping: true, dampingFactor: 0.09, rotateSpeed: 0.8, minDistance: 0.35, maxDistance: 3.2, enablePan: false });
+  Object.assign(controles, { enableDamping: true, dampingFactor: 0.09, rotateSpeed: 0.8, minDistance: 0.35, maxDistance: 3.2, enablePan: true, screenSpacePanning: true });
   escena.add(new HemisphereLight(0xfff6f2, 0x3a2224, 0.35));
   const luces = [[0xffffff, 1.15, [-1.2, 2.2, 2.4]], [0xffe6e0, 0.3, [2.2, 0.4, 1.2]], [0xffffff, 0.55, [0.5, 1.5, -2.5]]] as const;
   for (const [color, intensidad, [x, y, z]] of luces) {
@@ -421,6 +422,41 @@ export function crearVisor(contenedor: HTMLElement, datos: DatosModelo, bin: Arr
     visor.alTocar(estructuraEn(e.clientX, e.clientY));
   });
   lienzo.addEventListener("wheel", () => (animacion = null), { passive: true });
+
+  // Acercar hacia donde se pellizca (con la rueda, hacia el puntero) y no siempre al centro; con dos dedos,
+  // además, se arrastra. El objetivo no sale de la caja del modelo, y los botones de vista lo recentran.
+  const punteros = new Map<number, [number, number]>();
+  let raton: [number, number] | null = null;
+  const anotarPuntero = (e: PointerEvent) => {
+    if (e.pointerType === "mouse") raton = [e.clientX, e.clientY];
+    if (e.type === "pointerdown" || punteros.has(e.pointerId)) punteros.set(e.pointerId, [e.clientX, e.clientY]);
+  };
+  lienzo.addEventListener("pointerdown", anotarPuntero);
+  lienzo.addEventListener("pointermove", anotarPuntero);
+  for (const tipo of ["pointerup", "pointercancel"] as const) lienzo.addEventListener(tipo, (e) => punteros.delete(e.pointerId));
+  const plano = new Plane(), mirada = new Vector3(), bajoLosDedos = new Vector3(), ajuste = new Vector3();
+  const caja: [number, number, number] = [tam[0], tam[1], tam[2]];
+  let radio = camara.position.distanceTo(controles.target);
+  controles.addEventListener("change", () => {
+    const nuevo = camara.position.distanceTo(controles.target);
+    const dedos = [...punteros.values()];
+    const foco = dedos.length >= 2 ? [(dedos[0][0] + dedos[1][0]) / 2, (dedos[0][1] + dedos[1][1]) / 2] : raton;
+    if (!animacion && foco && Math.abs(nuevo - radio) > 1e-6) {
+      const r = lienzo.getBoundingClientRect();
+      ndc.set(((foco[0] - r.left) / r.width) * 2 - 1, -((foco[1] - r.top) / r.height) * 2 + 1);
+      rayo.setFromCamera(ndc, camara);
+      plano.setFromNormalAndCoplanarPoint(camara.getWorldDirection(mirada), controles.target);
+      if (rayo.ray.intersectPlane(plano, bajoLosDedos)) {
+        ajuste.fromArray(corrimientoAlAcercar(controles.target.toArray(), bajoLosDedos.toArray(), radio, nuevo));
+        controles.target.add(ajuste);
+        camara.position.add(ajuste);
+      }
+    }
+    ajuste.fromArray(dentroDeLaCaja(controles.target.toArray(), caja)).sub(controles.target);
+    controles.target.add(ajuste);
+    camara.position.add(ajuste);
+    radio = camara.position.distanceTo(controles.target);
+  });
 
   /** Lo que queda bajo el punto, primero lo sólido (el vasto lateral antes que el tracto iliotibial translúcido). */
   function estructuraEn(x: number, y: number): string | null {

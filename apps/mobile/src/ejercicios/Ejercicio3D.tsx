@@ -97,7 +97,7 @@ export function Ejercicio3D({
       </Text>
       {tocar && (
         <Text style={estilosTexto.ayuda}>
-          {elegida ? "Puedes tocar otro antes de comprobar." : "Gíralo con un dedo, pellizca para acercar y toca el músculo."}
+          {elegida ? "Puedes tocar otro antes de comprobar." : "Gíralo con un dedo, pellizca para acercar, arrastra con dos dedos y toca el músculo."}
         </Text>
       )}
       <View style={estilos.hueco} onLayout={(ev) => onHueco(ev.nativeEvent.layout)} />

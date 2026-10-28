@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deBase64, distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, vistaDeAngulo } from "../src/geometria";
+import { corrimientoAlAcercar, deBase64, dentroDeLaCaja, distanciaParaVer, giroMasCorto, Ocupacion, ordenDesdeElCentro, puntosDeBusqueda, vistaDeAngulo } from "../src/geometria";
 
 describe("giroMasCorto", () => {
   it("gira por el lado más corto, también al cruzar los 180°", () => {
@@ -70,5 +70,19 @@ describe("Ocupacion", () => {
     expect(o.libre(10, 10, 50, 18)).toBe(true);
     expect(o.libre(280, 10, 50, 18)).toBe(false);
     expect(o.libre(-5, 10, 20, 10)).toBe(false);
+  });
+});
+
+describe("corrimientoAlAcercar y dentroDeLaCaja", () => {
+  const cerca = (a: number[], b: number[]) => a.forEach((x, i) => expect(x).toBeCloseTo(b[i]));
+
+  it("al acercar a la mitad, se corre la mitad del camino hacia el punto; al alejar, se aleja", () => {
+    cerca(corrimientoAlAcercar([0, 0, 0], [0.2, -0.1, 0], 1, 0.5), [0.1, -0.05, 0]);
+    cerca(corrimientoAlAcercar([0, 0, 0], [0.2, 0, 0], 1, 2), [-0.2, 0, 0]);
+    cerca(corrimientoAlAcercar([0.1, 0, 0], [0.1, 0, 0], 1, 0.5), [0, 0, 0]);
+  });
+
+  it("no deja que el objetivo salga de la caja del modelo", () => {
+    cerca(dentroDeLaCaja([0.5, -0.9, 0.01], [0.2, 0.8, 0.2]), [0.1, -0.4, 0.01]);
   });
 });

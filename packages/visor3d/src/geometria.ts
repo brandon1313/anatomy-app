@@ -16,6 +16,23 @@ export function distanciaParaVer(alto: number, ancho: number, fovGrados: number,
   return 1.05 * Math.max(alto / 2 / t, ancho / 2 / (t * aspecto)) + ancho / 2;
 }
 
+type Vec3 = [number, number, number];
+
+/**
+ * Acercar hacia un punto y no hacia el centro: cuando la distancia de la cámara al objetivo pasa de
+ * `antes` a `despues`, cámara y objetivo se corren juntos hacia `punto` (lo que queda bajo los dedos,
+ * en el plano del objetivo) en la misma proporción. Devuelve ese corrimiento; alejarse lo invierte.
+ */
+export function corrimientoAlAcercar(objetivo: Vec3, punto: Vec3, antes: number, despues: number): Vec3 {
+  const k = 1 - despues / antes;
+  return [(punto[0] - objetivo[0]) * k, (punto[1] - objetivo[1]) * k, (punto[2] - objetivo[2]) * k];
+}
+
+/** El objetivo de la cámara dentro de la caja del modelo (centrada en el origen): moverse no lo pierde de vista. */
+export function dentroDeLaCaja(objetivo: Vec3, tam: Vec3): Vec3 {
+  return [0, 1, 2].map((e) => Math.min(tam[e] / 2, Math.max(-tam[e] / 2, objetivo[e]))) as Vec3;
+}
+
 /** Entrada y salida suaves para las animaciones de cámara (k de 0 a 1). */
 export const suavizar = (k: number) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
 
