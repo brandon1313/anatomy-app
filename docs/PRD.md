@@ -6,7 +6,7 @@ Especificación para que un agente construya la beta. Entrégala junto con `esqu
 
 ## Objetivo
 
-Construir en 4 semanas una beta mobile (iOS y Android) para aprender los músculos del muslo con lecciones cortas, y probarla 2 semanas con 15–20 estudiantes de fisioterapia para medir si vuelven solos, si el contenido es confiable y si pagarían.
+Construir en 4 semanas una beta mobile (iOS y Android) para aprender los músculos del miembro inferior con lecciones cortas, y probarla 2 semanas con 15–20 estudiantes de fisioterapia para medir si vuelven solos, si el contenido es confiable y si pagarían.
 
 - **Producto:** app de lecciones cortas tipo Duolingo, en español, con contenido redactado por IA y aprobado por una revisora experta antes de publicarse.
 - **Fuente de verificación:** *Principios de Anatomía y Fisiología* (Tortora y Derrickson). Ningún texto, cuadro ni ilustración del libro se copia a la app.
@@ -15,7 +15,13 @@ Construir en 4 semanas una beta mobile (iOS y Android) para aprender los múscul
 
 ## Alcance
 
-La beta cubre una sola unidad, "Músculos del muslo", con los músculos que defina la revisora (alrededor de 12) y 2 imágenes: muslo en vista anterior y en vista posterior.
+La beta cubre 3 unidades del miembro inferior, con los músculos que defina la revisora (alrededor de 37); el detalle está en [PLAN-UNIDADES.md](PLAN-UNIDADES.md):
+
+1. **Muslo:** compartimentos anterior, medial y posterior.
+2. **Glúteo y cadera:** glúteos y rotadores laterales.
+3. **Pierna:** compartimentos anterior, lateral y posterior.
+
+Con una sola unidad, un estudiante terminaba todo en menos de una hora y no tenía a qué volver. Las unidades 2 y 3 pueden publicarse durante la beta: cada una es una razón para volver.
 
 **Incluye**
 
@@ -26,9 +32,10 @@ La beta cubre una sola unidad, "Músculos del muslo", con los músculos que defi
 
 **No incluye (Fase 2 o después)**
 
-- Pagos y suscripciones, vidas, XP, ligas.
+- Pagos y suscripciones, XP, ligas.
+- Vidas: castigan el error, que en anatomía es parte de aprender; frustran a quien más necesita practicar y ensucian la medición de la retención (ver [PLAN-UNIDADES.md](PLAN-UNIDADES.md)).
 - Inicio de sesión con Google o Apple.
-- Otras unidades y los ejercicios "completar la ficha" y "terminología".
+- Otras regiones (miembro superior, tronco, cabeza y cuello) y los ejercicios "completar la ficha" y "terminología".
 - Zoom sobre las imágenes.
 - Panel para catedráticos y licencias por universidad.
 - Notificaciones enviadas desde el servidor y otros idiomas.

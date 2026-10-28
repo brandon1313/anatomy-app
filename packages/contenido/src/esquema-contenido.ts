@@ -324,7 +324,7 @@ export const OFERTA_PREMIUM: z.infer<typeof OfertaPremium> = {
   mensual: 2.99,
   anual: 19.99,
   beneficios: [
-    "Todas las unidades: no solo el muslo, todo el cuerpo.",
+    "Todo el cuerpo: miembro superior, tronco, cabeza y cuello.",
     "Ejercicios nuevos: completar la ficha y terminología.",
     "Modelos 3D de cada región, con su presentación.",
     "Lecciones nuevas cada mes, revisadas por especialistas.",
