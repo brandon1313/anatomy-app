@@ -1,4 +1,4 @@
-import { type OfertaPremium, puntoEnZona, type Racha, type SalidaGenerador, type Zona } from "./esquema-contenido";
+import { type MarcaLeccion, type OfertaPremium, puntoEnZona, type Racha, type SalidaGenerador, type Zona } from "./esquema-contenido";
 
 type Punto = [number, number];
 
@@ -116,6 +116,38 @@ export function fusionarRacha(a: Racha, b: Racha): Racha {
     r = { ...ultima, actual };
   }
   return { ...r, maxima: Math.max(a.maxima, b.maxima, r.actual) };
+}
+
+/**
+ * Estrellas de una lección según los aciertos a la primera: 1 por terminarla, 2 desde el 70% y 3 desde el
+ * 90%. Sin ejercicios, 0.
+ */
+export function estrellas(aciertos: number, total: number): 0 | 1 | 2 | 3 {
+  if (total <= 0) return 0;
+  if (aciertos >= total * 0.9) return 3;
+  if (aciertos >= total * 0.7) return 2;
+  return 1;
+}
+
+/**
+ * true si la marca `a` es mejor que `b`: más aciertos en proporción; si empatan, la de más ejercicios y,
+ * después, la lograda antes. Es un orden total: el teléfono y el servidor eligen la misma.
+ */
+export function esMejorMarca(a: MarcaLeccion, b: MarcaLeccion): boolean {
+  const proporcion = a.aciertos * b.total - b.aciertos * a.total;
+  if (proporcion !== 0) return proporcion > 0;
+  if (a.total !== b.total) return a.total > b.total;
+  return a.logrado < b.logrado;
+}
+
+/** Une las marcas de dos lugares (el teléfono y el servidor): de cada lección queda la mejor. */
+export function fusionarMarcas(a: readonly MarcaLeccion[], b: readonly MarcaLeccion[]): MarcaLeccion[] {
+  const porLeccion = new Map(a.map((m) => [m.leccionId, m]));
+  for (const m of b) {
+    const actual = porLeccion.get(m.leccionId);
+    if (!actual || esMejorMarca(m, actual)) porLeccion.set(m.leccionId, m);
+  }
+  return [...porLeccion.values()];
 }
 
 /** Cuánto se ahorra, en porcentaje entero, pagando el año en vez de 12 meses (0 si no conviene). */

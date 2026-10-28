@@ -1,4 +1,4 @@
-import { fusionarProgreso, fusionarRacha, type MotivoReporte, type NombreEvento, type PaqueteContenido, type Racha } from "@anatomia/contenido";
+import { fusionarMarcas, fusionarProgreso, fusionarRacha, type MarcaLeccion, type MotivoReporte, type NombreEvento, type PaqueteContenido, type Racha } from "@anatomia/contenido";
 import { randomUUID } from "expo-crypto";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
@@ -21,7 +21,18 @@ import { borrarJson, guardarJson, leerJson } from "./almacen";
 import { alAbrirRecordatorio, programarRecordatorio } from "./notificaciones";
 import { borrarDatosPremium } from "./premium";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
-import { borrarDatosLocales, guardarEvento, guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
+import {
+  borrarDatosLocales,
+  guardarEvento,
+  guardarIntento,
+  guardarMarcaPropia,
+  guardarProgresoPropio,
+  guardarRachaPropia,
+  guardarReporte,
+  leerMarcas,
+  leerProgreso,
+  leerRacha,
+} from "./registro";
 import { sincronizar } from "./sync";
 
 interface Estado {
@@ -36,9 +47,12 @@ interface Estado {
   descarga: "descargando" | "al_dia" | "sin_conexion" | "error";
   actualizar: () => Promise<void>;
 
-  /** Ids de las lecciones completadas por este usuario en este dispositivo. */
+  /** Ids de las lecciones completadas: las de este dispositivo y las que tienen marca (también de otros). */
   completadas: string[];
-  completar: (leccionId: string) => Promise<void>;
+  /** La mejor marca de cada lección terminada; de ella salen las estrellas. */
+  marcas: MarcaLeccion[];
+  /** Al terminar una lección: queda completada y, si mejora la marca, se guarda y se sube. */
+  completar: (leccionId: string, resultado: { aciertos: number; total: number }) => Promise<void>;
 
   /** Progreso del repaso espaciado de cada ficha que ya apareció en una lección. */
   progreso: Progreso[];
@@ -94,6 +108,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const [paquete, setPaquete] = useState<PaqueteContenido | null>(null);
   const [descarga, setDescarga] = useState<Estado["descarga"]>("descargando");
   const [completadas, setCompletadas] = useState<string[]>([]);
+  const [marcas, setMarcas] = useState<MarcaLeccion[]>([]);
   const [progreso, setProgreso] = useState<Progreso[]>([]);
   const [racha, setRacha] = useState<Racha>(SIN_RACHA);
   const [horaRecordatorio, setHoraRecordatorio] = useState<string | null>(null);
@@ -119,8 +134,9 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const sincronizarAhora = useCallback((usuarioId: string) => {
     // Se une con lo que ya está en pantalla: una sesión que terminó durante la subida no se pierde.
     sincronizar(usuarioId).then(
-      ({ progreso: p, racha: r }) => {
+      ({ progreso: p, racha: r, marcas: m }) => {
         setProgreso((actual) => fusionarProgreso(actual, p));
+        setMarcas((actual) => fusionarMarcas(actual, m));
         if (r) setRacha((actual) => unirRacha(actual, r));
         // Si la sesión se renovó durante la subida, el usuario llegó al día (por ejemplo, con la hora del recordatorio).
         setHoraRecordatorio(usuarioActual()?.horaRecordatorio ?? null);
@@ -141,6 +157,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     leerJson<string[]>(claveProgreso(usuario.id)).then((c) => setCompletadas(c ?? []));
     leerProgreso(usuario.id).then((p) => setProgreso((actual) => fusionarProgreso(p, actual)), () => {});
     leerRacha(usuario.id).then((r) => r && setRacha((actual) => unirRacha(actual, r)), () => {});
+    leerMarcas(usuario.id).then((m) => setMarcas((actual) => fusionarMarcas(m, actual)), () => {});
     setHoraRecordatorio(usuario.horaRecordatorio ?? null);
     // Abrir la app (o volver a ella) cuenta como evento y reintenta la subida, por ejemplo con conexión otra vez.
     const abrir = () => {
@@ -171,6 +188,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const limpiar = () => {
     setUsuario(null);
     setCompletadas([]);
+    setMarcas([]);
     setProgreso([]);
     setRacha(SIN_RACHA);
     setHoraRecordatorio(null);
@@ -189,12 +207,20 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     paquete,
     descarga,
     actualizar,
-    completadas,
-    completar: async (leccionId) => {
-      if (!usuario || completadas.includes(leccionId)) return;
-      const nuevas = [...completadas, leccionId];
-      setCompletadas(nuevas);
-      await guardarJson(claveProgreso(usuario.id), nuevas);
+    completadas: [...new Set([...completadas, ...marcas.map((m) => m.leccionId)])],
+    marcas,
+    completar: async (leccionId, { aciertos, total }) => {
+      if (!usuario) return;
+      const usuarioId = usuario.id;
+      if (!completadas.includes(leccionId)) {
+        const nuevas = [...completadas, leccionId];
+        setCompletadas(nuevas);
+        await guardarJson(claveProgreso(usuarioId), nuevas);
+      }
+      if (total === 0) return;
+      const todas = await guardarMarcaPropia(usuarioId, { leccionId, aciertos, total, logrado: new Date().toISOString() });
+      setMarcas((actual) => fusionarMarcas(actual, todas));
+      sincronizarAhora(usuarioId);
     },
     progreso,
     registrarIntento: ({ ejercicioId, correcto, ms }) => {

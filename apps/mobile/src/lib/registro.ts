@@ -1,4 +1,4 @@
-import { type EventoUso, fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
+import { type EventoUso, fusionarMarcas, fusionarProgreso, fusionarRacha, type Intento, type MarcaLeccion, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import { openDatabaseAsync, type SQLiteDatabase } from "expo-sqlite";
 import type { Progreso } from "../repaso/espaciado";
 
@@ -8,6 +8,7 @@ import type { Progreso } from "../repaso/espaciado";
  *  - Intentos: solo los que faltan subir; al subirlos se borran.
  *  - Progreso: el de cada ficha, con `pendiente` si cambió en este teléfono y falta subirlo.
  *  - Racha: una fila, también con `pendiente`.
+ *  - Marcas de lección: una fila con la mejor de cada lección, también con `pendiente`.
  *  - Reportes de error y eventos de uso: los que faltan enviar; al enviarlos se borran.
  */
 let base: Promise<SQLiteDatabase> | null = null;
@@ -22,6 +23,7 @@ function abrir(): Promise<SQLiteDatabase> {
         PRIMARY KEY (usuario_id, ficha_id)
       );
       CREATE TABLE IF NOT EXISTS racha (usuario_id TEXT PRIMARY KEY NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS marcas (usuario_id TEXT PRIMARY KEY NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS reportes (id TEXT PRIMARY KEY NOT NULL, usuario_id TEXT NOT NULL, datos TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS eventos (id TEXT PRIMARY KEY NOT NULL, usuario_id TEXT NOT NULL, datos TEXT NOT NULL);
     `);
@@ -153,7 +155,7 @@ export async function borrarReporte(id: string): Promise<void> {
 export async function borrarDatosLocales(usuarioId: string): Promise<void> {
   const db = await abrir();
   await db.withTransactionAsync(async () => {
-    for (const tabla of ["intentos", "progreso", "racha", "reportes", "eventos"]) {
+    for (const tabla of ["intentos", "progreso", "racha", "marcas", "reportes", "eventos"]) {
       await db.runAsync(`DELETE FROM ${tabla} WHERE usuario_id = ?`, usuarioId);
     }
   });
@@ -174,4 +176,49 @@ export async function borrarEventos(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
   const db = await abrir();
   await db.runAsync(`DELETE FROM eventos WHERE id IN (${ids.map(() => "?").join(", ")})`, ...ids);
+}
+
+/** Las marcas en un orden fijo, para guardarlas y compararlas como texto. */
+const textoMarcas = (marcas: readonly MarcaLeccion[]) => JSON.stringify([...marcas].sort((a, b) => (a.leccionId < b.leccionId ? -1 : 1)));
+
+export async function leerMarcas(usuarioId: string): Promise<MarcaLeccion[]> {
+  const db = await abrir();
+  const fila = await db.getFirstAsync<{ datos: string }>("SELECT datos FROM marcas WHERE usuario_id = ?", usuarioId);
+  return fila ? (JSON.parse(fila.datos) as MarcaLeccion[]) : [];
+}
+
+/** Una lección terminada en este teléfono: si mejora la marca, queda pendiente de subir. Devuelve todas. */
+export async function guardarMarcaPropia(usuarioId: string, marca: MarcaLeccion): Promise<MarcaLeccion[]> {
+  const local = await leerMarcas(usuarioId);
+  const marcas = fusionarMarcas(local, [marca]);
+  if (textoMarcas(marcas) === textoMarcas(local)) return local;
+  const db = await abrir();
+  await db.runAsync("INSERT OR REPLACE INTO marcas (usuario_id, datos, pendiente) VALUES (?, ?, 1)", usuarioId, textoMarcas(marcas));
+  return marcas;
+}
+
+export async function marcasPorSubir(usuarioId: string): Promise<MarcaLeccion[] | null> {
+  const db = await abrir();
+  const fila = await db.getFirstAsync<{ datos: string }>("SELECT datos FROM marcas WHERE usuario_id = ? AND pendiente = 1", usuarioId);
+  return fila ? (JSON.parse(fila.datos) as MarcaLeccion[]) : null;
+}
+
+/** Las marcas subidas dejan de estar pendientes, salvo que hayan cambiado mientras se subían. */
+export async function confirmarMarcas(usuarioId: string, subidas: MarcaLeccion[]): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("UPDATE marcas SET pendiente = 0 WHERE usuario_id = ? AND datos = ?", usuarioId, textoMarcas(subidas));
+}
+
+/** Las del servidor se unen con las locales; queda pendiente si este teléfono tiene alguna mejor. */
+export async function guardarMarcasDelServidor(usuarioId: string, servidor: MarcaLeccion[]): Promise<void> {
+  const local = await leerMarcas(usuarioId);
+  const marcas = fusionarMarcas(local, servidor);
+  if (textoMarcas(marcas) === textoMarcas(local)) return;
+  const db = await abrir();
+  await db.runAsync(
+    "INSERT INTO marcas (usuario_id, datos, pendiente) VALUES (?, ?, ?) ON CONFLICT (usuario_id) DO UPDATE SET datos = excluded.datos, pendiente = MAX(marcas.pendiente, excluded.pendiente)",
+    usuarioId,
+    textoMarcas(marcas),
+    textoMarcas(marcas) === textoMarcas(servidor) ? 0 : 1,
+  );
 }

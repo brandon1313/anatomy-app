@@ -5,7 +5,11 @@ import {
   distanciaABorde,
   erroresDeConsistencia,
   erroresDeSalidaGenerador,
+  esMejorMarca,
   esToqueCorrecto,
+  estrellas,
+  fusionarMarcas,
+  MarcaLeccion,
   fusionarProgreso,
   fusionarRacha,
   NuevoReporte,
@@ -312,5 +316,37 @@ describe("PeticionEventos", () => {
     expect(PeticionEventos.safeParse({ eventos: [{ ...evento, nombre: "registro" }] }).success).toBe(false);
     expect(PeticionEventos.safeParse({ eventos: [{ ...evento, propiedades: { x: { y: 1 } } }] }).success).toBe(false);
     expect(PeticionEventos.safeParse({ eventos: [] }).success).toBe(false);
+  });
+});
+
+describe("marcas de lección", () => {
+  const marca = (aciertos: number, total: number, logrado = "2026-10-28T15:00:00.000Z") => ({ leccionId: "gluteos", aciertos, total, logrado });
+
+  it("da 1 estrella por terminar, 2 desde el 70% y 3 desde el 90%", () => {
+    expect([estrellas(6, 10), estrellas(7, 10), estrellas(8, 10), estrellas(9, 10), estrellas(10, 10)]).toEqual([1, 2, 2, 3, 3]);
+    expect([estrellas(5, 6), estrellas(6, 6), estrellas(0, 6), estrellas(0, 0)]).toEqual([2, 3, 1, 0]);
+  });
+
+  it("gana la de más aciertos en proporción, después la de más ejercicios y después la más antigua", () => {
+    expect(esMejorMarca(marca(9, 10), marca(8, 10))).toBe(true);
+    expect(esMejorMarca(marca(8, 10), marca(5, 6))).toBe(false);
+    expect(esMejorMarca(marca(10, 10), marca(6, 6))).toBe(true);
+    const antes = marca(8, 10, "2026-10-27T10:00:00.000Z");
+    expect(esMejorMarca(antes, marca(8, 10))).toBe(true);
+    expect(esMejorMarca(marca(8, 10), antes)).toBe(false);
+  });
+
+  it("al unir queda la mejor de cada lección, sin importar el orden", () => {
+    const telefono = [marca(9, 10), { ...marca(3, 6), leccionId: "pierna" }];
+    const servidor = [marca(7, 10), { ...marca(5, 6), leccionId: "pierna" }, { ...marca(4, 4), leccionId: "cadera" }];
+    const porLeccion = (ms: MarcaLeccion[]) => Object.fromEntries(ms.map((m) => [m.leccionId, m.aciertos]));
+    expect(porLeccion(fusionarMarcas(telefono, servidor))).toEqual({ gluteos: 9, pierna: 5, cadera: 4 });
+    expect(porLeccion(fusionarMarcas(servidor, telefono))).toEqual(porLeccion(fusionarMarcas(telefono, servidor)));
+  });
+
+  it("no acepta más aciertos que ejercicios, y viaja opcional en /sync", () => {
+    expect(MarcaLeccion.safeParse(marca(11, 10)).success).toBe(false);
+    expect(PeticionSync.safeParse({ intentos: [], progreso: [], marcas: [marca(9, 10)] }).success).toBe(true);
+    expect(PeticionSync.safeParse({ intentos: [], progreso: [] }).success).toBe(true);
   });
 });

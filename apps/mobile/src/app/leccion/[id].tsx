@@ -1,9 +1,10 @@
-import type { Ejercicio, Imagen } from "@anatomia/contenido";
+import { type Ejercicio, esMejorMarca, estrellas, type Imagen } from "@anatomia/contenido";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, type LayoutRectangle, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Boton } from "../../componentes/Boton";
+import { Estrellas } from "../../componentes/Estrellas";
 import { ReportarError } from "../../componentes/ReportarError";
 import { Ejercicio3D } from "../../ejercicios/Ejercicio3D";
 import { Emparejar } from "../../ejercicios/Emparejar";
@@ -57,8 +58,10 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 
 export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { usuario, paquete, completar, completadas, progreso: progresoFichas, racha, registrarIntento, registrarEvento, terminarSesion } = useApp();
+  const { usuario, paquete, completar, completadas, marcas, progreso: progresoFichas, racha, registrarIntento, registrarEvento, terminarSesion } = useApp();
   const rachaAlEmpezar = useRef(racha);
+  // La mejor marca antes de esta vez: el resultado dice si se superó.
+  const marcaAlEmpezar = useRef(marcas.find((m) => m.leccionId === id));
   const insets = useSafeAreaInsets();
   // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
   const esRepaso = id === "repaso";
@@ -162,7 +165,7 @@ export default function Leccion() {
     });
     // Una calificación por ficha con ts-fsrs (también en el repaso), y la lección queda completada.
     terminarSesion(sesion.respuestas);
-    if (!esRepaso) void completar(leccion.id);
+    if (!esRepaso) void completar(leccion.id, { aciertos: r.aciertos, total: r.total });
     efecto("fin");
   }, [fin, leccion, ejercicios.length, completar, terminarSesion, registrarEvento, esRepaso, sesion]);
 
@@ -189,10 +192,34 @@ export default function Leccion() {
     // Con esta sesión ya contada: terminarSesion corre después de este render (y contar dos veces no suma).
     const dias = rachaVigente(registrarActividad(racha, hoy), hoy);
     const subio = dias > rachaVigente(rachaAlEmpezar.current, hoy);
+    const ganadas = estrellas(r.aciertos, r.total);
+    const antes = marcaAlEmpezar.current;
+    const record = !!antes && esMejorMarca({ leccionId: leccion.id, ...r, logrado: new Date().toISOString() }, antes);
+    // Otra vuelta a la misma lección, para mejorar la marca: la sesión empieza de cero.
+    const repetir = () => {
+      marcaAlEmpezar.current = record || !antes ? { leccionId: leccion.id, aciertos: r.aciertos, total: r.total, logrado: new Date().toISOString() } : antes;
+      rachaAlEmpezar.current = racha;
+      sesionIniciada.current = false;
+      sesionCerrada.current = false;
+      setSesion(iniciar(ejercicios.map((e) => e.id)));
+      setEleccion(null);
+      setComprobado(false);
+      setReportados([]);
+      inicio.current = Date.now();
+    };
     return (
       <SafeAreaView style={estilos.centro}>
-        <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
+        {esRepaso ? (
+          <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
+        ) : (
+          <Estrellas cuantas={ganadas} tam={64} />
+        )}
         <Text style={estilos.tituloResultado} accessibilityRole="header">{esRepaso ? "¡Repaso completado!" : "¡Lección completada!"}</Text>
+        {!esRepaso && antes && (
+          <Text style={[estilos.marca, record && estilos.record]} accessibilityLiveRegion="polite">
+            {record ? `¡Nuevo récord! Antes: ${antes.aciertos}/${antes.total}` : `Tu mejor marca: ${antes.aciertos}/${antes.total}`}
+          </Text>
+        )}
         <View style={estilos.cifras}>
           <View style={[estilos.cifra, { borderColor: color.logro }]}>
             <Text style={[estilos.etiqueta, { backgroundColor: color.logro, color: color.logroTexto }]}>Aciertos</Text>
@@ -214,6 +241,7 @@ export default function Leccion() {
             else router.back();
           }}
         />
+        {!esRepaso && ganadas < 3 && <Boton titulo="Repetir para sumar estrellas" variante="secundario" onPress={repetir} />}
       </SafeAreaView>
     );
   }
@@ -414,4 +442,6 @@ const estilos = StyleSheet.create({
   valor: { fontSize: 26, fontFamily: fuente.titulo, textAlign: "center", paddingVertical: espacio.m },
   racha: { fontSize: 17, fontFamily: fuente.negrita, color: color.tenue, textAlign: "center" },
   rachaSubio: { fontSize: 20, fontFamily: fuente.titulo, color: color.logroTexto },
+  marca: { fontSize: 16, fontFamily: fuente.negrita, color: color.tenue, textAlign: "center" },
+  record: { fontSize: 18, fontFamily: fuente.titulo, color: color.logroTexto },
 });

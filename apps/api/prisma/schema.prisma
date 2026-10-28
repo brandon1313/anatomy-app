@@ -45,6 +45,7 @@ model Usuario {
   intentos       Intento[]
   progreso       ProgresoFicha[]
   racha          Racha?
+  marcas         MarcaLeccion[]
   reportes       ReporteError[]
   eventos        Evento[]
   interesPremium InteresPremium[]
@@ -170,6 +171,19 @@ model Racha {
   usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("rachas")
+}
+
+/// Mejor marca de cada lección (aciertos a la primera); de ella salen las estrellas.
+model MarcaLeccion {
+  usuarioId String   @map("usuario_id") @db.Uuid
+  leccionId String   @map("leccion_id")
+  aciertos  Int
+  total     Int
+  logrado   DateTime
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, leccionId])
+  @@map("marcas_leccion")
 }
 
 model ReporteError {

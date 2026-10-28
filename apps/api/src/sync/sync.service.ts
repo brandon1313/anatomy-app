@@ -1,6 +1,6 @@
-import { fusionarProgreso, fusionarRacha, type PeticionSync, type ProgresoSync, type Racha, type RespuestaSync } from "@anatomia/contenido";
+import { fusionarMarcas, fusionarProgreso, fusionarRacha, type MarcaLeccion, type PeticionSync, type ProgresoSync, type Racha, type RespuestaSync } from "@anatomia/contenido";
 import { Injectable } from "@nestjs/common";
-import type { ProgresoFicha as FilaProgreso, Racha as FilaRacha } from "@prisma/client";
+import type { MarcaLeccion as FilaMarca, ProgresoFicha as FilaProgreso, Racha as FilaRacha } from "@prisma/client";
 import { mismoJson } from "../comun/json";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -34,17 +34,20 @@ export function aFila({ ultimaRevision, proximaRevision, ultimoEjercicioId, ...r
 /** La fila de rachas como viaja en /sync. */
 export const aRacha = (f: FilaRacha): Racha => ({ actual: f.actual, maxima: f.maxima, ultimoDia: f.ultimoDia ?? undefined });
 
+/** Una fila de marcas_leccion como viaja en /sync. */
+export const aMarca = (f: FilaMarca): MarcaLeccion => ({ leccionId: f.leccionId, aciertos: f.aciertos, total: f.total, logrado: f.logrado.toISOString() });
+
 @Injectable()
 export class SyncService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Guarda los intentos (un id que ya existe se ignora: reenviar no duplica) y, de cada ficha, el progreso
-   * con la revisión más reciente, sea el guardado o el que llega; la racha que llega se une con la guardada.
-   * Devuelve el progreso consolidado del usuario, de todas sus fichas, y su racha: así un dispositivo nuevo
-   * recupera lo hecho en otro.
+   * con la revisión más reciente, sea el guardado o el que llega; la racha que llega se une con la guardada,
+   * y de cada lección queda la mejor marca. Devuelve el progreso consolidado del usuario, de todas sus fichas,
+   * su racha y sus marcas: así un dispositivo nuevo recupera lo hecho en otro.
    */
-  async sincronizar(usuarioId: string, { intentos, progreso, racha }: PeticionSync): Promise<RespuestaSync> {
+  async sincronizar(usuarioId: string, { intentos, progreso, racha, marcas = [] }: PeticionSync): Promise<RespuestaSync> {
     if (intentos.length > 0) {
       await this.prisma.intento.createMany({
         data: intentos.map((i) => ({ ...i, usuarioId, respondidoEn: new Date(i.respondidoEn) })),
@@ -66,7 +69,30 @@ export class SyncService {
         ),
       );
     }
-    return { progreso: consolidado, racha: await this.consolidarRacha(usuarioId, racha) };
+    return { progreso: consolidado, racha: await this.consolidarRacha(usuarioId, racha), marcas: await this.consolidarMarcas(usuarioId, marcas) };
+  }
+
+  /** Las marcas guardadas unidas con las que llegan (fusionarMarcas): se escriben solo las que mejoraron. */
+  private async consolidarMarcas(usuarioId: string, llegan: MarcaLeccion[]): Promise<MarcaLeccion[]> {
+    const guardadas = (await this.prisma.marcaLeccion.findMany({ where: { usuarioId } })).map(aMarca);
+    // La fecha como la devuelve la base, para comparar sin falsos cambios.
+    const normalizadas = llegan.map((m) => ({ ...m, logrado: new Date(m.logrado).toISOString() }));
+    const consolidadas = fusionarMarcas(guardadas, normalizadas);
+    const antes = new Map(guardadas.map((m) => [m.leccionId, m]));
+    const mejoradas = consolidadas.filter((m) => !mismoJson(antes.get(m.leccionId), m));
+    if (mejoradas.length > 0) {
+      await this.prisma.$transaction(
+        mejoradas.map(({ leccionId, aciertos, total, logrado }) => {
+          const datos = { aciertos, total, logrado: new Date(logrado) };
+          return this.prisma.marcaLeccion.upsert({
+            where: { usuarioId_leccionId: { usuarioId, leccionId } },
+            create: { usuarioId, leccionId, ...datos },
+            update: datos,
+          });
+        }),
+      );
+    }
+    return consolidadas;
   }
 
   /** La racha guardada unida con la que llega (fusionarRacha); undefined si el usuario todavía no tiene. */

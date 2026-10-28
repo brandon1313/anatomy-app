@@ -1,19 +1,23 @@
-import { type Racha, RespuestaSync } from "@anatomia/contenido";
+import { type MarcaLeccion, type Racha, RespuestaSync } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 import { api, ErrorApi } from "./api";
 import {
   borrarEventos,
   borrarIntentos,
   borrarReporte,
+  confirmarMarcas,
   confirmarRacha,
   confirmarSubida,
   eventosPorEnviar,
   guardarDelServidor,
+  guardarMarcasDelServidor,
   guardarRachaDelServidor,
   intentosPorSubir,
   leerProgreso,
+  leerMarcas,
   leerRacha,
   progresoPorSubir,
+  marcasPorSubir,
   rachaPorSubir,
   reportesPorEnviar,
 } from "./registro";
@@ -25,6 +29,7 @@ const LOTE_EVENTOS = 200;
 export interface Sincronizado {
   progreso: Progreso[];
   racha: Racha | null;
+  marcas: MarcaLeccion[];
 }
 
 let enCurso: Promise<Sincronizado> | null = null;
@@ -32,9 +37,9 @@ let otraVez: Promise<Sincronizado> | null = null;
 
 /**
  * Envía los reportes de error pendientes a /reportes y los eventos de uso a /eventos; después sube a /sync
- * los intentos, el progreso y la racha pendientes, en lotes, y guarda lo consolidado que devuelve el
- * servidor (en el progreso gana la revisión más reciente; las rachas se unen). Devuelve el progreso y la
- * racha locales resultantes. Sin conexión falla y todo queda pendiente para la próxima vez.
+ * los intentos, el progreso, la racha y las marcas pendientes, en lotes, y guarda lo consolidado que devuelve
+ * el servidor (en el progreso gana la revisión más reciente; las rachas se unen; de cada lección queda la mejor
+ * marca). Devuelve el progreso, la racha y las marcas locales resultantes. Sin conexión falla y todo queda pendiente para la próxima vez.
  */
 export function sincronizar(usuarioId: string): Promise<Sincronizado> {
   if (!enCurso) {
@@ -80,14 +85,19 @@ async function subir(usuarioId: string): Promise<Sincronizado> {
     const intentos = await intentosPorSubir(usuarioId, LOTE_INTENTOS);
     const progreso = (await progresoPorSubir(usuarioId)).slice(0, LOTE_PROGRESO);
     const racha = await rachaPorSubir(usuarioId);
-    const r = RespuestaSync.parse(await api("/sync", { metodo: "POST", cuerpo: { intentos, progreso, racha: racha ?? undefined } }));
+    const marcas = await marcasPorSubir(usuarioId);
+    const r = RespuestaSync.parse(
+      await api("/sync", { metodo: "POST", cuerpo: { intentos, progreso, racha: racha ?? undefined, marcas: marcas ?? undefined } }),
+    );
     await borrarIntentos(intentos.map((i) => i.id));
     await confirmarSubida(usuarioId, progreso);
     if (racha) await confirmarRacha(usuarioId, racha);
+    if (marcas) await confirmarMarcas(usuarioId, marcas);
     if (intentos.length < LOTE_INTENTOS && progreso.length < LOTE_PROGRESO) {
       await guardarDelServidor(usuarioId, r.progreso);
       if (r.racha) await guardarRachaDelServidor(usuarioId, r.racha);
-      return { progreso: await leerProgreso(usuarioId), racha: await leerRacha(usuarioId) };
+      if (r.marcas) await guardarMarcasDelServidor(usuarioId, r.marcas);
+      return { progreso: await leerProgreso(usuarioId), racha: await leerRacha(usuarioId), marcas: await leerMarcas(usuarioId) };
     }
   }
 }

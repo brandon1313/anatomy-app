@@ -373,15 +373,29 @@ export const Racha = z.object({
   ultimoDia: z.iso.date().optional(),
 });
 
-/** POST /sync: los intentos que faltan subir, el progreso que cambió en el dispositivo y la racha, si cambió. */
+/**
+ * La mejor marca de una lección: aciertos a la primera sobre el total de ejercicios de esa vez. Repetir
+ * la lección la mejora; las estrellas salen de ella (`estrellas`).
+ */
+export const MarcaLeccion = z
+  .object({
+    leccionId: Id,
+    aciertos: z.number().int().nonnegative(),
+    total: z.number().int().positive(),
+    logrado: z.iso.datetime(),
+  })
+  .refine((m) => m.aciertos <= m.total, { message: "aciertos no puede pasar de total", path: ["aciertos"] });
+
+/** POST /sync: los intentos que faltan subir, el progreso que cambió en el dispositivo, la racha y las marcas, si cambiaron. */
 export const PeticionSync = z.object({
   intentos: z.array(Intento).max(200),
   progreso: z.array(ProgresoSync).max(500),
   racha: Racha.optional(),
+  marcas: z.array(MarcaLeccion).max(500).optional(),
 });
 
-/** Respuesta de /sync: el progreso consolidado del usuario, de todas sus fichas, y su racha si ya tiene. */
-export const RespuestaSync = z.object({ progreso: z.array(ProgresoSync), racha: Racha.optional() });
+/** Respuesta de /sync: el progreso consolidado del usuario, de todas sus fichas, su racha si ya tiene y sus marcas. */
+export const RespuestaSync = z.object({ progreso: z.array(ProgresoSync), racha: Racha.optional(), marcas: z.array(MarcaLeccion).optional() });
 
 // ───────────────────────── Tipos ─────────────────────────
 
@@ -408,6 +422,7 @@ export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
 export type Intento = z.infer<typeof Intento>;
 export type ProgresoSync = z.infer<typeof ProgresoSync>;
 export type Racha = z.infer<typeof Racha>;
+export type MarcaLeccion = z.infer<typeof MarcaLeccion>;
 export type PeticionSync = z.infer<typeof PeticionSync>;
 export type RespuestaSync = z.infer<typeof RespuestaSync>;
 

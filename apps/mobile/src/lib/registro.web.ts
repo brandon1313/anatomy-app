@@ -1,9 +1,9 @@
-import { type EventoUso, fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
+import { type EventoUso, fusionarMarcas, fusionarProgreso, fusionarRacha, type Intento, type MarcaLeccion, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 
 /**
  * En web (solo para desarrollo) el registro va en localStorage, con las mismas reglas que la versión de
- * SQLite (registro.ts): intentos, reportes y eventos por enviar, y progreso por ficha y racha con `pendiente`.
+ * SQLite (registro.ts): intentos, reportes y eventos por enviar, y progreso por ficha, racha y marcas con `pendiente`.
  */
 type Fila = { datos: Progreso; pendiente: boolean };
 
@@ -122,7 +122,7 @@ export async function borrarReporte(id: string): Promise<void> {
 }
 
 export async function borrarDatosLocales(usuarioId: string): Promise<void> {
-  for (const clave of [claveIntentos, claveProgreso, claveRacha, claveReportes, claveEventos]) {
+  for (const clave of [claveIntentos, claveProgreso, claveRacha, claveMarcas, claveReportes, claveEventos]) {
     try {
       localStorage.removeItem(clave(usuarioId));
     } catch {
@@ -146,4 +146,41 @@ export async function borrarEventos(ids: string[]): Promise<void> {
   for (const k of Object.keys(localStorage).filter((k) => k.startsWith("anatomia.eventos."))) {
     escribir(k, leer<EventoUso[]>(k, []).filter((e) => !ids.includes(e.id)));
   }
+}
+
+type FilaMarcas = { datos: MarcaLeccion[]; pendiente: boolean };
+const claveMarcas = (u: string) => `anatomia.marcas.${u}`;
+const filaMarcas = (u: string) => leer<FilaMarcas | null>(claveMarcas(u), null);
+const textoMarcas = (marcas: readonly MarcaLeccion[]) => JSON.stringify([...marcas].sort((a, b) => (a.leccionId < b.leccionId ? -1 : 1)));
+
+export async function leerMarcas(usuarioId: string): Promise<MarcaLeccion[]> {
+  return filaMarcas(usuarioId)?.datos ?? [];
+}
+
+export async function guardarMarcaPropia(usuarioId: string, marca: MarcaLeccion): Promise<MarcaLeccion[]> {
+  const local = await leerMarcas(usuarioId);
+  const marcas = fusionarMarcas(local, [marca]);
+  if (textoMarcas(marcas) === textoMarcas(local)) return local;
+  escribir(claveMarcas(usuarioId), { datos: JSON.parse(textoMarcas(marcas)), pendiente: true });
+  return marcas;
+}
+
+export async function marcasPorSubir(usuarioId: string): Promise<MarcaLeccion[] | null> {
+  const f = filaMarcas(usuarioId);
+  return f?.pendiente ? f.datos : null;
+}
+
+export async function confirmarMarcas(usuarioId: string, subidas: MarcaLeccion[]): Promise<void> {
+  const f = filaMarcas(usuarioId);
+  if (f && textoMarcas(f.datos) === textoMarcas(subidas)) escribir(claveMarcas(usuarioId), { ...f, pendiente: false });
+}
+
+export async function guardarMarcasDelServidor(usuarioId: string, servidor: MarcaLeccion[]): Promise<void> {
+  const f = filaMarcas(usuarioId);
+  const marcas = fusionarMarcas(f?.datos ?? [], servidor);
+  if (f && textoMarcas(marcas) === textoMarcas(f.datos)) return;
+  escribir(claveMarcas(usuarioId), {
+    datos: JSON.parse(textoMarcas(marcas)),
+    pendiente: (f?.pendiente ?? false) || textoMarcas(marcas) !== textoMarcas(servidor),
+  });
 }

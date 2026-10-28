@@ -1,7 +1,9 @@
+import { estrellas } from "@anatomia/contenido";
 import { router } from "expo-router";
 import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
+import { Estrellas } from "../componentes/Estrellas";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
 import { programarRecordatorio } from "../lib/notificaciones";
@@ -22,7 +24,7 @@ const ZIGZAG = [0, 56, 84, 56, 0, -56, -84, -56];
 const TAM = 76;
 
 export default function Inicio() {
-  const { usuario, paquete, descarga, actualizar, completadas, progreso, racha, horaRecordatorio } = useApp();
+  const { usuario, paquete, descarga, actualizar, completadas, marcas, progreso, racha, horaRecordatorio } = useApp();
 
   if (!paquete) {
     return (
@@ -114,12 +116,14 @@ export default function Inicio() {
                   const estado = estadoLeccion(todas, u.desde + j, completadas);
                   const cuantos = ejerciciosDeLeccion(paquete, l, (archivo) => uriImagen(archivo) !== null).length;
                   const c = CIRCULO[estado];
+                  const marca = marcas.find((m) => m.leccionId === l.id);
+                  const ganadas = marca ? estrellas(marca.aciertos, marca.total) : 0;
                   return (
                     <View key={l.id} style={[estilos.parada, { transform: [{ translateX: ZIGZAG[j % ZIGZAG.length] }] }]}>
                       <Pressable
                         accessibilityRole="button"
                         accessibilityState={{ disabled: estado === "bloqueada" }}
-                        accessibilityLabel={`Lección ${j + 1}: ${l.titulo}. ${estado === "completada" ? "Completada" : estado === "bloqueada" ? "Bloqueada" : "Siguiente"}. ${cuantos} ejercicios`}
+                        accessibilityLabel={`Lección ${j + 1}: ${l.titulo}. ${estado === "completada" ? `Completada${marca ? `, ${ganadas} de 3 estrellas` : ""}` : estado === "bloqueada" ? "Bloqueada" : "Siguiente"}. ${cuantos} ejercicios`}
                         disabled={estado === "bloqueada" || cuantos === 0}
                         onPress={() => router.push({ pathname: "/leccion/[id]", params: { id: l.id } })}
                       >
@@ -132,6 +136,11 @@ export default function Inicio() {
                         )}
                       </Pressable>
                       {estado === "siguiente" && <Text style={estilos.empezar}>Empezar</Text>}
+                      {marca && (
+                        <View style={estilos.estrellas} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                          <Estrellas cuantas={ganadas} />
+                        </View>
+                      )}
                       <Text style={[estilos.tituloLeccion, estado === "bloqueada" && { color: color.bloqueado }]} numberOfLines={2}>
                         {l.titulo}
                       </Text>
@@ -188,6 +197,7 @@ const estilos = StyleSheet.create({
   circulo: { width: TAM, height: TAM, borderRadius: TAM / 2, borderBottomWidth: 6, alignItems: "center", justifyContent: "center" },
   hundido: { borderBottomWidth: 0, marginTop: 6 },
   icono: { color: "#fff", fontSize: 30, fontFamily: fuente.titulo },
+  estrellas: { marginTop: espacio.xs },
   empezar: { marginTop: espacio.xs, fontSize: 14, fontFamily: fuente.titulo, color: color.marcaTexto },
   tituloLeccion: { marginTop: espacio.xs, fontSize: 15, fontFamily: fuente.negrita, color: color.texto, textAlign: "center" },
 });
