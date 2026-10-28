@@ -97,7 +97,8 @@ th { font-size: 0.85em; color: var(--tenue); font-weight: 600; }
 .resultado-creado strong { color: var(--verde); }
 .resultado-fallido strong { color: var(--rojo); }
 
-.leccion .fila input { flex: 1; }
+.unidad { border-top: 1px solid var(--borde); margin-top: 24px; padding-top: 8px; }
+.unidad > .fila input, .leccion .fila input { flex: 1; }
 .ejercicios-leccion { padding-left: 24px; margin: 8px 0; }
 .ejercicios-leccion li { padding: 4px 0; }
 .ejercicios-leccion .tipo { color: var(--tenue); font-size: 0.9em; }

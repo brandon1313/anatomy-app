@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { api, type ElementoCola, type RespuestaCola } from "../api";
 import { Errores, Estado, NOMBRES_TIPO } from "../componentes/comun";
 
-type Leccion = TCurso["unidades"][number]["lecciones"][number];
+type Unidad = TCurso["unidades"][number];
+type Leccion = Unidad["lecciones"][number];
 
 /** Curso inicial de la beta: una unidad, sin lecciones todavía. */
 const CURSO_INICIAL: TCurso = {
@@ -116,14 +117,23 @@ export function Curso() {
     for (const f of e.fichaIds ?? []) porFicha.set(f, [...(porFicha.get(f) ?? []), e]);
   }
 
-  const unidad = c.unidades[0];
   const original = consultaCurso.data?.curso;
   const sinGuardar = JSON.stringify(c) !== JSON.stringify(original ?? CURSO_INICIAL) || !original;
   const validacion = EsquemaCurso.safeParse(c);
-  const pendientes = unidad.lecciones.flatMap((l) => l.ejercicioIds).filter((id) => ejercicios.get(id)?.estado !== "aprobada");
+  const todas = c.unidades.flatMap((u) => u.lecciones);
+  const pendientes = todas.flatMap((l) => l.ejercicioIds).filter((id) => ejercicios.get(id)?.estado !== "aprobada");
 
-  const cambiarLecciones = (lecciones: Leccion[]) =>
-    setC({ ...c, unidades: [{ ...unidad, lecciones: lecciones.map((l, i) => ({ ...l, orden: i })) }] });
+  const cambiarUnidades = (unidades: Unidad[]) => setC({ ...c, unidades: unidades.map((u, i) => ({ ...u, orden: i })) });
+  const cambiarUnidad = (i: number, u: Unidad) => cambiarUnidades(c.unidades.map((x, j) => (j === i ? u : x)));
+  const cambiarLecciones = (i: number, lecciones: Leccion[]) =>
+    cambiarUnidad(i, { ...c.unidades[i], lecciones: lecciones.map((l, n) => ({ ...l, orden: n })) });
+  // Los ids de lección no se repiten en todo el curso: el progreso se guarda por lección.
+  const nuevaLeccion = (i: number) => {
+    const titulo = window.prompt("Título de la lección")?.trim();
+    if (!titulo) return;
+    const lecciones = c.unidades[i].lecciones;
+    cambiarLecciones(i, [...lecciones, { id: idNuevo(titulo, new Set(todas.map((l) => l.id))), titulo, orden: lecciones.length, ejercicioIds: [] }]);
+  };
 
   return (
     <section className="editor">
@@ -137,20 +147,20 @@ export function Curso() {
             type="button"
             className="secundario"
             onClick={() => {
-              const titulo = window.prompt("Título de la lección")?.trim();
+              const titulo = window.prompt("Título de la unidad")?.trim();
               if (!titulo) return;
-              const usados = new Set(unidad.lecciones.map((l) => l.id));
-              cambiarLecciones([...unidad.lecciones, { id: idNuevo(titulo, usados), titulo, orden: unidad.lecciones.length, ejercicioIds: [] }]);
+              const id = idNuevo(titulo, new Set(c.unidades.map((u) => u.id)));
+              cambiarUnidades([...c.unidades, { id, titulo, orden: c.unidades.length, lecciones: [] }]);
             }}
           >
-            + Nueva lección
+            + Nueva unidad
           </button>
         </div>
         {pendientes.length > 0 && (
           <p className="aviso">{pendientes.length} ejercicio(s) de las lecciones todavía no están aprobados; publicar queda bloqueado hasta aprobarlos o quitarlos.</p>
         )}
       </div>
-      {!validacion.success && unidad.lecciones.length > 0 && (
+      {!validacion.success && todas.length > 0 && (
         <div className="error">
           <p>Hay que corregir esto antes de guardar:</p>
           <ul>{validacion.error.issues.map((i, n) => <li key={n}><code>{i.path.join(".")}</code> {i.message}</li>)}</ul>
@@ -158,22 +168,40 @@ export function Curso() {
       )}
       <Errores error={guardar.error} />
 
-      <label>
-        Unidad
-        <input value={unidad.titulo} onChange={(e) => setC({ ...c, unidades: [{ ...unidad, titulo: e.target.value }] })} />
-      </label>
-      {unidad.lecciones.length === 0 && <p className="vacio">Todavía no hay lecciones. Crea la primera con "+ Nueva lección".</p>}
-      {unidad.lecciones.map((l, i) => (
-        <EditorLeccion
-          key={l.id}
-          leccion={l}
-          ejercicios={ejercicios}
-          porFicha={porFicha}
-          nombresFicha={nombresFicha}
-          onChange={(nueva) => cambiarLecciones(unidad.lecciones.map((x, j) => (j === i ? nueva : x)))}
-          onMover={(delta) => cambiarLecciones(mover(unidad.lecciones, i, delta))}
-          onQuitar={() => window.confirm(`¿Quitar la lección "${l.titulo}"?`) && cambiarLecciones(unidad.lecciones.filter((_, j) => j !== i))}
-        />
+      {c.unidades.map((unidad, i) => (
+        <section key={unidad.id} className="unidad">
+          <h2>
+            Unidad {i + 1} <code>{unidad.id}</code>
+          </h2>
+          <div className="fila">
+            <input aria-label="Título de la unidad" value={unidad.titulo} onChange={(e) => cambiarUnidad(i, { ...unidad, titulo: e.target.value })} />
+            <button type="button" className="secundario" aria-label="Subir unidad" onClick={() => cambiarUnidades(mover(c.unidades, i, -1))}>↑</button>
+            <button type="button" className="secundario" aria-label="Bajar unidad" onClick={() => cambiarUnidades(mover(c.unidades, i, 1))}>↓</button>
+            <button
+              type="button"
+              className="rechazar"
+              onClick={() => window.confirm(`¿Quitar la unidad "${unidad.titulo}" con sus lecciones?`) && cambiarUnidades(c.unidades.filter((_, j) => j !== i))}
+            >
+              Quitar unidad
+            </button>
+          </div>
+          {unidad.lecciones.length === 0 && <p className="vacio">Todavía no hay lecciones. Crea la primera con "+ Nueva lección".</p>}
+          {unidad.lecciones.map((l, n) => (
+            <EditorLeccion
+              key={l.id}
+              leccion={l}
+              ejercicios={ejercicios}
+              porFicha={porFicha}
+              nombresFicha={nombresFicha}
+              onChange={(nueva) => cambiarLecciones(i, unidad.lecciones.map((x, j) => (j === n ? nueva : x)))}
+              onMover={(delta) => cambiarLecciones(i, mover(unidad.lecciones, n, delta))}
+              onQuitar={() => window.confirm(`¿Quitar la lección "${l.titulo}"?`) && cambiarLecciones(i, unidad.lecciones.filter((_, j) => j !== n))}
+            />
+          ))}
+          <button type="button" className="secundario" onClick={() => nuevaLeccion(i)}>
+            + Nueva lección
+          </button>
+        </section>
       ))}
     </section>
   );
