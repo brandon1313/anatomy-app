@@ -17,7 +17,7 @@ export class PremiumController {
 
   @HttpCode(204)
   @Post("interes-premium")
-  interes(@UsuarioActual() usuario: UsuarioToken, @Body(new ZodPipe(PeticionInteresPremium)) { plan }: z.infer<typeof PeticionInteresPremium>) {
-    return this.premium.registrarInteres(usuario.id, plan);
+  interes(@UsuarioActual() usuario: UsuarioToken, @Body(new ZodPipe(PeticionInteresPremium)) { plan, origen }: z.infer<typeof PeticionInteresPremium>) {
+    return this.premium.registrarInteres(usuario.id, plan, origen);
   }
 }

@@ -17,7 +17,7 @@ export class MetricasService {
   constructor(private readonly prisma: PrismaService) {}
 
   async calcular() {
-    const [actividad, eventos, aciertos, [conteos], premium] = await Promise.all([
+    const [actividad, eventos, aciertos, [conteos], premium, porOrigen] = await Promise.all([
       this.prisma.$queryRawUnsafe<ActividadEstudiante[]>(`
         SELECT ${DIA("u.creado")} AS registro,
                to_char(((now() AT TIME ZONE u.zona_horaria) - interval '4 hours')::date, 'YYYY-MM-DD') AS hoy,
@@ -42,6 +42,15 @@ export class MetricasService {
         SELECT p.plan, count(DISTINCT p.usuario_id)::int AS usuarios
         FROM interes_premium p JOIN usuarios u ON u.id = p.usuario_id AND u.rol = 'estudiante'
         GROUP BY p.plan`,
+      // De dónde vino cada vista y cada "Me interesa" (docs/PLAN-PREMIUM.md); el interés de antes no lo guardaba.
+      this.prisma.$queryRaw<{ origen: string; vieron: number; interesados: number }[]>`
+        SELECT coalesce(v.propiedades->>'origen', 'sin_dato') AS origen,
+               count(DISTINCT v.usuario_id) FILTER (WHERE v.nombre = 'premium_visto')::int AS vieron,
+               count(DISTINCT v.usuario_id) FILTER (WHERE v.nombre = 'premium_interes')::int AS interesados
+        FROM eventos v JOIN usuarios u ON u.id = v.usuario_id AND u.rol = 'estudiante'
+        WHERE v.nombre IN ('premium_visto', 'premium_interes')
+        GROUP BY 1
+        ORDER BY 2 DESC, 1`,
     ]);
 
     const evento = (nombre: string) => {
@@ -63,6 +72,7 @@ export class MetricasService {
         vieron: evento("premium_visto").usuarios,
         interesados: evento("premium_interes").usuarios,
         porPlan: Object.fromEntries(premium.map((p) => [p.plan, p.usuarios])),
+        porOrigen,
       },
       ejercicios: filas.map((f) => {
         const e = porId.get(f.ejercicioId);

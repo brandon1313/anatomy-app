@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import { api, type Metricas as TMetricas, type Retencion } from "../api";
 import { Errores, NOMBRES_TIPO } from "../componentes/comun";
 
+/** Dónde apareció la oferta de Premium (docs/PLAN-PREMIUM.md). */
+const MOMENTOS: Record<string, string> = {
+  tercera_leccion: "Al completar la tercera lección",
+  fin_unidad: "Al terminar una unidad",
+  fin_region: "Al terminar el curso",
+  perfil: "Desde Perfil",
+  otro: "Otro",
+  sin_dato: "Sin dato (interés de antes de medirlo)",
+};
+
 const porcentaje = (parte: number, total: number) => (total ? `${Math.round((parte / total) * 100)}%` : "—");
 const decimal = (n: number | null) => (n === null ? "—" : n.toLocaleString("es", { maximumFractionDigits: 1 }));
 const retencion = (r: Retencion) => ({ valor: porcentaje(r.retenidos, r.elegibles), detalle: `${r.retenidos} de ${r.elegibles} que ya cumplieron el día` });
@@ -51,6 +61,28 @@ export function Metricas() {
           detalle={`${m.premium.interesados} tocaron "Me interesa" de ${m.premium.vieron} que vieron la pantalla${Object.keys(m.premium.porPlan).length ? ` (${Object.entries(m.premium.porPlan).map(([p, n]) => `${p}: ${n}`).join(", ")})` : ""}`}
         />
       </div>
+
+      <h2>Premium por momento</h2>
+      <p className="nota-pie">Estudiantes que vieron la oferta en cada momento y cuántos de ellos tocaron "Me interesa".</p>
+      {m.premium.porOrigen.length === 0 ? (
+        <p className="vacio">Todavía nadie vio la oferta.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr><th>Momento</th><th>Vieron</th><th>Me interesa</th><th>Interés</th></tr>
+          </thead>
+          <tbody>
+            {m.premium.porOrigen.map((o) => (
+              <tr key={o.origen}>
+                <td>{MOMENTOS[o.origen] ?? o.origen}</td>
+                <td>{o.vieron}</td>
+                <td>{o.interesados}</td>
+                <td>{porcentaje(o.interesados, o.vieron)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       <h2>Acierto por ejercicio</h2>
       <p className="nota-pie">

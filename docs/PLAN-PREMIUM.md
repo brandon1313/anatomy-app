@@ -48,14 +48,19 @@ En orden de cuánto creemos que vende:
 
 ## Dónde aparece la oferta
 
-Regla general: la oferta aparece **cuando el estudiante acaba de querer algo que Premium da**, nunca en medio de un ejercicio ni al abrir la app. A lo sumo una vez por día. "Ahora no" nunca cuesta nada.
+Regla general: la oferta aparece **cuando el estudiante acaba de querer algo que Premium da**, nunca en medio de un ejercicio ni al abrir la app. "Ahora no" nunca cuesta nada. Las que aparecen solas (`apps/mobile/src/leccion/oferta.ts`):
+
+- a lo sumo una por día de estudio;
+- cada momento una sola vez (cada unidad terminada cuenta aparte);
+- si coinciden varios, gana el más fuerte: terminar el curso, después terminar una unidad, después la tercera lección;
+- ninguna después de que el estudiante tocó "Me interesa".
 
 | Momento | Qué dice | `origen` | Estado |
 | --- | --- | --- | --- |
 | Al completar la 3.ª lección | La pantalla de Premium completa, una sola vez | `tercera_leccion` | Existe |
 | Desde Perfil | La pantalla completa | `perfil` | Existe |
-| **Al terminar una unidad** | "Terminaste el muslo. Ponte a prueba en modo examen" (si el modo examen es Premium) | `fin_unidad` | Propuesto |
-| **Al terminar el miembro inferior** | "Completaste el miembro inferior. El miembro superior está en Premium". Es el momento de mayor ganas | `fin_region` | Propuesto |
+| **Al terminar una unidad** | "¡Terminaste Músculos del muslo!" arriba de la pantalla de Premium. Cuando exista el modo examen: "Ponte a prueba en modo examen" | `fin_unidad` | Existe |
+| **Al terminar el miembro inferior** | "¡Completaste el curso Miembro inferior!" arriba de la pantalla de Premium. Es el momento de mayor ganas | `fin_region` | Existe |
 | **Unidades Premium en Inicio** | Debajo de la última unidad gratis, las regiones Premium con candado 👑. Se ven sus títulos y cuántas lecciones tienen; al tocarlas se abre la pantalla de Premium | `unidad_bloqueada` | Propuesto |
 | **Resultado con 3 estrellas** | Una línea: "¿Listo para el modo examen?" | `tres_estrellas` | Propuesto |
 | **Repaso al día** | En la tarjeta de Repaso, cuando dice "Al día": "Repasa lo que quieras con Premium" | `repaso_al_dia` | Propuesto |
@@ -86,9 +91,9 @@ En orden, para decidir hasta dónde llegar en la beta:
 
 | Paso | Qué | Tamaño | Para |
 | --- | --- | --- | --- |
-| 1 | Beneficios corregidos en la pantalla (sin "terminología", con "Modo examen") | Minutos, desde `configuracion` | Beta |
-| 2 | Oferta al terminar unidad y región, con su `origen` | Chico | Beta |
-| 3 | Desglose por `origen` en Métricas | Chico | Beta |
+| 1 | ✓ Beneficios corregidos en la pantalla (sin "terminología", con "Modo examen") | Hecho, en `OFERTA_PREMIUM` | Beta |
+| 2 | ✓ Oferta al terminar unidad y región, con su `origen` | Hecho | Beta |
+| 3 | ✓ Desglose por `origen` en Métricas ("Premium por momento"); "Me interesa" guarda el `origen` desde ahora | Hecho | Beta |
 | 4 | Prueba A/B del primer beneficio | Chico | Beta |
 | 5 | Regiones Premium con candado en Inicio. Necesita unidades marcadas como Premium en el curso, aunque todavía no tengan lecciones | Mediano | Beta, si se decide mostrar lo que viene |
 | 6 | Modo examen | Mediano | Primer beneficio cobrable |

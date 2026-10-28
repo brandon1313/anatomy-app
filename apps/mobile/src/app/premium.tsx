@@ -18,7 +18,7 @@ const volver = () => (router.canGoBack() ? router.back() : router.replace("/inic
 
 export default function Premium() {
   const { usuario, registrarEvento } = useApp();
-  const { origen } = useLocalSearchParams<{ origen?: string }>();
+  const { origen, logro } = useLocalSearchParams<{ origen?: string; logro?: string }>();
   const [oferta, setOferta] = useState<OfertaPremium>(OFERTA_PREMIUM);
   const [plan, setPlan] = useState<PlanPremium>("anual");
   const [interes, setInteres] = useState<PlanPremium | null>(null);
@@ -59,7 +59,7 @@ export default function Premium() {
     setEnviando(true);
     setError(null);
     try {
-      await api("/interes-premium", { metodo: "POST", cuerpo: { plan } });
+      await api("/interes-premium", { metodo: "POST", cuerpo: { plan, origen: origen ?? "otro" } });
       await guardarInteresPremium(usuario.id, plan);
       setInteres(plan);
     } catch (e) {
@@ -84,7 +84,12 @@ export default function Premium() {
           <Text style={estilos.marca}>palpa</Text>
           <Text style={estilos.etiqueta}>premium</Text>
         </View>
-        <Text style={estilos.titulo}>Toda la anatomía, con el mismo método.</Text>
+        {logro && (
+          <Text style={estilos.logro} accessibilityRole="header">
+            {logro}
+          </Text>
+        )}
+        <Text style={estilos.titulo}>{logro ? "Sigue con toda la anatomía, con el mismo método." : "Toda la anatomía, con el mismo método."}</Text>
         <View style={{ gap: espacio.s }}>
           {oferta.beneficios.map((b) => (
             <View key={b} style={estilos.beneficio}>
@@ -142,6 +147,7 @@ const estilos = StyleSheet.create({
   encabezado: { flexDirection: "row", alignItems: "center", gap: espacio.s },
   marca: { fontSize: 34, fontFamily: fuente.titulo, color: color.marca, letterSpacing: -1 },
   etiqueta: { paddingHorizontal: espacio.s, paddingVertical: 2, borderRadius: 999, backgroundColor: color.logro, color: color.logroTexto, fontSize: 14, fontFamily: fuente.titulo },
+  logro: { fontSize: 18, fontFamily: fuente.titulo, color: color.logroTexto },
   titulo: { fontSize: 26, fontFamily: fuente.titulo, color: color.texto },
   beneficio: { flexDirection: "row", gap: espacio.s, alignItems: "flex-start" },
   check: { fontSize: 18, fontFamily: fuente.titulo, color: color.marca },

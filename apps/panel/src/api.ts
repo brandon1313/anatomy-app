@@ -207,7 +207,13 @@ export interface Metricas {
   repasos: { total: number; usuarios: number };
   respuestas: { total: number; correctas: number };
   reportes: number;
-  premium: { vieron: number; interesados: number; porPlan: Record<string, number> };
+  premium: {
+    vieron: number;
+    interesados: number;
+    porPlan: Record<string, number>;
+    /** Por momento en que apareció la oferta; "sin_dato" es el interés de antes de guardarlo. */
+    porOrigen: { origen: string; vieron: number; interesados: number }[];
+  };
   ejercicios: {
     ejercicioId: string;
     tipo: string | null;

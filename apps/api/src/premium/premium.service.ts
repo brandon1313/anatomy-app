@@ -13,11 +13,14 @@ export class PremiumService {
     return r.success ? r.data : OFERTA_PREMIUM;
   }
 
-  /** "Me interesa": una fila por toque (la métrica cuenta usuarios distintos) y su evento. No cobra nada. */
-  async registrarInteres(usuarioId: string, plan: PlanPremium): Promise<void> {
+  /**
+   * "Me interesa": una fila por toque (la métrica cuenta usuarios distintos) y su evento, con dónde apareció
+   * la oferta. No cobra nada.
+   */
+  async registrarInteres(usuarioId: string, plan: PlanPremium, origen?: string): Promise<void> {
     await this.prisma.$transaction([
       this.prisma.interesPremium.create({ data: { usuarioId, plan } }),
-      this.prisma.evento.create({ data: { usuarioId, nombre: "premium_interes", propiedades: { plan } } }),
+      this.prisma.evento.create({ data: { usuarioId, nombre: "premium_interes", propiedades: { plan, ...(origen && { origen }) } } }),
     ]);
   }
 }

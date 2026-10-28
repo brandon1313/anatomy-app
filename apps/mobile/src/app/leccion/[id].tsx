@@ -13,6 +13,7 @@ import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
 import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import type { Eleccion } from "../../ejercicios/tipos";
 import { actual, ejerciciosDeLeccion, ejerciciosMostrables, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { ofertasAlTerminar } from "../../leccion/oferta";
 import { diaDeEstudio } from "../../repaso/dia";
 import { ejerciciosDeRepaso } from "../../repaso/espaciado";
 import { rachaVigente, registrarActividad } from "../../repaso/racha";
@@ -21,7 +22,7 @@ import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
 import { useApp } from "../../lib/estado";
 import { uriImagen } from "../../lib/imagenes";
-import { mostrarPremiumUnaVez } from "../../lib/premium";
+import { ofertaParaMostrar } from "../../lib/premium";
 import { color, espacio, fuente, TOQUE_MINIMO } from "../../tema";
 import { type ControlEscena, EscenaLeccion, type Toque } from "../../visor3d/EscenaLeccion";
 
@@ -62,6 +63,8 @@ export default function Leccion() {
   const rachaAlEmpezar = useRef(racha);
   // La mejor marca antes de esta vez: el resultado dice si se superó.
   const marcaAlEmpezar = useRef(marcas.find((m) => m.leccionId === id));
+  // Las lecciones completadas antes de esta vez: terminarla puede completar una unidad o el curso.
+  const completadasAlEmpezar = useRef(completadas);
   const insets = useSafeAreaInsets();
   // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
   const esRepaso = id === "repaso";
@@ -199,6 +202,7 @@ export default function Leccion() {
     const repetir = () => {
       marcaAlEmpezar.current = record || !antes ? { leccionId: leccion.id, aciertos: r.aciertos, total: r.total, logrado: new Date().toISOString() } : antes;
       rachaAlEmpezar.current = racha;
+      completadasAlEmpezar.current = [...completadasAlEmpezar.current, leccion.id];
       sesionIniciada.current = false;
       sesionCerrada.current = false;
       setSesion(iniciar(ejercicios.map((e) => e.id)));
@@ -236,8 +240,10 @@ export default function Leccion() {
         <Boton
           titulo="Continuar"
           onPress={async () => {
-            // Premium aparece sola una vez, al completar la tercera lección (PRD).
-            if (!esRepaso && usuario && (await mostrarPremiumUnaVez(usuario.id, completadas.length))) router.replace({ pathname: "/premium", params: { origen: "tercera_leccion" } });
+            // Premium aparece sola al terminar el curso, una unidad o la tercera lección (docs/PLAN-PREMIUM.md).
+            const oferta =
+              !esRepaso && usuario ? await ofertaParaMostrar(usuario.id, ofertasAlTerminar(paquete, leccion.id, completadasAlEmpezar.current), hoy) : null;
+            if (oferta) router.replace({ pathname: "/premium", params: { origen: oferta.origen, ...(oferta.logro && { logro: oferta.logro }) } });
             else router.back();
           }}
         />

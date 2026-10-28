@@ -315,8 +315,11 @@ export const EventoUso = z.object({
 /** POST /eventos: un lote de eventos pendientes. */
 export const PeticionEventos = z.object({ eventos: z.array(EventoUso).min(1).max(200) });
 
-/** POST /interes-premium: el plan que el estudiante tenía elegido al tocar "Me interesa". */
-export const PeticionInteresPremium = z.object({ plan: PlanPremium });
+/**
+ * POST /interes-premium: el plan que el estudiante tenía elegido al tocar "Me interesa" y dónde apareció
+ * la oferta ("tercera_leccion", "fin_unidad", "perfil"…), para medir qué momento funciona.
+ */
+export const PeticionInteresPremium = z.object({ plan: PlanPremium, origen: z.string().min(1).max(40).optional() });
 
 /** Los valores por defecto del PRD ("Decisiones abiertas"); los beneficios salen de lo que deja para la fase 2. */
 export const OFERTA_PREMIUM: z.infer<typeof OfertaPremium> = {
@@ -325,8 +328,8 @@ export const OFERTA_PREMIUM: z.infer<typeof OfertaPremium> = {
   anual: 19.99,
   beneficios: [
     "Todo el cuerpo: miembro superior, tronco, cabeza y cuello.",
-    "Ejercicios nuevos: completar la ficha y terminología.",
-    "Modelos 3D de cada región, con su presentación.",
+    "Modo examen para practicar antes del parcial.",
+    "Modelos 3D de las regiones nuevas, con su presentación.",
     "Lecciones nuevas cada mes, revisadas por especialistas.",
   ],
 };
