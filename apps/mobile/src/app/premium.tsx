@@ -1,6 +1,6 @@
 import { ahorroAnual, OFERTA_PREMIUM, OfertaPremium, type PlanPremium } from "@anatomia/contenido";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
@@ -17,12 +17,21 @@ import { color, espacio, fuente, TOQUE_MINIMO } from "../tema";
 const volver = () => (router.canGoBack() ? router.back() : router.replace("/inicio"));
 
 export default function Premium() {
-  const { usuario } = useApp();
+  const { usuario, registrarEvento } = useApp();
+  const { origen } = useLocalSearchParams<{ origen?: string }>();
   const [oferta, setOferta] = useState<OfertaPremium>(OFERTA_PREMIUM);
   const [plan, setPlan] = useState<PlanPremium>("anual");
   const [interes, setInteres] = useState<PlanPremium | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Un evento por apertura de la pantalla, con de dónde vino.
+  const vista = useRef(false);
+  useEffect(() => {
+    if (vista.current || !usuario) return;
+    vista.current = true;
+    void registrarEvento("premium_visto", { origen: origen ?? "otro" });
+  }, [usuario, origen, registrarEvento]);
 
   useEffect(() => {
     api<unknown>("/premium").then(

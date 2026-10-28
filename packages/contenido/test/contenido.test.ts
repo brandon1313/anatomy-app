@@ -9,6 +9,7 @@ import {
   fusionarProgreso,
   fusionarRacha,
   NuevoReporte,
+  PeticionEventos,
   OFERTA_PREMIUM,
   OfertaPremium,
   PeticionSync,
@@ -297,5 +298,19 @@ describe("Premium", () => {
   it("calcula el ahorro del plan anual", () => {
     expect(ahorroAnual(OFERTA_PREMIUM)).toBe(44);
     expect(ahorroAnual({ mensual: 3, anual: 40 })).toBe(0);
+  });
+});
+
+describe("PeticionEventos", () => {
+  const evento = { id: "8f1c2a8e-58e1-4b6b-9a0e-3c3a1d2b4c5d", nombre: "leccion_completada", propiedades: { leccionId: "capa-profunda", aciertos: 5 }, creado: "2026-10-28T15:00:00Z" };
+
+  it("acepta eventos del teléfono, con o sin propiedades", () => {
+    expect(PeticionEventos.safeParse({ eventos: [evento, { ...evento, propiedades: undefined }] }).success).toBe(true);
+  });
+
+  it("rechaza los que anota la API, propiedades anidadas y lotes vacíos", () => {
+    expect(PeticionEventos.safeParse({ eventos: [{ ...evento, nombre: "registro" }] }).success).toBe(false);
+    expect(PeticionEventos.safeParse({ eventos: [{ ...evento, propiedades: { x: { y: 1 } } }] }).success).toBe(false);
+    expect(PeticionEventos.safeParse({ eventos: [] }).success).toBe(false);
   });
 });

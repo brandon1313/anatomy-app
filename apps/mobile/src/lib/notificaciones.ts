@@ -48,3 +48,21 @@ export function programarRecordatorio(r: Recordatorio | null): Promise<void> {
   cola = cola.then(() => programar(r)).catch(() => {});
   return cola;
 }
+
+/**
+ * Llama a `f` cuando el estudiante abre la app tocando el recordatorio, también si la app estaba cerrada
+ * (esa respuesta se lee una vez y se borra, para no contarla en cada apertura).
+ */
+export function alAbrirRecordatorio(f: () => void): () => void {
+  const avisar = (r: Notifications.NotificationResponse | null) => {
+    if (r?.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) f();
+  };
+  try {
+    avisar(Notifications.getLastNotificationResponse());
+    Notifications.clearLastNotificationResponse();
+  } catch {
+    // Sin respuesta guardada no hay nada que contar.
+  }
+  const s = Notifications.addNotificationResponseReceivedListener(avisar);
+  return () => s.remove();
+}

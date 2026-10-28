@@ -1,4 +1,4 @@
-import { fusionarProgreso, fusionarRacha, type MotivoReporte, type PaqueteContenido, type Racha } from "@anatomia/contenido";
+import { fusionarProgreso, fusionarRacha, type MotivoReporte, type NombreEvento, type PaqueteContenido, type Racha } from "@anatomia/contenido";
 import { randomUUID } from "expo-crypto";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
@@ -18,10 +18,10 @@ import {
   usuarioActual,
 } from "./api";
 import { borrarJson, guardarJson, leerJson } from "./almacen";
-import { programarRecordatorio } from "./notificaciones";
+import { alAbrirRecordatorio, programarRecordatorio } from "./notificaciones";
 import { borrarDatosPremium } from "./premium";
 import { actualizarPaquete, paqueteLocal } from "./paquete";
-import { borrarDatosLocales, guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
+import { borrarDatosLocales, guardarEvento, guardarIntento, guardarProgresoPropio, guardarRachaPropia, guardarReporte, leerProgreso, leerRacha } from "./registro";
 import { sincronizar } from "./sync";
 
 interface Estado {
@@ -56,6 +56,8 @@ interface Estado {
   cambiarHoraRecordatorio: (hora: string | null) => Promise<void>;
   /** Borra la cuenta en el servidor y todo lo del usuario en este teléfono. Necesita conexión. */
   borrarCuenta: () => Promise<void>;
+  /** Anota un evento de uso (PRD, "Medición de la beta"); sale con la próxima sincronización. */
+  registrarEvento: (nombre: NombreEvento, propiedades?: Record<string, string | number | boolean>) => Promise<void>;
 }
 
 const Contexto = createContext<Estado | null>(null);
@@ -68,6 +70,17 @@ export function useApp(): Estado {
 
 /** El progreso se guarda por usuario: dos cuentas en el mismo teléfono no se mezclan. */
 const claveProgreso = (usuarioId: string) => `completadas-${usuarioId}`;
+
+/** Guarda un evento de uso en el teléfono, con id y hora del teléfono; un fallo de almacenamiento no importa. */
+const anotar = (usuarioId: string, nombre: NombreEvento, propiedades: Record<string, string | number | boolean> = {}) =>
+  guardarEvento(usuarioId, { id: randomUUID(), nombre, propiedades, creado: new Date().toISOString() }).catch(() => {});
+
+/**
+ * `app_abierta` cuenta una vez por sesión: volver a la app antes de 30 minutos (desbloquear el teléfono, un
+ * diálogo del sistema) no es otra apertura.
+ */
+const SESION_MS = 30 * 60_000;
+let ultimaApertura: { usuarioId: string; cuando: number } | null = null;
 
 /** fusionarRacha que conserva el mismo objeto si nada cambió: así no se reprograma el recordatorio en cada subida. */
 function unirRacha(actual: Racha, otra: Racha): Racha {
@@ -129,10 +142,20 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     leerProgreso(usuario.id).then((p) => setProgreso((actual) => fusionarProgreso(p, actual)), () => {});
     leerRacha(usuario.id).then((r) => r && setRacha((actual) => unirRacha(actual, r)), () => {});
     setHoraRecordatorio(usuario.horaRecordatorio ?? null);
-    sincronizarAhora(usuario.id);
-    // Al volver a la app (por ejemplo, con conexión otra vez) se reintenta la subida.
-    const s = AppState.addEventListener("change", (estado) => estado === "active" && sincronizarAhora(usuario.id));
-    return () => s.remove();
+    // Abrir la app (o volver a ella) cuenta como evento y reintenta la subida, por ejemplo con conexión otra vez.
+    const abrir = () => {
+      const ahora = Date.now();
+      const nueva = ultimaApertura?.usuarioId !== usuario.id || ahora - ultimaApertura.cuando >= SESION_MS;
+      if (nueva) ultimaApertura = { usuarioId: usuario.id, cuando: ahora };
+      void (nueva ? anotar(usuario.id, "app_abierta") : Promise.resolve()).then(() => sincronizarAhora(usuario.id));
+    };
+    abrir();
+    const s = AppState.addEventListener("change", (estado) => estado === "active" && abrir());
+    const quitar = alAbrirRecordatorio(() => void anotar(usuario.id, "notificacion_abierta"));
+    return () => {
+      s.remove();
+      quitar();
+    };
   }, [usuario, actualizar, sincronizarAhora]);
 
   // Recordatorio diario (PRD): se reprograma al abrir la app, al volver a ella y cuando cambia la racha.
@@ -210,6 +233,9 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     cambiarHoraRecordatorio: async (hora) => {
       const u = await actualizarPerfil({ horaRecordatorio: hora });
       setHoraRecordatorio(u.horaRecordatorio ?? null);
+    },
+    registrarEvento: async (nombre, propiedades) => {
+      if (usuario) await anotar(usuario.id, nombre, propiedades);
     },
     borrarCuenta: async () => {
       if (!usuario) return;

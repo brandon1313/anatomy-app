@@ -1,4 +1,4 @@
-import { fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
+import { type EventoUso, fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import { openDatabaseAsync, type SQLiteDatabase } from "expo-sqlite";
 import type { Progreso } from "../repaso/espaciado";
 
@@ -8,7 +8,7 @@ import type { Progreso } from "../repaso/espaciado";
  *  - Intentos: solo los que faltan subir; al subirlos se borran.
  *  - Progreso: el de cada ficha, con `pendiente` si cambió en este teléfono y falta subirlo.
  *  - Racha: una fila, también con `pendiente`.
- *  - Reportes de error: los que faltan enviar a /reportes; al enviarlos se borran.
+ *  - Reportes de error y eventos de uso: los que faltan enviar; al enviarlos se borran.
  */
 let base: Promise<SQLiteDatabase> | null = null;
 
@@ -23,6 +23,7 @@ function abrir(): Promise<SQLiteDatabase> {
       );
       CREATE TABLE IF NOT EXISTS racha (usuario_id TEXT PRIMARY KEY NOT NULL, datos TEXT NOT NULL, pendiente INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS reportes (id TEXT PRIMARY KEY NOT NULL, usuario_id TEXT NOT NULL, datos TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS eventos (id TEXT PRIMARY KEY NOT NULL, usuario_id TEXT NOT NULL, datos TEXT NOT NULL);
     `);
     return db;
   });
@@ -152,8 +153,25 @@ export async function borrarReporte(id: string): Promise<void> {
 export async function borrarDatosLocales(usuarioId: string): Promise<void> {
   const db = await abrir();
   await db.withTransactionAsync(async () => {
-    for (const tabla of ["intentos", "progreso", "racha", "reportes"]) {
+    for (const tabla of ["intentos", "progreso", "racha", "reportes", "eventos"]) {
       await db.runAsync(`DELETE FROM ${tabla} WHERE usuario_id = ?`, usuarioId);
     }
   });
+}
+
+export async function guardarEvento(usuarioId: string, evento: EventoUso): Promise<void> {
+  const db = await abrir();
+  await db.runAsync("INSERT OR IGNORE INTO eventos (id, usuario_id, datos) VALUES (?, ?, ?)", evento.id, usuarioId, JSON.stringify(evento));
+}
+
+export async function eventosPorEnviar(usuarioId: string, limite: number): Promise<EventoUso[]> {
+  const db = await abrir();
+  const filas = await db.getAllAsync<{ datos: string }>("SELECT datos FROM eventos WHERE usuario_id = ? LIMIT ?", usuarioId, limite);
+  return filas.map((f) => JSON.parse(f.datos) as EventoUso);
+}
+
+export async function borrarEventos(ids: string[]): Promise<void> {
+  if (ids.length === 0) return;
+  const db = await abrir();
+  await db.runAsync(`DELETE FROM eventos WHERE id IN (${ids.map(() => "?").join(", ")})`, ...ids);
 }

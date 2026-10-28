@@ -57,7 +57,7 @@ function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | 
 
 export default function Leccion() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { usuario, paquete, completar, completadas, progreso: progresoFichas, racha, registrarIntento, terminarSesion } = useApp();
+  const { usuario, paquete, completar, completadas, progreso: progresoFichas, racha, registrarIntento, registrarEvento, terminarSesion } = useApp();
   const rachaAlEmpezar = useRef(racha);
   const insets = useSafeAreaInsets();
   // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
@@ -142,15 +142,29 @@ export default function Leccion() {
 
   // Una sesión vacía no está terminada: todavía no empezó.
   const fin = sesion.cola.length > 0 && terminada(sesion);
+  // Eventos de uso (PRD, "Medición de la beta"): una vez al empezar la lección y una al terminar.
+  const sesionIniciada = useRef(false);
+  useEffect(() => {
+    if (esRepaso || !leccion || ejercicios.length === 0 || sesionIniciada.current) return;
+    sesionIniciada.current = true;
+    void registrarEvento("leccion_iniciada", { leccionId: leccion.id });
+  }, [esRepaso, leccion, ejercicios.length, registrarEvento]);
   const sesionCerrada = useRef(false);
   useEffect(() => {
     if (!fin || !leccion || ejercicios.length === 0 || sesionCerrada.current) return;
     sesionCerrada.current = true;
+    const r = resultado(sesion);
+    void registrarEvento(esRepaso ? "repaso_completado" : "leccion_completada", {
+      ...(!esRepaso && { leccionId: leccion.id }),
+      aciertos: r.aciertos,
+      total: r.total,
+      ms: r.ms,
+    });
     // Una calificación por ficha con ts-fsrs (también en el repaso), y la lección queda completada.
     terminarSesion(sesion.respuestas);
     if (!esRepaso) void completar(leccion.id);
     efecto("fin");
-  }, [fin, leccion, ejercicios.length, completar, terminarSesion, esRepaso, sesion.respuestas]);
+  }, [fin, leccion, ejercicios.length, completar, terminarSesion, registrarEvento, esRepaso, sesion]);
 
   if (!paquete || (ejercicios.length > 0 && sesion.cola.length === 0)) {
     return (
@@ -196,7 +210,7 @@ export default function Leccion() {
           titulo="Continuar"
           onPress={async () => {
             // Premium aparece sola una vez, al completar la tercera lección (PRD).
-            if (!esRepaso && usuario && (await mostrarPremiumUnaVez(usuario.id, completadas.length))) router.replace("/premium");
+            if (!esRepaso && usuario && (await mostrarPremiumUnaVez(usuario.id, completadas.length))) router.replace({ pathname: "/premium", params: { origen: "tercera_leccion" } });
             else router.back();
           }}
         />

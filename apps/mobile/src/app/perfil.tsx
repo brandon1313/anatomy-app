@@ -152,7 +152,7 @@ export default function Perfil() {
         </View>
 
         <Text style={estilos.seccion} accessibilityRole="header">Premium</Text>
-        <Pressable accessibilityRole="button" onPress={() => router.push("/premium")} style={[estilos.tarjeta, estilos.fila]}>
+        <Pressable accessibilityRole="button" onPress={() => router.push({ pathname: "/premium", params: { origen: "perfil" } })} style={[estilos.tarjeta, estilos.fila]}>
           <View style={{ flex: 1 }}>
             <Text style={estilos.texto}>Palpa Premium</Text>
             <Text style={estilos.tenue}>Todo el cuerpo y ejercicios nuevos. Pronto.</Text>

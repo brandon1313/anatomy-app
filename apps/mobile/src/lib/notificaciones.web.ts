@@ -8,3 +8,7 @@ export type EstadoPermiso = "concedido" | "denegado" | "pendiente" | "no_disponi
 export async function estadoPermiso(): Promise<EstadoPermiso> {
   return "no_disponible";
 }
+
+export function alAbrirRecordatorio(_f: () => void): () => void {
+  return () => {};
+}

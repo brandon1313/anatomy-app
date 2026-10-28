@@ -1,9 +1,9 @@
-import { fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
+import { type EventoUso, fusionarProgreso, fusionarRacha, type Intento, type NuevoReporte, type Racha } from "@anatomia/contenido";
 import type { Progreso } from "../repaso/espaciado";
 
 /**
  * En web (solo para desarrollo) el registro va en localStorage, con las mismas reglas que la versión de
- * SQLite (registro.ts): intentos y reportes por enviar, y progreso por ficha y racha con `pendiente`.
+ * SQLite (registro.ts): intentos, reportes y eventos por enviar, y progreso por ficha y racha con `pendiente`.
  */
 type Fila = { datos: Progreso; pendiente: boolean };
 
@@ -122,11 +122,28 @@ export async function borrarReporte(id: string): Promise<void> {
 }
 
 export async function borrarDatosLocales(usuarioId: string): Promise<void> {
-  for (const clave of [claveIntentos, claveProgreso, claveRacha, claveReportes]) {
+  for (const clave of [claveIntentos, claveProgreso, claveRacha, claveReportes, claveEventos]) {
     try {
       localStorage.removeItem(clave(usuarioId));
     } catch {
       // Sin almacenamiento no hay nada que borrar.
     }
+  }
+}
+
+const claveEventos = (u: string) => `anatomia.eventos.${u}`;
+
+export async function guardarEvento(usuarioId: string, evento: EventoUso): Promise<void> {
+  const eventos = leer<EventoUso[]>(claveEventos(usuarioId), []);
+  if (!eventos.some((e) => e.id === evento.id)) escribir(claveEventos(usuarioId), [...eventos, evento]);
+}
+
+export async function eventosPorEnviar(usuarioId: string, limite: number): Promise<EventoUso[]> {
+  return leer<EventoUso[]>(claveEventos(usuarioId), []).slice(0, limite);
+}
+
+export async function borrarEventos(ids: string[]): Promise<void> {
+  for (const k of Object.keys(localStorage).filter((k) => k.startsWith("anatomia.eventos."))) {
+    escribir(k, leer<EventoUso[]>(k, []).filter((e) => !ids.includes(e.id)));
   }
 }

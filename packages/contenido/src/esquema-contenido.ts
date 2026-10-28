@@ -298,6 +298,23 @@ export const OfertaPremium = z.object({
 
 export const PlanPremium = z.enum(["mensual", "anual"]);
 
+/**
+ * Eventos de uso que manda el teléfono (PRD, "Medición de la beta"). `registro`, `reporte_creado` y
+ * `premium_interes` los anota la API al recibir esas acciones, así que no se aceptan desde aquí.
+ */
+export const NombreEvento = z.enum(["app_abierta", "leccion_iniciada", "leccion_completada", "repaso_completado", "premium_visto", "notificacion_abierta"]);
+
+/** Un evento: id y fecha del teléfono (reenviarlo no lo duplica) y propiedades simples. */
+export const EventoUso = z.object({
+  id: z.uuid(),
+  nombre: NombreEvento,
+  propiedades: z.record(z.string().max(40), z.union([z.string().max(200), z.number(), z.boolean()])).default({}),
+  creado: z.iso.datetime(),
+});
+
+/** POST /eventos: un lote de eventos pendientes. */
+export const PeticionEventos = z.object({ eventos: z.array(EventoUso).min(1).max(200) });
+
 /** POST /interes-premium: el plan que el estudiante tenía elegido al tocar "Me interesa". */
 export const PeticionInteresPremium = z.object({ plan: PlanPremium });
 
@@ -385,6 +402,8 @@ export type MotivoReporte = z.infer<typeof MotivoReporte>;
 export type NuevoReporte = z.infer<typeof NuevoReporte>;
 export type OfertaPremium = z.infer<typeof OfertaPremium>;
 export type PlanPremium = z.infer<typeof PlanPremium>;
+export type NombreEvento = z.infer<typeof NombreEvento>;
+export type EventoUso = z.infer<typeof EventoUso>;
 export type ProgresoFicha = z.infer<typeof ProgresoFicha>;
 export type Intento = z.infer<typeof Intento>;
 export type ProgresoSync = z.infer<typeof ProgresoSync>;
