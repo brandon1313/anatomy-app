@@ -28,4 +28,10 @@ describe("modelo3dParaImagen", () => {
     expect(m.ocultas).toEqual(["recto_femoral"]);
     expect(m.estructuras).toEqual({ "vasto-intermedio": "vasto_intermedio" });
   });
+
+  it("con una capa por vista, gana la clave más específica", () => {
+    const conVistas = { ...datos, hide: { ...datos.hide, "posterior-profunda": ["biceps_femoral"] } };
+    expect(modelo3dParaImagen(conVistas, "muslo-posterior-profunda", fichas, claves).ocultas).toEqual(["biceps_femoral"]);
+    expect(modelo3dParaImagen(conVistas, "muslo-anterior-profunda", fichas, claves).ocultas).toEqual(["recto_femoral"]);
+  });
 });

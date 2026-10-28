@@ -20,6 +20,12 @@ interface Estructura {
 interface DatosLamina {
   data: Record<string, Estructura>;
   ghosts: Record<string, string>;
+  /**
+   * Zonas por capa (las láminas generadas desde el 3D, contenido/laminas/generar.mjs): el contorno de lo que
+   * se ve de cada músculo en esa capa. Un músculo sin entrada en una capa no tiene zona ahí. Sin esto se
+   * usa `ghosts` en todas las capas donde el músculo no está oculto.
+   */
+  ghostsCapa?: Record<Capa, Record<string, string>>;
   hide: Record<Capa, string[]>;
 }
 
@@ -67,12 +73,13 @@ const redondear = (n: number) => Math.round(Math.min(1, Math.max(0, n)) * 10000)
 /** Zonas de los músculos visibles en la capa, en orden de dibujo y normalizadas a 0–1 con el viewBox. */
 export function zonasDeCapa(l: Lamina, capa: Capa): Zona[] {
   const [x0, y0, ancho, alto] = l.viewBox;
+  const porCapa = l.datos.ghostsCapa?.[capa];
   return musculos(l)
-    .filter((id) => !l.datos.hide[capa].includes(id))
+    .filter((id) => !l.datos.hide[capa].includes(id) && (!porCapa || id in porCapa))
     .map((id) => ({
       id: `zona-${slug(id)}`,
       fichaId: slug(id),
-      puntos: [...l.datos.ghosts[id].matchAll(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g)].map(
+      puntos: [...(porCapa?.[id] ?? l.datos.ghosts[id]).matchAll(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g)].map(
         ([, x, y]) => [redondear((Number(x) - x0) / ancho), redondear((Number(y) - y0) / alto)] as [number, number],
       ),
     }));
@@ -120,7 +127,7 @@ export function fichasDeLamina(l: Lamina, region: string): FichaMusculoBase[] {
       tipo: "musculo",
       nombre: { principal: e.name, latin: e.latin, sinonimos: [] },
       region,
-      compartimento: grupo.includes("compartimento anterior") ? "anterior" : grupo.includes("compartimento medial") ? "medial" : undefined,
+      compartimento: grupo.match(/compartimento (anterior|medial|lateral|posterior)/)?.[1],
       origen: elementos(fila(e, "Origen")),
       insercion: elementos(fila(e, "Inserción")),
       inervacion: elementos(fila(e, "Inervación")).map((s) => {

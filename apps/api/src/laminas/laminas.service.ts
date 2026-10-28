@@ -15,6 +15,8 @@ export interface OpcionesImportacion {
   id: string;
   titulo: string;
   region: string;
+  /** Por defecto "propia" (dibujo hecho a mano); las generadas desde el 3D llevan la de BodyParts3D. */
+  licencia?: Imagen["licencia"];
 }
 
 export interface ResultadoImportacion {
@@ -62,7 +64,7 @@ export class LaminasService {
         archivo,
         ancho,
         alto,
-        licencia: { tipo: "propia" },
+        licencia: o.licencia ?? { tipo: "propia" },
         sinEtiquetas: true,
         zonas: zonasDeCapa(lamina, capa),
         revision: { estado: "borrador" },

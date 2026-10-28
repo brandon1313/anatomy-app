@@ -1,0 +1,34 @@
+[
+  {
+    "id": "muslo-posterior",
+    "titulo": "Muslo derecho, vista posterior",
+    "modelo": "prototipos/modelo",
+    "vista": [0, 0, -1],
+    "profunda": ["semitendinoso", "biceps_femoral", "gluteo_mayor"],
+    "zonas": ["semitendinoso", "semimembranoso", "biceps_femoral"]
+  },
+  {
+    "id": "cadera-posterior",
+    "titulo": "Cadera derecha, vista posterior",
+    "modelo": "contenido/modelos/cadera-derecha",
+    "vista": [0, 0, -1],
+    "profunda": ["gluteo_mayor", "gluteo_medio"],
+    "zonas": ["gluteo_mayor", "gluteo_medio", "gluteo_menor", "piriforme", "gemelo_superior", "gemelo_inferior", "obturador_interno", "obturador_externo", "cuadrado_femoral"]
+  },
+  {
+    "id": "pierna-anterolateral",
+    "titulo": "Pierna derecha, vista anterolateral",
+    "modelo": "contenido/modelos/pierna-derecha",
+    "vista": [-0.71, 0, 0.71],
+    "profunda": ["tibial_anterior", "extensor_largo_dedos", "fibular_largo"],
+    "zonas": ["tibial_anterior", "extensor_largo_dedos", "extensor_largo_dedo_gordo", "fibular_tercero", "fibular_largo", "fibular_corto"]
+  },
+  {
+    "id": "pierna-posterior",
+    "titulo": "Pierna derecha, vista posterior",
+    "modelo": "contenido/modelos/pierna-derecha",
+    "vista": [0, 0, -1],
+    "profunda": ["gastrocnemio", "soleo", "plantar"],
+    "zonas": ["gastrocnemio", "soleo", "plantar", "popliteo", "tibial_posterior", "flexor_largo_dedos", "flexor_largo_dedo_gordo"]
+  }
+]

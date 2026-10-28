@@ -109,6 +109,10 @@
       "gastrocnemio": "post", "soleo": "post", "plantar": "post",
       "popliteo": "post", "tibial_posterior": "post", "flexor_largo_dedos": "post", "flexor_largo_dedo_gordo": "post"
     },
-    "hide": { "superficial": [], "profunda": ["gastrocnemio", "soleo", "plantar"] }
+    "hide": {
+      "superficial": [],
+      "anterolateral-profunda": ["tibial_anterior", "extensor_largo_dedos", "fibular_largo"],
+      "posterior-profunda": ["gastrocnemio", "soleo", "plantar"]
+    }
   }
 }

@@ -1,0 +1,252 @@
+{
+  "semitendinoso": {
+    "name": "Semitendinoso", "latin": "Musculus semitendinosus", "group": "Isquiotibiales, compartimento posterior",
+    "rows": [
+      ["Origen", "Tuberosidad isquiática, junto con la cabeza larga del bíceps femoral."],
+      ["Inserción", "Cara medial de la parte superior de la tibia, en la pata de ganso."],
+      ["Inervación", "Porción tibial del nervio ciático (L5–S2)."],
+      ["Acción", "Extiende la cadera; flexiona la rodilla y rota medialmente la tibia con la rodilla flexionada."],
+      ["Dato clave", "Su tendón largo y delgado se usa a menudo como injerto para reconstruir el ligamento cruzado anterior."]
+    ]
+  },
+  "semimembranoso": {
+    "name": "Semimembranoso", "latin": "Musculus semimembranosus", "group": "Isquiotibiales, compartimento posterior",
+    "rows": [
+      ["Origen", "Tuberosidad isquiática, por arriba y por fuera del origen del semitendinoso."],
+      ["Inserción", "Cara posterior del cóndilo medial de la tibia."],
+      ["Inervación", "Porción tibial del nervio ciático (L5–S2)."],
+      ["Acción", "Extiende la cadera; flexiona la rodilla y rota medialmente la tibia con la rodilla flexionada."],
+      ["Dato clave", "Debe su nombre a su tendón de origen, aplanado como una membrana; queda por debajo del semitendinoso."]
+    ]
+  },
+  "biceps_femoral": {
+    "name": "Bíceps femoral", "latin": "Musculus biceps femoris", "group": "Isquiotibiales, compartimento posterior",
+    "rows": [
+      ["Origen", "Cabeza larga: tuberosidad isquiática; cabeza corta: labio lateral de la línea áspera del fémur."],
+      ["Inserción", "Cabeza del peroné."],
+      ["Inervación", "Cabeza larga: porción tibial del nervio ciático (L5–S2); cabeza corta: porción fibular común del nervio ciático (L5–S2)."],
+      ["Acción", "Flexiona la rodilla y rota lateralmente la tibia con la rodilla flexionada; la cabeza larga también extiende la cadera."],
+      ["Dato clave", "Es el único isquiotibial lateral, y su cabeza corta es la única porción de los isquiotibiales que no cruza la cadera."]
+    ]
+  },
+  "gluteo_mayor": {
+    "name": "Glúteo mayor", "latin": "Musculus gluteus maximus", "group": "Glúteos",
+    "rows": [
+      ["Origen", "Cara glútea del ilion, por detrás de la línea glútea posterior; cara posterior del sacro y del cóccix; ligamento sacrotuberoso."],
+      ["Inserción", "Tracto iliotibial; tuberosidad glútea del fémur."],
+      ["Inervación", "Nervio glúteo inferior (L5–S2)."],
+      ["Acción", "Extiende y rota lateralmente la cadera; a través del tracto iliotibial ayuda a estabilizar la rodilla extendida."],
+      ["Dato clave", "Es el músculo más voluminoso del cuerpo; trabaja sobre todo al levantarse de una silla, subir escaleras o correr, más que al caminar en plano."]
+    ]
+  },
+  "gluteo_medio": {
+    "name": "Glúteo medio", "latin": "Musculus gluteus medius", "group": "Glúteos",
+    "rows": [
+      ["Origen", "Cara glútea del ilion, entre las líneas glúteas anterior y posterior."],
+      ["Inserción", "Cara lateral del trocánter mayor."],
+      ["Inervación", "Nervio glúteo superior (L4–S1)."],
+      ["Acción", "Abduce y rota medialmente la cadera; estabiliza la pelvis al apoyarse en una pierna."],
+      ["Dato clave", "Si está débil o su nervio está lesionado, la pelvis cae hacia el lado contrario al apoyarse en una sola pierna: es el signo de Trendelenburg."]
+    ]
+  },
+  "gluteo_menor": {
+    "name": "Glúteo menor", "latin": "Musculus gluteus minimus", "group": "Glúteos",
+    "rows": [
+      ["Origen", "Cara glútea del ilion, entre las líneas glúteas anterior e inferior."],
+      ["Inserción", "Cara anterior del trocánter mayor."],
+      ["Inervación", "Nervio glúteo superior (L4–S1)."],
+      ["Acción", "Abduce y rota medialmente la cadera; estabiliza la pelvis junto con el glúteo medio."],
+      ["Dato clave", "Es el más profundo y el más pequeño de los glúteos: queda cubierto por el glúteo medio."]
+    ]
+  },
+  "piriforme": {
+    "name": "Piriforme", "latin": "Musculus piriformis", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Cara anterior del sacro, entre los agujeros sacros anteriores."],
+      ["Inserción", "Borde superior del trocánter mayor."],
+      ["Inervación", "Nervio del piriforme, ramo del plexo sacro (S1–S2)."],
+      ["Acción", "Rota lateralmente la cadera extendida; la abduce con la cadera flexionada."],
+      ["Dato clave", "Sale de la pelvis por el agujero ciático mayor y sirve de referencia para los nervios y vasos glúteos; si comprime el nervio ciático causa el síndrome del piriforme."]
+    ]
+  },
+  "gemelo_superior": {
+    "name": "Gemelo superior", "latin": "Musculus gemellus superior", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Espina isquiática."],
+      ["Inserción", "Cara medial del trocánter mayor, con el tendón del obturador interno."],
+      ["Inervación", "Nervio del obturador interno (L5–S1)."],
+      ["Acción", "Rota lateralmente la cadera extendida."],
+      ["Dato clave", "Con el gemelo inferior y el obturador interno forma el tríceps coxal: los dos gemelos acompañan a ese tendón, uno por arriba y otro por abajo."]
+    ]
+  },
+  "gemelo_inferior": {
+    "name": "Gemelo inferior", "latin": "Musculus gemellus inferior", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Parte superior de la tuberosidad isquiática."],
+      ["Inserción", "Cara medial del trocánter mayor, con el tendón del obturador interno."],
+      ["Inervación", "Nervio del cuadrado femoral (L4–S1)."],
+      ["Acción", "Rota lateralmente la cadera extendida."],
+      ["Dato clave", "Queda justo por debajo del tendón del obturador interno; con él y el gemelo superior forma el tríceps coxal."]
+    ]
+  },
+  "obturador_interno": {
+    "name": "Obturador interno", "latin": "Musculus obturator internus", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Cara interna de la membrana obturatriz y del hueso que rodea el agujero obturado."],
+      ["Inserción", "Cara medial del trocánter mayor."],
+      ["Inervación", "Nervio del obturador interno (L5–S1)."],
+      ["Acción", "Rota lateralmente la cadera extendida; la abduce con la cadera flexionada."],
+      ["Dato clave", "Nace dentro de la pelvis y sale por el agujero ciático menor, donde su tendón gira en ángulo recto sobre el isquion."]
+    ]
+  },
+  "obturador_externo": {
+    "name": "Obturador externo", "latin": "Musculus obturator externus", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Cara externa de la membrana obturatriz y del hueso que rodea el agujero obturado."],
+      ["Inserción", "Fosa trocantérica del fémur."],
+      ["Inervación", "Nervio obturador (L3–L4)."],
+      ["Acción", "Rota lateralmente la cadera."],
+      ["Dato clave", "Es el único rotador lateral inervado por el nervio obturador; desde atrás apenas se ve, por debajo del cuadrado femoral."]
+    ]
+  },
+  "cuadrado_femoral": {
+    "name": "Cuadrado femoral", "latin": "Musculus quadratus femoris", "group": "Rotadores laterales",
+    "rows": [
+      ["Origen", "Borde lateral de la tuberosidad isquiática."],
+      ["Inserción", "Tubérculo cuadrado, en la cresta intertrocantérica."],
+      ["Inervación", "Nervio del cuadrado femoral (L4–S1)."],
+      ["Acción", "Rota lateralmente la cadera."],
+      ["Dato clave", "Es el más bajo de los rotadores laterales y tiene forma rectangular; por debajo de él asoma el aductor mayor."]
+    ]
+  },
+  "tibial_anterior": {
+    "name": "Tibial anterior", "latin": "Musculus tibialis anterior", "group": "Compartimento anterior",
+    "rows": [
+      ["Origen", "Cóndilo lateral y mitad superior de la cara lateral de la tibia; membrana interósea."],
+      ["Inserción", "Cara medial de la cuña medial y base del primer metatarsiano."],
+      ["Inervación", "Nervio fibular profundo (L4–L5)."],
+      ["Acción", "Flexiona dorsalmente el tobillo; invierte el pie."],
+      ["Dato clave", "Si está paralizado, el pie cae al caminar (pie caído) y la persona levanta más la rodilla para no arrastrar los dedos."]
+    ]
+  },
+  "extensor_largo_dedos": {
+    "name": "Extensor largo de los dedos", "latin": "Musculus extensor digitorum longus", "group": "Compartimento anterior",
+    "rows": [
+      ["Origen", "Cóndilo lateral de la tibia; tres cuartos superiores de la cara anterior del peroné; membrana interósea."],
+      ["Inserción", "Falanges media y distal de los dedos segundo a quinto, por la expansión extensora."],
+      ["Inervación", "Nervio fibular profundo (L5–S1)."],
+      ["Acción", "Extiende los dedos segundo a quinto; flexiona dorsalmente el tobillo."],
+      ["Dato clave", "Sus cuatro tendones se ven y se palpan en el dorso del pie al levantar los dedos."]
+    ]
+  },
+  "extensor_largo_dedo_gordo": {
+    "name": "Extensor largo del dedo gordo", "latin": "Musculus extensor hallucis longus", "group": "Compartimento anterior",
+    "rows": [
+      ["Origen", "Parte media de la cara anterior del peroné; membrana interósea."],
+      ["Inserción", "Base de la falange distal del dedo gordo."],
+      ["Inervación", "Nervio fibular profundo (L5–S1)."],
+      ["Acción", "Extiende el dedo gordo; flexiona dorsalmente el tobillo."],
+      ["Dato clave", "Queda entre el tibial anterior y el extensor largo de los dedos; su fuerza se usa para evaluar la raíz L5."]
+    ]
+  },
+  "fibular_tercero": {
+    "name": "Fibular tercero", "latin": "Musculus fibularis tertius", "group": "Compartimento anterior",
+    "rows": [
+      ["Origen", "Tercio inferior de la cara anterior del peroné; membrana interósea."],
+      ["Inserción", "Dorso de la base del quinto metatarsiano."],
+      ["Inervación", "Nervio fibular profundo (L5–S1)."],
+      ["Acción", "Flexiona dorsalmente el tobillo; everte el pie."],
+      ["Dato clave", "Aunque se llama fibular, está en el compartimento anterior: es como un quinto tendón del extensor largo de los dedos, y falta en algunas personas."]
+    ]
+  },
+  "fibular_largo": {
+    "name": "Fibular largo", "latin": "Musculus fibularis longus", "group": "Compartimento lateral",
+    "rows": [
+      ["Origen", "Cabeza y dos tercios superiores de la cara lateral del peroné."],
+      ["Inserción", "Base del primer metatarsiano y cuña medial, después de cruzar la planta del pie."],
+      ["Inervación", "Nervio fibular superficial (L5–S2)."],
+      ["Acción", "Everte el pie; flexiona plantarmente el tobillo; sostiene el arco transverso."],
+      ["Dato clave", "Su tendón pasa por detrás del maléolo lateral y cruza la planta en diagonal, por un surco del cuboides."]
+    ]
+  },
+  "fibular_corto": {
+    "name": "Fibular corto", "latin": "Musculus fibularis brevis", "group": "Compartimento lateral",
+    "rows": [
+      ["Origen", "Dos tercios inferiores de la cara lateral del peroné."],
+      ["Inserción", "Tuberosidad de la base del quinto metatarsiano."],
+      ["Inervación", "Nervio fibular superficial (L5–S2)."],
+      ["Acción", "Everte el pie; flexiona plantarmente el tobillo."],
+      ["Dato clave", "En un esguince de tobillo por inversión, su tendón puede arrancar un fragmento de la base del quinto metatarsiano."]
+    ]
+  },
+  "gastrocnemio": {
+    "name": "Gastrocnemio", "latin": "Musculus gastrocnemius", "group": "Compartimento posterior, superficial",
+    "rows": [
+      ["Origen", "Cabeza medial: cara poplítea del fémur, por encima del cóndilo medial; cabeza lateral: cara lateral del cóndilo lateral del fémur."],
+      ["Inserción", "Cara posterior del calcáneo, por el tendón calcáneo."],
+      ["Inervación", "Nervio tibial (S1–S2)."],
+      ["Acción", "Flexiona plantarmente el tobillo; flexiona la rodilla."],
+      ["Dato clave", "Con el sóleo forma el tríceps sural; como cruza la rodilla, empuja el tobillo con más fuerza cuando la rodilla está extendida."]
+    ]
+  },
+  "soleo": {
+    "name": "Sóleo", "latin": "Musculus soleus", "group": "Compartimento posterior, superficial",
+    "rows": [
+      ["Origen", "Cara posterior de la cabeza y del cuello del peroné; línea del sóleo de la tibia; arco tendinoso entre ambos huesos."],
+      ["Inserción", "Cara posterior del calcáneo, por el tendón calcáneo."],
+      ["Inervación", "Nervio tibial (S1–S2)."],
+      ["Acción", "Flexiona plantarmente el tobillo."],
+      ["Dato clave", "Al contraerse empuja hacia arriba la sangre de sus venas, por eso se le llama corazón periférico; la inmovilidad prolongada favorece la trombosis."]
+    ]
+  },
+  "plantar": {
+    "name": "Plantar", "latin": "Musculus plantaris", "group": "Compartimento posterior, superficial",
+    "rows": [
+      ["Origen", "Línea supracondílea lateral del fémur."],
+      ["Inserción", "Cara posterior del calcáneo, junto al tendón calcáneo."],
+      ["Inervación", "Nervio tibial (S1–S2)."],
+      ["Acción", "Ayuda débilmente a flexionar plantarmente el tobillo y a flexionar la rodilla."],
+      ["Dato clave", "Tiene un vientre pequeño y un tendón muy largo y delgado que a veces se usa como injerto; falta en algunas personas."]
+    ]
+  },
+  "popliteo": {
+    "name": "Poplíteo", "latin": "Musculus popliteus", "group": "Compartimento posterior, profundo",
+    "rows": [
+      ["Origen", "Cara lateral del cóndilo lateral del fémur; menisco lateral."],
+      ["Inserción", "Cara posterior de la tibia, por encima de la línea del sóleo."],
+      ["Inervación", "Nervio tibial (L4–S1)."],
+      ["Acción", "Rota medialmente la tibia, o lateralmente el fémur, para desbloquear la rodilla extendida; flexiona la rodilla."],
+      ["Dato clave", "Es la llave de la rodilla: al empezar a flexionarla, la destraba de su posición bloqueada en extensión."]
+    ]
+  },
+  "tibial_posterior": {
+    "name": "Tibial posterior", "latin": "Musculus tibialis posterior", "group": "Compartimento posterior, profundo",
+    "rows": [
+      ["Origen", "Membrana interósea y caras posteriores vecinas de la tibia y del peroné."],
+      ["Inserción", "Tuberosidad del navicular y, por expansiones, otros huesos del tarso y bases de los metatarsianos."],
+      ["Inervación", "Nervio tibial (L4–L5)."],
+      ["Acción", "Invierte el pie; flexiona plantarmente el tobillo; sostiene el arco longitudinal medial."],
+      ["Dato clave", "Es el músculo más profundo del compartimento posterior; si su tendón falla, el arco se hunde y aparece un pie plano adquirido."]
+    ]
+  },
+  "flexor_largo_dedos": {
+    "name": "Flexor largo de los dedos", "latin": "Musculus flexor digitorum longus", "group": "Compartimento posterior, profundo",
+    "rows": [
+      ["Origen", "Cara posterior de la tibia, por debajo de la línea del sóleo."],
+      ["Inserción", "Bases de las falanges distales de los dedos segundo a quinto."],
+      ["Inervación", "Nervio tibial (S2–S3)."],
+      ["Acción", "Flexiona los dedos segundo a quinto; flexiona plantarmente el tobillo."],
+      ["Dato clave", "Nace en la tibia, del lado medial, pero sus tendones van a los dedos laterales: en la planta cruza por encima del tendón del flexor largo del dedo gordo."]
+    ]
+  },
+  "flexor_largo_dedo_gordo": {
+    "name": "Flexor largo del dedo gordo", "latin": "Musculus flexor hallucis longus", "group": "Compartimento posterior, profundo",
+    "rows": [
+      ["Origen", "Dos tercios inferiores de la cara posterior del peroné; membrana interósea."],
+      ["Inserción", "Base de la falange distal del dedo gordo."],
+      ["Inervación", "Nervio tibial (S2–S3)."],
+      ["Acción", "Flexiona el dedo gordo; flexiona plantarmente el tobillo; sostiene el arco longitudinal medial."],
+      ["Dato clave", "Nace del peroné, del lado lateral, pero va al dedo gordo, del lado medial; da el impulso final al despegar el pie del suelo al caminar."]
+    ]
+  }
+}

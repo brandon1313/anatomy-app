@@ -30,6 +30,17 @@ describe("zonasDeCapa", () => {
     ]);
   });
 
+  it("con zonas por capa, usa la de cada capa y deja sin zona lo que esa capa no trae", () => {
+    const conCapas = {
+      ...lamina,
+      datos: { ...lamina.datos, ghostsCapa: { superficial: { sartorio: "M48,44 L200,44 L200,485 Z" }, profunda: {} } },
+    };
+    const [zona, ...resto] = zonasDeCapa(conCapas, "superficial");
+    expect(resto).toEqual([]);
+    expect(zona).toEqual({ id: "zona-sartorio", fichaId: "sartorio", puntos: [[0, 0], [0.5, 0], [0.5, 0.5]] });
+    expect(zonasDeCapa(conCapas, "profunda")).toEqual([]);
+  });
+
   it("produce zonas válidas para el esquema Imagen", () => {
     for (const capa of CAPAS) {
       const r = Imagen.safeParse({

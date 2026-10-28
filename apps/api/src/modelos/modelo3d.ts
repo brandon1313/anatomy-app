@@ -19,7 +19,8 @@ export const LICENCIA_BODYPARTS3D: Modelo3D["licencia"] = {
 /**
  * El modelo 3D de una imagen de lámina.
  *  - Capa: sale del final del id de la imagen ("muslo-anterior-profunda" → "profunda"), y con ella las
- *    estructuras que se ocultan.
+ *    estructuras que se ocultan. Gana la clave más específica: "pierna-posterior-profunda" usa
+ *    "posterior-profunda" si el modelo la tiene, y si no "profunda".
  *  - Estructuras: solo los músculos con una ficha existente (la ficha es el id con guiones). Vasos y
  *    nervio quedan fuera de los ejercicios (docs/PLAN-REDISENO.md, decisiones 4 y 5), y una estructura
  *    oculta en esta capa no se puede preguntar.
@@ -30,7 +31,9 @@ export function modelo3dParaImagen(
   fichas: Set<string>,
   claves: { archivo: string; datos: string },
 ): Modelo3D {
-  const capa = Object.keys(datos.hide).find((c) => imagenId.endsWith(`-${c}`));
+  const capa = Object.keys(datos.hide)
+    .filter((c) => imagenId.endsWith(`-${c}`))
+    .sort((a, b) => b.length - a.length)[0];
   const ocultas = capa ? datos.hide[capa] : [];
   const estructuras: Record<string, string> = {};
   for (const [id, d] of Object.entries(datos.data)) {
