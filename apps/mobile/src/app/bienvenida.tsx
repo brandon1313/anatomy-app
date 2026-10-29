@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { Icono, type NombreIcono } from "../componentes/Icono";
+import { Logo } from "../componentes/Logo";
 import { color, espacio, fuente } from "../tema";
 
 /** Un pedazo del camino de lecciones de Inicio, como adelanto de la app. Es decorativo. */
@@ -43,8 +44,10 @@ export default function Bienvenida() {
           ))}
         </View>
 
-        <View>
-          <Text style={estilos.marca} accessibilityRole="header" accessibilityLabel="Palpa">palpa</Text>
+        <View style={estilos.cabecera}>
+          <View accessible accessibilityRole="header" accessibilityLabel="Palpa">
+            <Logo alto={60} />
+          </View>
           <Text style={estilos.lema}>Anatomía que se toca</Text>
         </View>
 
@@ -89,8 +92,7 @@ const estilos = StyleSheet.create({
   },
   rachaTexto: { fontSize: 16, fontFamily: fuente.titulo, color: color.logroTexto },
   circulo: { width: 64, height: 64, borderRadius: 32, borderBottomWidth: 5, alignItems: "center", justifyContent: "center" },
-  /** Logotipo provisional: el nombre en minúsculas, en el teal de la marca. */
-  marca: { fontSize: 52, fontFamily: fuente.titulo, color: color.marca, letterSpacing: -1 },
+  cabecera: { gap: espacio.s },
   lema: { fontSize: 22, fontFamily: fuente.negrita, color: color.coralTexto },
   beneficios: { gap: espacio.m },
   beneficio: { flexDirection: "row", alignItems: "center", gap: espacio.m },

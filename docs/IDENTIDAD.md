@@ -6,7 +6,10 @@ Decisión del dueño del producto (27-10-2026): nombre, colores y fuente propios
 
 - **Palpa.** Palpar es como los fisioterapeutas reconocen músculos y relieves óseos, y es lo que hace la app: tocar el músculo. Es corto y se lee igual en español y en inglés.
 - **Lema:** "Anatomía que se toca".
-- **Logotipo provisional:** "palpa" en minúsculas, Lexend Bold, en el teal de la marca (pantalla de bienvenida).
+- **Logotipo (29-10-2026, "Origen e inserción"):** el símbolo es una "p" hecha con un hueso en teal y un músculo en coral que sale de él, seguido del nombre "palpa" en Lexend Bold, convertido a trazos.
+  - Los archivos están en [marca/](marca/LEEME.md): logo a color y en blanco (SVG y PNG), solo el símbolo y el avatar para redes (1080 × 1080, sirve recortado en círculo).
+  - En la app, el componente `Logo` (`apps/mobile/src/componentes/Logo.tsx`) lo dibuja en la bienvenida.
+  - El panel usa el símbolo como favicon.
 - **Lo que no cambió en el código:** el `slug` y el `scheme` siguen siendo `anatomia`, igual que las carpetas internas `anatomia/`. Cambiarlos rompería el enlace con el proyecto de EAS, la firma de Expo Go y lo que ya se descargó en los teléfonos. Se cambian al preparar las tiendas.
 
 ## Colores
@@ -58,6 +61,7 @@ No es asesoría legal: el registro de la marca necesita un abogado.
 
 - **Búsqueda de marcas:** en la WIPO Global Brand Database y en el Registro de la Propiedad Intelectual de Guatemala, clases 9 (software) y 41 (educación). Una búsqueda rápida en la web no encontró apps llamadas Palpa. Lo más cercano es PalpationMapp, en inglés.
 - **Registros:** la marca (con abogado), el dominio y los usuarios en redes.
-- **Ícono y logotipo:** hoy el ícono de la app es el de Expo.
+- **Ícono de la app:** ya está en `apps/mobile/assets` (`icon.png`, el adaptable de Android con fondo `#009E8F`, el monocromo y el de notificaciones). Se ve a partir del siguiente build; en Expo Go siempre sale el ícono de Expo Go.
+- **Pantalla de carga:** `splash-icon.png` está en `assets`, pero falta el plugin `expo-splash-screen` para usarla.
 - **Panel:** solo cambió su nombre. Su estilo es de herramienta interna.
 - **Prototipos:** los de `prototipos/` conservan la paleta vieja como registro de cómo se llegó aquí.
