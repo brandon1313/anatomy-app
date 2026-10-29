@@ -6,3 +6,7 @@ export function uriImagen(clave: string): string | null {
 }
 
 export async function descargarImagen(_clave: string): Promise<void> {}
+
+export function alDescargarArchivo(_f: (clave: string) => void): () => void {
+  return () => {};
+}

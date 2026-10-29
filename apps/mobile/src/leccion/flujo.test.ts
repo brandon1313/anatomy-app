@@ -2,6 +2,7 @@ import type { PaqueteContenido } from "@anatomia/contenido";
 import { describe, expect, it } from "vitest";
 import {
   actual,
+  agruparPorModelo,
   barajar,
   calificarEmparejar,
   ejerciciosDeLeccion,
@@ -36,6 +37,32 @@ describe("ejerciciosDeLeccion", () => {
 
   it("salta los de imagen si la imagen no se descargó", () => {
     expect(ejerciciosDeLeccion(paquete, leccion, () => false).map((e) => e.id)).toEqual(["texto"]);
+  });
+});
+
+describe("agruparPorModelo", () => {
+  const paquete = {
+    imagenes: [
+      { id: "muslo", archivo: "imagenes/muslo.webp", modelo3d: { archivo: "modelos/muslo.bin" } },
+      { id: "cadera", archivo: "imagenes/cadera.webp", modelo3d: { archivo: "modelos/cadera.bin" } },
+      { id: "plana", archivo: "imagenes/plana.webp" },
+    ],
+    ejercicios: [
+      { id: "m1", tipo: "tocar_estructura", imagenId: "muslo" },
+      { id: "c1", tipo: "tocar_estructura", imagenId: "cadera" },
+      { id: "texto", tipo: "opcion_multiple" },
+      { id: "m2", tipo: "identificar_imagen", imagenId: "muslo" },
+      { id: "p1", tipo: "identificar_imagen", imagenId: "plana" },
+      { id: "c2", tipo: "identificar_imagen", imagenId: "cadera" },
+    ],
+  } as unknown as PaqueteContenido;
+
+  it("junta los de cada modelo en el orden en que aparece el primero", () => {
+    expect(agruparPorModelo(paquete, ["m1", "c1", "texto", "m2", "p1", "c2"])).toEqual(["m1", "m2", "c1", "c2", "texto", "p1"]);
+  });
+
+  it("no pierde ni repite ejercicios, aunque falten en el paquete", () => {
+    expect(agruparPorModelo(paquete, ["borrado", "c1", "m1"])).toEqual(["borrado", "c1", "m1"]);
   });
 });
 

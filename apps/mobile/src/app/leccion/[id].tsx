@@ -1,4 +1,4 @@
-import { type Ejercicio, esMejorMarca, estrellas, type Imagen } from "@anatomia/contenido";
+import { type Ejercicio, esMejorMarca, estrellas, type Imagen, type Modelo3D } from "@anatomia/contenido";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, type LayoutRectangle, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -13,7 +13,7 @@ import { IdentificarImagen } from "../../ejercicios/IdentificarImagen";
 import { OpcionMultiple } from "../../ejercicios/OpcionMultiple";
 import { TocarEstructura } from "../../ejercicios/TocarEstructura";
 import type { Eleccion } from "../../ejercicios/tipos";
-import { actual, ejerciciosDeLeccion, ejerciciosMostrables, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
+import { actual, agruparPorModelo, ejerciciosDeLeccion, ejerciciosMostrables, iniciar, lecciones, progreso, resultado, responder, siguiente, terminada } from "../../leccion/flujo";
 import { ofertasAlTerminar } from "../../leccion/oferta";
 import { diaDeEstudio } from "../../repaso/dia";
 import { ejerciciosDeRepaso } from "../../repaso/espaciado";
@@ -22,7 +22,7 @@ import { type MusculoPresentado, Presentacion3D } from "../../ejercicios/Present
 import { guardarJson, leerJson } from "../../lib/almacen";
 import { efecto } from "../../lib/efectos";
 import { useApp } from "../../lib/estado";
-import { uriImagen } from "../../lib/imagenes";
+import { alDescargarArchivo, descargarImagen, uriImagen } from "../../lib/imagenes";
 import { ofertaParaMostrar } from "../../lib/premium";
 import { color, espacio, fuente, TOQUE_MINIMO } from "../../tema";
 import { type ControlEscena, EscenaLeccion, type Toque } from "../../visor3d/EscenaLeccion";
@@ -48,6 +48,9 @@ function formatoTiempo(ms: number) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
+/** Un modelo 3D listo para la escena, con su región ("muslo derecho") para el indicador de vista. */
+type EscenaModelo = { modelo: Modelo3D; region: string };
+
 /** La estructura del modelo 3D que pregunta un ejercicio de imagen, o null si va con la imagen. */
 function en3D(e: Ejercicio, imagen: Imagen | undefined, archivoModelo: string | undefined) {
   if (!imagen?.modelo3d || imagen.modelo3d.archivo !== archivoModelo) return null;
@@ -67,10 +70,13 @@ export default function Leccion() {
   // Las lecciones completadas antes de esta vez: terminarla puede completar una unidad o el curso.
   const completadasAlEmpezar = useRef(completadas);
   const insets = useSafeAreaInsets();
-  // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas.
+  // "/leccion/repaso" es la sesión de repaso: se arma una vez, al abrir, con las fichas vencidas. Junta las de
+  // cada región para cambiar de modelo 3D lo menos posible.
   const esRepaso = id === "repaso";
   const [idsRepaso] = useState(() =>
-    esRepaso && paquete ? ejerciciosDeRepaso(progresoFichas, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), new Date()) : [],
+    esRepaso && paquete
+      ? agruparPorModelo(paquete, ejerciciosDeRepaso(progresoFichas, ejerciciosMostrables(paquete, (a) => uriImagen(a) !== null), new Date()))
+      : [],
   );
   const leccion = useMemo(() => {
     if (esRepaso) return idsRepaso.length > 0 ? { id: "repaso", titulo: "Repaso", orden: 0, ejercicioIds: idsRepaso } : undefined;
@@ -84,17 +90,40 @@ export default function Leccion() {
   const imagenes = useMemo(() => new Map((paquete?.imagenes ?? []).map((i) => [i.id, i])), [paquete]);
   const nombres = useMemo(() => new Map((paquete?.fichas ?? []).map((f) => [f.id, f.nombre.principal])), [paquete]);
 
-  // El modelo 3D de la lección: el de sus imágenes, si ya está en el teléfono. En web va todo con imágenes.
-  // La región para el indicador de vista sale del título de esa imagen ("Muslo derecho, vista anterior…").
-  const { modelo, region } = useMemo(() => {
-    if (Platform.OS === "web") return {};
-    for (const e of ejercicios) {
-      const imagen = "imagenId" in e ? imagenes.get(e.imagenId) : undefined;
-      const m = imagen?.modelo3d;
-      if (m && uriImagen(m.archivo) && uriImagen(m.datos)) return { modelo: m, region: imagen.titulo.split(",")[0].trim().toLowerCase() };
-    }
-    return {};
+  // Archivos que terminan de bajar con la lección abierta: el 3D se suma en cuanto llega su modelo.
+  const [descargados, setDescargados] = useState(0);
+  useEffect(() => alDescargarArchivo(() => setDescargados((n) => n + 1)), []);
+  // Si falta algún modelo de la lección, se pide ya, sin esperar su turno en la descarga de fondo.
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    const claves = new Set(ejercicios.flatMap((e) => {
+      const m = "imagenId" in e ? imagenes.get(e.imagenId)?.modelo3d : undefined;
+      return m ? [m.datos, m.archivo] : [];
+    }));
+    for (const c of claves) descargarImagen(c).catch(() => {});
   }, [ejercicios, imagenes]);
+  // El modelo 3D de cada ejercicio de imagen cuyos dos archivos ya están en el teléfono. En web va todo con
+  // imágenes. La región para el indicador de vista sale del título de la imagen ("Muslo derecho, vista anterior…").
+  // Si nada cambió devuelve el mismo Map: bajar otros archivos no debe reiniciar la presentación.
+  const anteriores = useRef(new Map<string, EscenaModelo>());
+  const disponibles = useMemo(() => {
+    const m = new Map<string, EscenaModelo>();
+    if (Platform.OS !== "web") {
+      for (const e of ejercicios) {
+        const imagen = "imagenId" in e ? imagenes.get(e.imagenId) : undefined;
+        const modelo = imagen?.modelo3d;
+        if (modelo && uriImagen(modelo.archivo) && uriImagen(modelo.datos)) m.set(e.id, { modelo, region: imagen.titulo.split(",")[0].trim().toLowerCase() });
+      }
+    }
+    const antes = anteriores.current;
+    if (m.size !== antes.size || [...m].some(([id, v]) => antes.get(id)?.modelo !== v.modelo)) anteriores.current = m;
+    return anteriores.current;
+    // `descargados` no se lee: avisa que uriImagen puede responder distinto.
+  }, [ejercicios, imagenes, descargados]);
+  // Los que usa la lección: `disponibles`, pero un modelo que llega cuando ya se eligió una respuesta espera a la pregunta siguiente.
+  const [modelos, setModelos] = useState(disponibles);
+  // El de la lección, para la presentación (el repaso no tiene).
+  const modeloLeccion = useMemo(() => (esRepaso ? undefined : ejercicios.map((e) => modelos.get(e.id)).find((m) => m !== undefined)), [esRepaso, ejercicios, modelos]);
   const [fallo3D, setFallo3D] = useState(false);
   const escena = useRef<ControlEscena>(null);
   const control = useMemo<ControlEscena>(() => ({ enviar: (o) => escena.current?.enviar(o) }), []);
@@ -111,18 +140,21 @@ export default function Leccion() {
     let ocultas: string[] = [];
     for (const e of ejercicios) {
       const imagen = "imagenId" in e ? imagenes.get(e.imagenId) : undefined;
-      const d = modelo ? en3D(e, imagen, modelo.archivo) : null;
+      const d = modeloLeccion ? en3D(e, imagen, modeloLeccion.modelo.archivo) : null;
       if (!d || !imagen || musculos.has(d.estructura)) continue;
       const fichaId = Object.entries(imagen.modelo3d?.estructuras ?? {}).find(([, s]) => s === d.estructura)?.[0];
       musculos.set(d.estructura, { estructura: d.estructura, nombre: (fichaId && nombres.get(fichaId)) || d.estructura });
       ocultas = d.ocultas;
     }
     return { musculos: [...musculos.values()], ocultas };
-  }, [ejercicios, imagenes, nombres, modelo]);
+  }, [ejercicios, imagenes, nombres, modeloLeccion]);
   /** null mientras se lee si ya se vio. Sale sola la primera vez; después, con el ▶ de la barra. */
   const [presentando, setPresentando] = useState<boolean | null>(null);
+  /** Ya se respondió algo: si el modelo llega después, la presentación queda para el ▶ de la barra. */
+  const empezada = useRef(false);
   useEffect(() => {
     if (!leccion || esRepaso || recorrido.musculos.length === 0) return setPresentando(false);
+    if (empezada.current) return;
     leerJson<string[]>(CLAVE_PRESENTACIONES).then(
       (vistas) => setPresentando(!(vistas ?? []).includes(leccion.id)),
       () => setPresentando(false),
@@ -146,6 +178,10 @@ export default function Leccion() {
   /** Ejercicios ya reportados en esta sesión: en la repetición del final no se ofrece de nuevo. */
   const [reportados, setReportados] = useState<string[]>([]);
   const inicio = useRef(Date.now());
+  empezada.current = sesion.indice > 0 || comprobado;
+  useEffect(() => {
+    if (!eleccion && !comprobado) setModelos(disponibles);
+  }, [disponibles, eleccion, comprobado]);
 
   // Una sesión vacía no está terminada: todavía no empezó.
   const fin = sesion.cola.length > 0 && terminada(sesion);
@@ -258,7 +294,10 @@ export default function Leccion() {
 
   const ejercicio = porId.get(actual(sesion)!)!;
   const imagen = "imagenId" in ejercicio ? imagenes.get(ejercicio.imagenId) : undefined;
-  const d3 = modelo && !fallo3D ? en3D(ejercicio, imagen, modelo.archivo) : null;
+  // La escena carga el modelo del ejercicio actual o, si este no es 3D, el del próximo que lo sea, para que
+  // esté listo al llegar. En la presentación, el de la lección. En el repaso cambia de región entre ejercicios.
+  const escenaModelo = presentando ? modeloLeccion : sesion.cola.slice(sesion.indice).map((i) => modelos.get(i)).find((m) => m !== undefined);
+  const d3 = escenaModelo && !fallo3D ? en3D(ejercicio, imagen, escenaModelo.modelo.archivo) : null;
   const props = { comprobado, onElegir: setEleccion };
 
   function comprobar() {
@@ -356,12 +395,20 @@ export default function Leccion() {
           </ScrollView>
         )}
         {/* La escena 3D vive toda la lección; se coloca sobre el hueco de la presentación o del ejercicio 3D, o se esconde. */}
-        {modelo && !fallo3D && (
+        {escenaModelo && !fallo3D && (
           <View
             style={(presentando || (d3 && presentando === false)) && hueco ? { position: "absolute", left: hueco.x, top: hueco.y, width: hueco.width, height: hueco.height } : estilos.escondida}
             pointerEvents={presentando || d3 ? "auto" : "none"}
           >
-            <EscenaLeccion ref={escena} modelo={modelo} region={region} onToque={(t) => alTocar.current?.(t)} onListo={onListo3D} onError={onError3D} />
+            <EscenaLeccion
+              key={escenaModelo.modelo.archivo}
+              ref={escena}
+              modelo={escenaModelo.modelo}
+              region={escenaModelo.region}
+              onToque={(t) => alTocar.current?.(t)}
+              onListo={onListo3D}
+              onError={onError3D}
+            />
           </View>
         )}
       </View>

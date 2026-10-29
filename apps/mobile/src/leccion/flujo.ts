@@ -32,6 +32,23 @@ export function ejerciciosDeLeccion(
 export const ejerciciosMostrables = (p: PaqueteContenido, imagenDisponible?: (archivo: string) => boolean): Ejercicio[] =>
   ejerciciosDeLeccion(p, { id: "todos", titulo: "Todos", orden: 0, ejercicioIds: p.ejercicios.map((e) => e.id) }, imagenDisponible);
 
+/**
+ * Junta los ejercicios que usan el mismo modelo 3D (el de la imagen de cada uno), para que el repaso
+ * cambie de región las menos veces posibles. Los grupos van en el orden en que aparece su primer
+ * ejercicio, y dentro de cada grupo se respeta el orden original.
+ */
+export function agruparPorModelo(p: PaqueteContenido, ids: readonly string[]): string[] {
+  const porId = new Map(p.ejercicios.map((e) => [e.id, e]));
+  const imagenes = new Map(p.imagenes.map((i) => [i.id, i]));
+  const grupos = new Map<string, string[]>();
+  for (const id of ids) {
+    const e = porId.get(id);
+    const clave = (e && "imagenId" in e && imagenes.get(e.imagenId)?.modelo3d?.archivo) || "";
+    grupos.set(clave, [...(grupos.get(clave) ?? []), id]);
+  }
+  return [...grupos.values()].flat();
+}
+
 export function lecciones(p: PaqueteContenido): TLeccion[] {
   return [...p.curso.unidades]
     .sort((a, b) => a.orden - b.orden)
