@@ -1,12 +1,23 @@
 import { ArrowLeftIcon } from "phosphor-react-native/src/icons/ArrowLeft";
+import { BellIcon } from "phosphor-react-native/src/icons/Bell";
+import { BrainIcon } from "phosphor-react-native/src/icons/Brain";
 import { CaretRightIcon } from "phosphor-react-native/src/icons/CaretRight";
 import { CheckFatIcon } from "phosphor-react-native/src/icons/CheckFat";
+import { EnvelopeSimpleIcon } from "phosphor-react-native/src/icons/EnvelopeSimple";
+import { EyeIcon } from "phosphor-react-native/src/icons/Eye";
+import { EyeSlashIcon } from "phosphor-react-native/src/icons/EyeSlash";
 import { FireIcon } from "phosphor-react-native/src/icons/Fire";
 import { FlagIcon } from "phosphor-react-native/src/icons/Flag";
+import { GraduationCapIcon } from "phosphor-react-native/src/icons/GraduationCap";
+import { HandTapIcon } from "phosphor-react-native/src/icons/HandTap";
+import { HandWavingIcon } from "phosphor-react-native/src/icons/HandWaving";
 import { LockSimpleIcon } from "phosphor-react-native/src/icons/LockSimple";
 import { PlayIcon } from "phosphor-react-native/src/icons/Play";
 import { StarIcon } from "phosphor-react-native/src/icons/Star";
+import { TimerIcon } from "phosphor-react-native/src/icons/Timer";
 import { TrophyIcon } from "phosphor-react-native/src/icons/Trophy";
+import { UserIcon } from "phosphor-react-native/src/icons/User";
+import { WarningCircleIcon } from "phosphor-react-native/src/icons/WarningCircle";
 import { XIcon } from "phosphor-react-native/src/icons/X";
 import type { IconWeight } from "phosphor-react-native";
 import { View } from "react-native";
@@ -28,6 +39,18 @@ const ICONOS = {
   reportar: FlagIcon,
   atras: ArrowLeftIcon,
   siguiente: CaretRightIcon,
+  alerta: WarningCircleIcon,
+  /** Bienvenida y formularios de la cuenta. */
+  saludo: HandWavingIcon,
+  tiempo: TimerIcon,
+  tocar: HandTapIcon,
+  memoria: BrainIcon,
+  correo: EnvelopeSimpleIcon,
+  usuario: UserIcon,
+  universidad: GraduationCapIcon,
+  recordatorio: BellIcon,
+  mostrar: EyeIcon,
+  ocultar: EyeSlashIcon,
 };
 
 export type NombreIcono = keyof typeof ICONOS;

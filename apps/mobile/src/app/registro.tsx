@@ -1,12 +1,13 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { Campo } from "../componentes/Campo";
+import { BarraAtras, Cabecera, Enlace, Errores } from "../componentes/Cuenta";
 import { ErrorApi, SinConexion } from "../lib/api";
 import { useApp } from "../lib/estado";
-import { color, espacio, fuente } from "../tema";
+import { color, espacio } from "../tema";
 
 const HORA = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -45,18 +46,19 @@ export default function Registro() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <ScrollView contentContainerStyle={estilos.contenido} keyboardShouldPersistTaps="handled">
-          <Text style={estilos.titulo} accessibilityRole="header">Crear cuenta</Text>
-          <Campo etiqueta="Nombre" value={nombre} onChangeText={setNombre} autoComplete="name" textContentType="name" />
-          <Campo etiqueta="Correo" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" textContentType="emailAddress" />
-          <Campo etiqueta="Contraseña" value={contrasena} onChangeText={setContrasena} secureTextEntry autoComplete="new-password" textContentType="newPassword" ayuda="Mínimo 8 caracteres" />
-          <Campo etiqueta="Universidad (opcional)" value={universidad} onChangeText={setUniversidad} />
-          <Campo etiqueta="Hora del recordatorio diario" value={hora} onChangeText={setHora} keyboardType="numbers-and-punctuation" maxLength={5} ayuda="Te avisaremos a esta hora los días que no hayas estudiado." />
-          {errores.map((e, i) => <Text key={i} style={estilos.error} accessibilityLiveRegion="polite">{e}</Text>)}
+          <BarraAtras />
+          <Cabecera icono="usuario" titulo="Crea tu cuenta" detalle="Es gratis. Tu avance y tu racha quedan guardados." />
+          <Campo etiqueta="Nombre" icono="usuario" value={nombre} onChangeText={setNombre} autoComplete="name" textContentType="name" />
+          <Campo etiqueta="Correo" icono="correo" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" textContentType="emailAddress" />
+          <Campo etiqueta="Contraseña" icono="candado" value={contrasena} onChangeText={setContrasena} secureTextEntry autoComplete="new-password" textContentType="newPassword" ayuda="Mínimo 8 caracteres" />
+          <Campo etiqueta="Universidad (opcional)" icono="universidad" value={universidad} onChangeText={setUniversidad} />
+          <Campo etiqueta="Hora del recordatorio diario" icono="recordatorio" value={hora} onChangeText={setHora} keyboardType="numbers-and-punctuation" maxLength={5} ayuda="Te avisaremos a esta hora los días que no hayas estudiado." />
+          <Errores errores={errores} />
           <Boton titulo="Crear cuenta" onPress={enviar} cargando={enviando} deshabilitado={!nombre.trim() || !email.trim() || !contrasena} />
-          <Boton titulo="Volver" variante="secundario" onPress={() => router.back()} />
+          <Enlace pregunta="¿Ya tienes cuenta?" accion="Iniciar sesión" onPress={() => router.replace("/login")} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -64,7 +66,5 @@ export default function Registro() {
 }
 
 const estilos = StyleSheet.create({
-  contenido: { padding: espacio.l, gap: espacio.s },
-  titulo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto, marginBottom: espacio.m },
-  error: { color: color.rojo, fontSize: 15, fontFamily: fuente.media },
+  contenido: { flexGrow: 1, padding: espacio.l, paddingTop: espacio.s },
 });
