@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
+import { Icono } from "../componentes/Icono";
 import { api, SinConexion } from "../lib/api";
 import { useApp } from "../lib/estado";
 import { guardarInteresPremium, leerInteresPremium } from "../lib/premium";
@@ -78,7 +79,7 @@ export default function Premium() {
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }}>
       <View style={estilos.barra}>
         <Pressable accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => volver()} hitSlop={8} style={estilos.cerrar}>
-          <Text style={estilos.x}>✕</Text>
+          <Icono nombre="cerrar" tam={26} color={color.tenue} />
         </Pressable>
       </View>
       <ScrollView contentContainerStyle={estilos.contenido}>
@@ -95,7 +96,9 @@ export default function Premium() {
         <View style={{ gap: espacio.s }}>
           {beneficios.map((b, i) => (
             <View key={b} style={[estilos.beneficio, i === 0 && estilos.destacado]}>
-              <Text style={estilos.check}>✓</Text>
+              <View style={estilos.check}>
+                <Icono nombre="check" tam={20} peso="fill" color={color.marcaTexto} />
+              </View>
               <Text style={[estilos.texto, i === 0 && estilos.textoDestacado]}>{b}</Text>
             </View>
           ))}
@@ -144,7 +147,6 @@ export default function Premium() {
 const estilos = StyleSheet.create({
   barra: { paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   cerrar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
-  x: { fontSize: 24, color: color.bloqueado },
   contenido: { padding: espacio.l, paddingTop: 0, gap: espacio.l },
   encabezado: { flexDirection: "row", alignItems: "center", gap: espacio.s },
   marca: { fontSize: 34, fontFamily: fuente.titulo, color: color.marca, letterSpacing: -1 },
@@ -154,7 +156,7 @@ const estilos = StyleSheet.create({
   beneficio: { flexDirection: "row", gap: espacio.s, alignItems: "flex-start" },
   destacado: { padding: espacio.m, borderRadius: 16, backgroundColor: color.marcaSuave },
   textoDestacado: { fontSize: 18, fontFamily: fuente.titulo, color: color.marcaTexto, lineHeight: 24 },
-  check: { fontSize: 18, fontFamily: fuente.titulo, color: color.marca },
+  check: { marginTop: 2 },
   texto: { flex: 1, fontSize: 16, fontFamily: fuente.normal, color: color.texto, lineHeight: 22 },
   tenue: { fontSize: 14, fontFamily: fuente.normal, color: color.tenue },
   plan: { flexDirection: "row", alignItems: "center", minHeight: TOQUE_MINIMO, padding: espacio.m, borderRadius: 16, borderWidth: 2, borderColor: color.borde },

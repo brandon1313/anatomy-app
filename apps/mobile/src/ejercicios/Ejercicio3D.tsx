@@ -10,9 +10,9 @@ import { estilosTexto } from "./OpcionMultiple";
 import type { PropsEjercicio } from "./tipos";
 
 /** Colores sobre el modelo (más vivos que los de la interfaz, porque tiñen músculo rojo). */
-const ELEGIDO = "#5b5bd6";
-const VERDE = "#2fbf71";
-const ROJO = "#e5484d";
+const ELEGIDO = "#6a5cff";
+const VERDE = "#1fc46f";
+const ROJO = "#f0444b";
 
 type TImagen = Extract<Ejercicio, { tipo: "tocar_estructura" | "identificar_imagen" }>;
 

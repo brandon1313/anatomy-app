@@ -13,18 +13,26 @@ Decisión del dueño del producto (27-10-2026): nombre, colores y fuente propios
 
 | Rol | Tokens | Hex | Dónde |
 | --- | --- | --- | --- |
-| Marca | `marca`, `marcaSombra`, `marcaTexto`, `marcaSuave` | `#0E8C80`, `#0A6B62`, `#0B7369`, `#E0F4F1` | Botones principales, progreso, lección siguiente, unidad |
-| Elegido | `acento`, `acentoSuave`, `acentoBorde` | `#4F4FCF`, `#ECEBFF`, `#B9B6FF` | Lo seleccionado antes de comprobar. En 3D, `#5B5BD6` |
-| Músculo | `coral`, `coralTexto` | `#F26D5B`, `#B8412F` | Lema, "Repasemos el que fallaste" |
-| Hueso | `hueso`, `huesoTexto` | `#F3E9D2`, `#6E5A32` | Caso clínico; nombres de los huesos en 3D |
-| Acierto | `verde`, `verdeSuave`, `verdeBoton`, `verdeSombra` | `#16743F`, `#DFF6E8`, `#1F9D55`, `#177A42` | Banda y botón al acertar. En 3D, `#2FBF71` |
-| Error | `rojo`, `rojoSuave`, `rojoBoton`, `rojoSombra` | `#B42318`, `#FDE4E4`, `#D93A3A`, `#A82C2C` | Banda y botón al fallar. En 3D, `#E5484D` |
-| Logro | `logro`, `logroSombra`, `logroTexto` | `#E8A317`, `#C48810`, `#5C3D00` | Lecciones completadas y resultado |
+| Marca | `marca`, `marcaSombra`, `marcaTexto`, `marcaSuave` | `#009E8F`, `#007A6E`, `#00796D`, `#D6F5F0` | Botones principales, progreso, lección siguiente, unidad |
+| Elegido | `acento`, `acentoSuave`, `acentoBorde` | `#5A4BF0`, `#EEEBFF`, `#B3A9FF` | Lo seleccionado antes de comprobar. En 3D, `#6A5CFF` |
+| Músculo | `coral`, `coralTexto` | `#FF6650`, `#C23A26` | Lema, "Repasemos el que fallaste" |
+| Hueso | `hueso`, `huesoTexto` | `#F8ECD0`, `#6E5A32` | Caso clínico; nombres de los huesos en 3D |
+| Acierto | `verde`, `verdeSuave`, `verdeBoton`, `verdeSombra` | `#11733C`, `#D9F8E5`, `#10A050`, `#0B7F3E` | Banda y botón al acertar. En 3D, `#1FC46F` |
+| Error | `rojo`, `rojoSuave`, `rojoBoton`, `rojoSombra` | `#B42318`, `#FFE2E2`, `#E5363C`, `#B0262B` | Banda y botón al fallar. En 3D, `#F0444B` |
+| Logro | `logro`, `logroSombra`, `logroTexto` | `#FFB41F`, `#D99200`, `#5C3D00` | Lecciones completadas y resultado |
 | Neutros | `texto`, `tenue`, `borde`, `bloqueado` | `#24323A`, `#5C6B73`, `#E3E6EA`, `#A7AEB3` | Texto, apoyo, bordes, lo bloqueado |
 
 - El verde y el rojo son solo para acierto y error.
-- Todo color que va como texto tiene contraste AA sobre su fondo. Los botones usan texto grande.
+- Todo color que va como texto tiene contraste AA sobre su fondo. Los botones y el título de la unidad usan texto grande, que pide 3:1: el blanco sobre `marca` da 3.3:1.
+- 28-10-2026: la paleta subió de saturación (la primera se veía apagada). Mismos tonos, más vivos.
 - Los botones van en minúsculas normales ("Comprobar"), no en mayúsculas.
+
+## Íconos
+
+- **Phosphor** (`phosphor-react-native`, licencia MIT), en lugar de emojis: cada sistema dibuja los emojis distinto y no siguen la paleta.
+- Todos pasan por `apps/mobile/src/componentes/Icono.tsx`, con nombres propios (`racha`, `candado`, `estrella`, `trofeo`, `check`, `cerrar`, `ver`, `reportar`, `atras`, `siguiente`) y colores de `tema.ts`. Se importan uno por uno, porque Metro no descarta los que no se usan.
+- **Pesos:** relleno para la llama, las estrellas, el candado y el check (CheckFat, blanco sobre el dorado de lección completada); *duotone* para el trofeo; negrita para la X y las flechas.
+- Son decorativos: el texto accesible va en el botón o la vista que los contiene.
 
 ## Tipografía
 

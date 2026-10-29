@@ -7,7 +7,7 @@ import type { ControlEscena } from "../visor3d/EscenaLeccion";
 import { estilosTexto } from "./OpcionMultiple";
 
 /** Un color por músculo, distinto del verde y el rojo de las respuestas. */
-const COLORES = ["#5b5bd6", "#14b8a6", "#e8a317", "#d9468f", "#0ea5e9", "#8b5cf6", "#6d8f00", "#c2410c"];
+const COLORES = ["#6a5cff", "#00bfa8", "#ffb41f", "#ec4899", "#0ea5e9", "#8b5cf6", "#7aa800", "#f05a12"];
 const MS_POR_MUSCULO = 1800;
 
 export interface MusculoPresentado {

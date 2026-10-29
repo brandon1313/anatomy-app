@@ -4,6 +4,7 @@ import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, V
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { Estrellas } from "../componentes/Estrellas";
+import { Icono } from "../componentes/Icono";
 import { useApp } from "../lib/estado";
 import { uriImagen } from "../lib/imagenes";
 import { programarRecordatorio } from "../lib/notificaciones";
@@ -15,7 +16,7 @@ import { proximoRecordatorio } from "../repaso/recordatorio";
 import { color, espacio, fuente, TOQUE_MINIMO } from "../tema";
 
 const CIRCULO = {
-  completada: { fondo: color.logro, sombra: color.logroSombra, icono: color.logroTexto },
+  completada: { fondo: color.logro, sombra: color.logroSombra, icono: "#fff" },
   siguiente: { fondo: color.marca, sombra: color.marcaSombra, icono: "#fff" },
   bloqueada: { fondo: color.borde, sombra: "#cfd5da", icono: color.bloqueado },
 };
@@ -70,7 +71,7 @@ export default function Inicio() {
             accessible
             accessibilityLabel={`Racha de ${dias} ${dias === 1 ? "día" : "días"}${dias > 0 && !encendida ? ". Completa una lección o un repaso hoy para no perderla" : ""}`}
           >
-            <Text style={[estilos.rachaIcono, !encendida && { opacity: 0.45 }]}>🔥</Text>
+            <Icono nombre="racha" tam={20} peso="fill" color={encendida ? color.coral : color.bloqueado} />
             <Text style={[estilos.rachaTexto, encendida && { color: color.logroTexto }]}>{dias}</Text>
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel="Perfil" onPress={() => router.push("/perfil")} style={estilos.avatar}>
@@ -129,9 +130,12 @@ export default function Inicio() {
                       >
                         {({ pressed }) => (
                           <View style={[estilos.circulo, { backgroundColor: c.fondo, borderColor: c.sombra }, pressed && estilos.hundido]}>
-                            <Text style={[estilos.icono, { color: c.icono }]}>
-                              {estado === "completada" ? "✓" : estado === "bloqueada" ? "🔒" : "★"}
-                            </Text>
+                            <Icono
+                              nombre={estado === "completada" ? "check" : estado === "bloqueada" ? "candado" : "estrella"}
+                              tam={34}
+                              peso="fill"
+                              color={c.icono}
+                            />
                           </View>
                         )}
                       </Pressable>
@@ -180,7 +184,6 @@ const estilos = StyleSheet.create({
   saludo: { fontSize: 28, fontFamily: fuente.titulo, color: color.texto },
   racha: { flexDirection: "row", alignItems: "center", gap: espacio.xs, paddingHorizontal: espacio.m, paddingVertical: espacio.xs, borderRadius: 999, borderWidth: 2, borderColor: color.borde, backgroundColor: color.superficie },
   rachaEncendida: { borderColor: color.logro, backgroundColor: color.hueso },
-  rachaIcono: { fontSize: 18 },
   rachaTexto: { fontSize: 18, fontFamily: fuente.titulo, color: color.tenue },
   avatar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, borderRadius: TOQUE_MINIMO / 2, backgroundColor: color.marcaSuave, borderWidth: 2, borderColor: color.marca, alignItems: "center", justifyContent: "center" },
   inicial: { fontSize: 18, fontFamily: fuente.titulo, color: color.marcaTexto },
@@ -190,13 +193,12 @@ const estilos = StyleSheet.create({
   repasoDetalle: { marginTop: 2, fontSize: 14, fontFamily: fuente.normal, color: color.tenue },
   unidad: { marginTop: espacio.l, marginBottom: espacio.l, padding: espacio.m, borderRadius: 16, backgroundColor: color.marca, borderBottomWidth: 4, borderColor: color.marcaSombra },
   unidadBloqueada: { backgroundColor: color.borde, borderColor: "#cfd5da" },
-  unidadEtiqueta: { color: "#d5f2ee", fontSize: 14, fontFamily: fuente.media },
+  unidadEtiqueta: { color: "#fff", fontSize: 14, fontFamily: fuente.negrita },
   unidadTitulo: { color: "#fff", fontSize: 20, fontFamily: fuente.titulo },
   ruta: { alignItems: "center", gap: espacio.l },
   parada: { alignItems: "center", width: 180 },
   circulo: { width: TAM, height: TAM, borderRadius: TAM / 2, borderBottomWidth: 6, alignItems: "center", justifyContent: "center" },
   hundido: { borderBottomWidth: 0, marginTop: 6 },
-  icono: { color: "#fff", fontSize: 30, fontFamily: fuente.titulo },
   estrellas: { marginTop: espacio.xs },
   empezar: { marginTop: espacio.xs, fontSize: 14, fontFamily: fuente.titulo, color: color.marcaTexto },
   tituloLeccion: { marginTop: espacio.xs, fontSize: 15, fontFamily: fuente.negrita, color: color.texto, textAlign: "center" },

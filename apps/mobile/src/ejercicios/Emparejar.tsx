@@ -10,7 +10,7 @@ import type { PropsEjercicio } from "./tipos";
 type TEmparejar = Extract<Ejercicio, { tipo: "emparejar" }>;
 
 /** Colores para distinguir qué elemento se unió con cuál. */
-const COLORES_PAR = ["#4f4fcf", "#0e8c80", "#b8412f", "#8a5a00", "#a3337a"];
+const COLORES_PAR = ["#5a4bf0", "#009e8f", "#e0503a", "#c27c00", "#c42f86"];
 
 /** Los pares se arman y se deshacen libremente; con todos unidos se puede comprobar y los incorrectos quedan en rojo. */
 export function Emparejar({ ejercicio: e, comprobado, onElegir }: PropsEjercicio & { ejercicio: TEmparejar }) {

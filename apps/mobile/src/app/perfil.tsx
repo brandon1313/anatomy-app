@@ -4,6 +4,7 @@ import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, Te
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Boton } from "../componentes/Boton";
 import { Campo } from "../componentes/Campo";
+import { Icono } from "../componentes/Icono";
 import { SinConexion } from "../lib/api";
 import { useApp } from "../lib/estado";
 import { type EstadoPermiso, estadoPermiso } from "../lib/notificaciones";
@@ -92,7 +93,7 @@ export default function Perfil() {
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <View style={estilos.barra}>
         <Pressable accessibilityRole="button" accessibilityLabel="Volver" onPress={() => volver()} hitSlop={8} style={estilos.volver}>
-          <Text style={estilos.flecha}>←</Text>
+          <Icono nombre="atras" tam={26} />
         </Pressable>
         <Text style={estilos.titulo} accessibilityRole="header">Perfil</Text>
       </View>
@@ -110,7 +111,10 @@ export default function Perfil() {
         <Text style={estilos.seccion} accessibilityRole="header">Racha</Text>
         <View style={[estilos.tarjeta, estilos.cifras]}>
           <View style={estilos.cifra} accessible accessibilityLabel={`Racha actual: ${dias} ${dias === 1 ? "día" : "días"}`}>
-            <Text style={estilos.valor}>🔥 {dias}</Text>
+            <View style={estilos.valorFila}>
+              <Icono nombre="racha" tam={26} peso="fill" color={dias > 0 ? color.coral : color.bloqueado} />
+              <Text style={estilos.valor}>{dias}</Text>
+            </View>
             <Text style={estilos.tenue}>{dias === 1 ? "día seguido" : "días seguidos"}</Text>
           </View>
           <View style={estilos.cifra} accessible accessibilityLabel={`Racha máxima: ${racha.maxima} ${racha.maxima === 1 ? "día" : "días"}`}>
@@ -157,7 +161,7 @@ export default function Perfil() {
             <Text style={estilos.texto}>Palpa Premium</Text>
             <Text style={estilos.tenue}>Todo el cuerpo y ejercicios nuevos. Pronto.</Text>
           </View>
-          <Text style={estilos.flecha}>›</Text>
+          <Icono nombre="siguiente" tam={22} color={color.tenue} />
         </Pressable>
 
         <Text style={estilos.seccion} accessibilityRole="header">Privacidad</Text>
@@ -196,7 +200,6 @@ export default function Perfil() {
 const estilos = StyleSheet.create({
   barra: { flexDirection: "row", alignItems: "center", gap: espacio.s, paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   volver: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
-  flecha: { fontSize: 26, color: color.texto },
   titulo: { fontSize: 22, fontFamily: fuente.titulo, color: color.texto },
   contenido: { padding: espacio.l, paddingTop: espacio.s, paddingBottom: espacio.xl },
   usuario: { flexDirection: "row", alignItems: "center", gap: espacio.m },
@@ -208,6 +211,7 @@ const estilos = StyleSheet.create({
   tarjeta: { padding: espacio.m, borderRadius: 16, borderWidth: 2, borderColor: color.borde, backgroundColor: color.superficie, gap: espacio.m },
   cifras: { flexDirection: "row" },
   cifra: { flex: 1, alignItems: "center", gap: 2 },
+  valorFila: { flexDirection: "row", alignItems: "center", gap: espacio.xs },
   valor: { fontSize: 26, fontFamily: fuente.titulo, color: color.logroTexto },
   fila: { flexDirection: "row", alignItems: "center", gap: espacio.m },
   texto: { fontSize: 16, fontFamily: fuente.normal, color: color.texto, lineHeight: 22 },

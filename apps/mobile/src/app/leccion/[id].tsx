@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, type LayoutRectangle, Platform, Pressable, Sc
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Boton } from "../../componentes/Boton";
 import { Estrellas } from "../../componentes/Estrellas";
+import { Icono } from "../../componentes/Icono";
 import { ReportarError } from "../../componentes/ReportarError";
 import { Ejercicio3D } from "../../ejercicios/Ejercicio3D";
 import { Emparejar } from "../../ejercicios/Emparejar";
@@ -214,7 +215,7 @@ export default function Leccion() {
     return (
       <SafeAreaView style={estilos.centro}>
         {esRepaso ? (
-          <Text style={estilos.trofeo} accessibilityElementsHidden>🏆</Text>
+          <Icono nombre="trofeo" tam={96} peso="duotone" color={color.logro} />
         ) : (
           <Estrellas cuantas={ganadas} tam={64} />
         )}
@@ -234,9 +235,12 @@ export default function Leccion() {
             <Text style={[estilos.valor, { color: color.marcaTexto }]}>{formatoTiempo(r.ms)}</Text>
           </View>
         </View>
-        <Text style={[estilos.racha, subio && estilos.rachaSubio]} accessibilityLiveRegion="polite">
-          🔥 {subio ? (dias === 1 ? "¡Empezaste una racha!" : `¡${dias} días seguidos!`) : `Racha de ${dias} ${dias === 1 ? "día" : "días"}`}
-        </Text>
+        <View style={estilos.filaRacha}>
+          <Icono nombre="racha" tam={subio ? 24 : 20} peso="fill" color={color.coral} />
+          <Text style={[estilos.racha, subio && estilos.rachaSubio]} accessibilityLiveRegion="polite">
+            {subio ? (dias === 1 ? "¡Empezaste una racha!" : `¡${dias} días seguidos!`) : `Racha de ${dias} ${dias === 1 ? "día" : "días"}`}
+          </Text>
+        </View>
         <Boton
           titulo="Continuar"
           onPress={async () => {
@@ -288,7 +292,7 @@ export default function Leccion() {
     <SafeAreaView style={{ flex: 1, backgroundColor: color.fondo }} edges={["top", "left", "right"]}>
       <View style={estilos.barra}>
         <Pressable accessibilityRole="button" accessibilityLabel="Salir de la lección" onPress={salirConConfirmacion} style={estilos.cerrar} hitSlop={8}>
-          <Text style={estilos.x}>✕</Text>
+          <Icono nombre="cerrar" tam={26} color={color.tenue} />
         </Pressable>
         <View style={estilos.progreso} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: Math.round(progreso(sesion) * 100) }}>
           <View style={[estilos.relleno, { width: `${Math.max(progreso(sesion) * 100, 4)}%` }]}>
@@ -309,7 +313,7 @@ export default function Leccion() {
             hitSlop={8}
           >
             <View style={estilos.botonVer}>
-              <Text style={estilos.ver}>▶</Text>
+              <Icono nombre="ver" tam={14} peso="fill" color={color.marcaTexto} />
             </View>
           </Pressable>
         )}
@@ -373,7 +377,7 @@ export default function Leccion() {
           <View style={estilos.retro} accessibilityLiveRegion="polite">
             <View style={estilos.filaTitulo}>
               <View style={[estilos.sello, { backgroundColor: eleccion.correcto ? color.verdeBoton : color.rojoBoton }]}>
-                <Text style={estilos.selloTexto}>{eleccion.correcto ? "✓" : "✕"}</Text>
+                <Icono nombre={eleccion.correcto ? "check" : "cerrar"} tam={20} peso={eleccion.correcto ? "fill" : "bold"} color="#fff" />
               </View>
               <Text style={[estilos.retroTitulo, { color: eleccion.correcto ? color.verde : color.rojo }]}>
                 {eleccion.correcto ? elogio : "Casi…"}
@@ -387,7 +391,15 @@ export default function Leccion() {
                 hitSlop={8}
                 style={estilos.botonReportar}
               >
-                <Text style={estilos.reportar}>{reportados.includes(ejercicio.id) ? "✓ Reportado" : "⚑ Reportar"}</Text>
+                <View style={estilos.filaReportar}>
+                  <Icono
+                    nombre={reportados.includes(ejercicio.id) ? "check" : "reportar"}
+                    tam={16}
+                    peso={reportados.includes(ejercicio.id) ? "fill" : "bold"}
+                    color={color.tenue}
+                  />
+                  <Text style={estilos.reportar}>{reportados.includes(ejercicio.id) ? "Reportado" : "Reportar"}</Text>
+                </View>
               </Pressable>
             </View>
             {!eleccion.correcto && eleccion.detalle && <Text style={estilos.detalle}>{eleccion.detalle}</Text>}
@@ -419,9 +431,7 @@ const estilos = StyleSheet.create({
   aviso: { fontSize: 17, fontFamily: fuente.media, color: color.tenue, textAlign: "center" },
   barra: { flexDirection: "row", alignItems: "center", gap: espacio.s, paddingHorizontal: espacio.m, paddingVertical: espacio.s },
   cerrar: { width: TOQUE_MINIMO, height: TOQUE_MINIMO, alignItems: "center", justifyContent: "center" },
-  x: { fontSize: 24, color: color.bloqueado },
   botonVer: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.marcaSuave, borderWidth: 2, borderColor: color.marca, alignItems: "center", justifyContent: "center" },
-  ver: { fontSize: 14, color: color.marcaTexto, marginLeft: 2 },
   progreso: { flex: 1, height: 16, borderRadius: 8, backgroundColor: color.borde, overflow: "hidden" },
   relleno: { height: "100%", backgroundColor: color.marca, borderRadius: 8 },
   brillo: { position: "absolute", left: 8, right: 8, top: 4, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.35)" },
@@ -434,18 +444,18 @@ const estilos = StyleSheet.create({
   retro: { gap: espacio.xs },
   filaTitulo: { flexDirection: "row", alignItems: "center", gap: espacio.s },
   sello: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
-  selloTexto: { color: "#fff", fontSize: 18, fontFamily: fuente.titulo },
   retroTitulo: { fontSize: 22, fontFamily: fuente.titulo },
   detalle: { fontSize: 16, fontFamily: fuente.negrita, color: color.rojo },
   explicacion: { fontSize: 15, fontFamily: fuente.normal, color: color.texto, lineHeight: 21 },
   botonReportar: { minHeight: TOQUE_MINIMO, justifyContent: "center", paddingHorizontal: espacio.xs },
+  filaReportar: { flexDirection: "row", alignItems: "center", gap: espacio.xs },
   reportar: { fontSize: 14, fontFamily: fuente.negrita, color: color.tenue },
-  trofeo: { fontSize: 84, textAlign: "center" },
   tituloResultado: { fontSize: 28, fontFamily: fuente.titulo, color: color.marcaTexto, textAlign: "center" },
   cifras: { flexDirection: "row", gap: espacio.m },
   cifra: { flex: 1, borderWidth: 2, borderRadius: 16, overflow: "hidden", alignItems: "stretch" },
   etiqueta: { color: "#fff", fontSize: 14, fontFamily: fuente.negrita, textAlign: "center", paddingVertical: 4 },
   valor: { fontSize: 26, fontFamily: fuente.titulo, textAlign: "center", paddingVertical: espacio.m },
+  filaRacha: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: espacio.xs },
   racha: { fontSize: 17, fontFamily: fuente.negrita, color: color.tenue, textAlign: "center" },
   rachaSubio: { fontSize: 20, fontFamily: fuente.titulo, color: color.logroTexto },
   marca: { fontSize: 16, fontFamily: fuente.negrita, color: color.tenue, textAlign: "center" },
